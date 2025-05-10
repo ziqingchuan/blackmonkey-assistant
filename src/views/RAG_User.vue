@@ -13,8 +13,12 @@
 
     <!-- 三界主体 -->
     <div class="main-container">
-      <!-- 往生名录 -->
+      <!-- 千劫万难 -->
       <div class="dialog-list">
+        <div class="list-title">
+          <CloudBeforeList class="cloud-decoration" />
+          <span class="title-text">千劫万难</span>
+        </div>
         <div
             v-for="dialog in dialogList"
             :key="dialog.id"
@@ -182,8 +186,7 @@ import type { Dialog, QueryInfo, ConfigParams } from '../apis/rag.ts';
 import CloudUnderLogo from "../assets/icons/Cloud-under-logo.vue";
 import CloudUnderInput from "../assets/icons/Cloud-under-input.vue";
 import CloudBeforeTitle from "../assets/icons/Cloud-before-title.vue";
-import Dragon from "../assets/icons/Dragon.vue";
-import Xianyunshan1 from "../assets/icons/xianyunshan1.vue";
+import CloudBeforeList from "../assets/icons/Cloud-before-list.vue";
 // ==================== Mock数据 ====================
 const mockUser: UserInfo = {
   userName: '齐天大圣',
@@ -223,7 +226,86 @@ const mockDialogs: Dialog[] = [
       }
     ]
   },
-
+  {
+    id: 3,
+    userId: 1,
+    title: '定海神针之谜',
+    createTime: new Date('2024-05-22'),
+    contentList: [
+      {
+        text: '如意金箍棒可有哪些变化神通？',
+        role: 'USER'
+      },
+      {
+        text: '大可撑天柱，小如绣花针，变化随心意，重逾万三千。此乃老君炉之造化，禹王定海之神物。',
+        role: 'RAG'
+      }
+    ]
+  },
+  {
+    id: 4,
+    userId: 1,
+    title: '地府生死簿',
+    createTime: new Date('2024-05-23'),
+    contentList: [
+      {
+        text: '如何修改生死簿阳寿记录？',
+        role: 'USER'
+      },
+      {
+        text: '须持判官笔，蘸幽冥墨，于子时三刻勾画。然逆天改命者，必遭十殿阎罗追魂索。',
+        role: 'RAG'
+      }
+    ]
+  },
+  {
+    id: 5,
+    userId: 1,
+    title: '七十二变精要',
+    createTime: new Date('2024-05-24'),
+    contentList: [
+      {
+        text: '变化之术可能避三灾否？',
+        role: 'USER'
+      },
+      {
+        text: '八九玄功虽妙，然天雷、阴火、赑风三劫乃天地法则，唯金丹大道可渡。',
+        role: 'RAG'
+      }
+    ]
+  },
+  {
+    id: 6,
+    userId: 1,
+    title: '天罡战阵',
+    createTime: new Date('2024-05-25'),
+    contentList: [
+      {
+        text: '破二十八星宿阵当取何位？',
+        role: 'USER'
+      },
+      {
+        text: '东方青龙角木蛟为阵眼，然需先破西方奎木狼牙旗，此乃虚则实之的兵法要诀。',
+        role: 'RAG'
+      }
+    ]
+  },
+  {
+    id: 7,
+    userId: 1,
+    title: '筋斗云驾驭法',
+    createTime: new Date('2024-05-26'),
+    contentList: [
+      {
+        text: '为何我的筋斗云时有颠簸？',
+        role: 'USER'
+      },
+      {
+        text: '云气不顺皆因心念不纯，需凝神静气，念《冲虚真经》第三卷调合云灵。',
+        role: 'RAG'
+      }
+    ]
+  }
 ];
 
 const createDialog = async (title: string, userId: number): Promise<boolean> => {
@@ -445,9 +527,31 @@ button {
 .dialog-list {
   overflow-y: auto;
   width: 250px;
-  background: rgba(28, 28, 31, 0.95);
+  background-image: url('public/dragon.png');
+  background-repeat: no-repeat;
+  background-position-y: center;
+  background-position-x: 50px;
   border-right: 1px solid #3a3a3f;
-  padding: 20px;
+  padding: 15px 20px 20px;
+}
+
+.list-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+  padding: 12px 0;
+  border-bottom: 2px solid #c0aa6a;
+}
+
+.title-text {
+  font-size: 20px;
+  color: #d3b479;
+  text-shadow: 0 0 8px rgba(192, 170, 106, 0.3);
+  margin: 0 10px;
+  position: relative;
+  font-family: 'Ma Shan Zheng', cursive;
 }
 
 .dialog-container {
