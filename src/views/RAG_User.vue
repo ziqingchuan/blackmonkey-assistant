@@ -3,8 +3,9 @@
     <!-- 玄铁侧栏 -->
     <div class="sidebar">
       <Logo/>
+      <CloudUnderLogo />
       <div class="btn-group">
-        <button class="btn" @click="showCreate" title="新建对话">开天</button>
+        <button class="btn" @click="showCreate" title="新建对话">开劫</button>
         <button class="btn" @click="showConfig" title="高级设置">造化</button>
         <button class="btn" @click="router.push('/account')" title="退出">归尘</button>
       </div>
@@ -33,7 +34,10 @@
 
       <!-- 问道之境 -->
       <div class="dialog-container">
-        <span class="dialog-title">{{ currentDialog?.title || "新劫难" }}</span>
+        <div class="dialog-header">
+          <CloudBeforeTitle />
+          <span class="dialog-title">{{ currentDialog?.title || "新劫难" }}</span>
+        </div>
         <div class="dialog-content">
           <template v-if="currentDialog">
             <div
@@ -71,11 +75,16 @@
               :disabled="isLoading || !question"
               @click="sendQuestion"
           >
-            <Send />
+            <span class="icon-container">
+              <Send />
+            </span>
+            <span class="text-container">求问</span>
           </button>
         </div>
         <div class="footer">
-          <span>◇ 历劫证道 · 天机自现 ◇</span>
+          <CloudUnderInput />
+          <span> 历劫证道 · 天机自现 </span>
+          <CloudUnderInput />
         </div>
       </div>
     </div>
@@ -85,6 +94,8 @@
   <div v-if="showCreateDialog" class="xuan-window">
     <div class="xuan-content">
       <h3 class="xuan-title">开劫度人</h3>
+      <p>点击开劫，创建一条新的求问之路！</p>
+      <p>若尚未决断，就请遁去吧......</p>
       <input
           v-model="newDialogTitle"
           class="xuan-input"
@@ -98,7 +109,7 @@
             newDialogTitle = ''
           })"
         >
-          证道
+          开劫
         </button>
         <button class="xuan-btn" @click="showCreateDialog = false">遁去</button>
       </div>
@@ -168,6 +179,11 @@ import Logo from '../assets/icons/logo.vue';
 import Send from "../assets/icons/send.vue";
 import { type UserInfo } from '../apis/user.ts';
 import type { Dialog, QueryInfo, ConfigParams } from '../apis/rag.ts';
+import CloudUnderLogo from "../assets/icons/Cloud-under-logo.vue";
+import CloudUnderInput from "../assets/icons/Cloud-under-input.vue";
+import CloudBeforeTitle from "../assets/icons/Cloud-before-title.vue";
+import Dragon from "../assets/icons/Dragon.vue";
+import Xianyunshan1 from "../assets/icons/xianyunshan1.vue";
 // ==================== Mock数据 ====================
 const mockUser: UserInfo = {
   userName: '齐天大圣',
@@ -378,7 +394,6 @@ const sendQuestion = async () => {
   background: linear-gradient(to right, #1a1a1d 0%, #0a0a0c 100%);
   font-family: 'Ma Shan Zheng', cursive;
   height: 100vh;
-  color: #c0aa6a;
 }
 
 .sidebar {
@@ -389,13 +404,6 @@ const sendQuestion = async () => {
   align-items: center;
   padding: 20px 0;
   box-shadow: 3px 0 15px rgba(0,0,0,0.5);
-}
-
-.logo-icon {
-  width: 50px;
-  height: 50px;
-  margin-bottom: 40px;
-  filter: sepia(100%) hue-rotate(180deg);
 }
 
 .btn-group {
@@ -409,17 +417,24 @@ const sendQuestion = async () => {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #2d2d32;
+  background: #37373d url("public/xianyunshan.png");
+  font-family: 'Ma Shan Zheng', cursive;
+  color: #e7cc80;
+  font-size: 14px;
+  font-weight: bold;
   border: 1px solid #3a3a3f;
   cursor: pointer;
   transition: all 0.3s;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
+button {
+  font-family: 'Ma Shan Zheng', cursive;
+}
+
 .btn:hover {
   transform: scale(1.1);
   border-color: #c0aa6a;
-  background: #37373d;
 }
 
 .main-container {
@@ -442,23 +457,36 @@ const sendQuestion = async () => {
   padding: 30px;
 }
 
+.dialog-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
 .dialog-title {
   font-size: 18px;
   letter-spacing: 2px;
   color: #d3b479;
   border-bottom: 2px solid #c0aa6a;
   padding-bottom: 10px;
-  margin-bottom: 20px;
 }
 
 .dialog-content {
+  background-image: url('public/wukong.png');
+  background-repeat: no-repeat;
+  background-position-x: center;
+  background-position-y: center;
   overflow-y: auto;
   flex: 1;
-  background: rgba(18, 18, 20, 0.9);
   border: 1px solid #3a3a3f;
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
+}
+
+input {
+  font-family: 'Ma Shan Zheng', cursive;
 }
 
 .dialog-input {
@@ -479,16 +507,44 @@ const sendQuestion = async () => {
 .btn-send {
   width: 50px;
   height: 50px;
+  font-family: 'Ma Shan Zheng', cursive;
+  color: #c0aa6a;
   border-radius: 50%;
   background: #2d2d32;
   border: 1px solid #3a3a3f;
   cursor: pointer;
   transition: all 0.3s;
+  position: relative; /* 用于定位图标和文字 */
+  overflow: hidden; /* 确保内容不超出按钮范围 */
 }
 
 .btn-send:hover {
   background: #37373d;
   border-color: #c0aa6a;
+}
+
+.icon-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+}
+
+.text-container {
+  font-size: 16px;
+  color: #d3b479;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-family: 'Ma Shan Zheng', cursive;
+}
+
+.btn-send:hover .icon-container {
+  opacity: 0;
+}
+
+.btn-send:hover .text-container {
+  opacity: 1;
 }
 
 .dialog-item {
@@ -514,7 +570,8 @@ const sendQuestion = async () => {
 .dialog-time {
   font-size: 16px;
   color: #a9956a;
-  margin-top: 4px;
+  margin-top: 10px;
+  margin-left: 150px;
 }
 
 .empty-tip {
@@ -543,7 +600,7 @@ const sendQuestion = async () => {
 }
 
 .message-content {
-  font-size: 16px;
+  font-size: 18px;
   color: #d3b479;
   line-height: 1.6;
 }
@@ -589,21 +646,18 @@ const sendQuestion = async () => {
 }
 
 .footer {
+  display: flex;
+  flex-direction: row;
   text-align: center;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
   padding-top: 15px;
-  font-size: 12px;
+  font-size: 14px;
   color: #a48c5e;
   letter-spacing: 1px;
   border-top: 1px solid #3a3a3f;
   margin-top: 20px;
-}
-
-/* 按钮文字样式 */
-.btn {
-  font-family: 'Ma Shan Zheng', cursive;
-  font-size: 18px;
-  color: #c0aa6a;
-  text-shadow: 0 0 5px rgba(192, 170, 106, 0.3);
 }
 
 /* 弹窗样式 */
@@ -640,6 +694,7 @@ const sendQuestion = async () => {
   color: #c0aa6a;
   width: 90%;
   margin: 10px 0;
+  font-family: 'Ma Shan Zheng', cursive;
 }
 
 .xuan-config-item {
@@ -708,7 +763,7 @@ const sendQuestion = async () => {
   border-radius: 8px;
   background: rgba(40, 40, 45, 0.8);
   border: 1px solid #3a3a3f;
-  color: #7a6a4a;
+  color: #e7cc80;
   cursor: pointer;
   transition: all 0.3s;
 }

@@ -134,7 +134,7 @@ h2 {
 }
 
 p {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 100;
   line-height: 20px;
   letter-spacing: 0.5px;
@@ -164,6 +164,7 @@ button {
   transition: transform 80ms ease-in;
   margin-top: 20px;
   cursor: pointer;
+  font-family: 'Ma Shan Zheng', cursive;
 }
 
 button:active {
@@ -175,10 +176,10 @@ button:focus {
 }
 
 button.ghost {
-  background-color: transparent;
+  background-color: rgba(63, 62, 62, 0.44);
   border-color: #FFFFFF;
   &:hover {
-    background-color: rgba(218, 215, 215, 0.18);
+    background-color: rgba(145, 143, 143, 0.18);
   }
 }
 
@@ -194,16 +195,20 @@ button.ghost {
   height: 100%;
   text-align: center;
   color: white;
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 24px;
 }
 
 input {
-  background-color: rgba(238, 238, 238, 0.58);
+  background-color: white;
   border: none;
   border-radius: 8px;
   padding: 12px 15px;
   margin: 20px 0 20px;
   width: 100%;
   height: 40px;
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 18px;
 }
 
 .container {
@@ -212,11 +217,13 @@ input {
   0 10px 10px rgba(0, 0, 0, 0.22);
   position: relative;
   overflow: hidden;
-  width: 80%;
-  height: 80vh;
+  width: 100%;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 24px;
 }
 
 .form-container {
