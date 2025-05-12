@@ -380,6 +380,7 @@ onMounted(async () => {
     isLoading.value = true;
     // 判断用户是否登录
     if (localStorage.getItem('userProfile')) {
+      currentUser.value = JSON.parse(localStorage.getItem('userProfile') || '');
       dialogList.value = await getAllhistory(mockUser);
       if (dialogList.value.length > 0) {
         currentDialog.value = await getDialogDetail(dialogList.value[0].id);
