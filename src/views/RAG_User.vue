@@ -7,7 +7,7 @@
       <div class="btn-group">
         <button class="btn" @click="showCreate" title="新建对话">开劫</button>
         <button class="btn" @click="showConfig" title="高级设置">造化</button>
-        <button class="btn" @click="router.push('/account')" title="退出">归尘</button>
+        <button class="btn" @click="logout" title="退出">归尘</button>
       </div>
     </div>
 
@@ -187,11 +187,13 @@ import CloudUnderLogo from "../assets/icons/Cloud-under-logo.vue";
 import CloudUnderInput from "../assets/icons/Cloud-under-input.vue";
 import CloudBeforeTitle from "../assets/icons/Cloud-before-title.vue";
 import CloudBeforeList from "../assets/icons/Cloud-before-list.vue";
+import {dialogProps} from "element-plus";
 // ==================== Mock数据 ====================
 const mockUser: UserInfo = {
   userName: '齐天大圣',
   password: 'wukong2024'
 };
+localStorage.setItem('userProfile', JSON.stringify(mockUser));
 
 const mockDialogs: Dialog[] = [
   {
@@ -325,26 +327,7 @@ const createDialog = async (title: string, userId: number): Promise<boolean> => 
 }
 
 // ==================== 接口实现 ====================
-const login = async (user: UserInfo): Promise<boolean> => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(
-          user.userName === mockUser.userName &&
-          user.password === mockUser.password
-      );
-    }, 500);
-  });
-};
 
-const register = async (user: UserInfo): Promise<boolean> => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      mockUser.userName = user.userName;
-      mockUser.password = user.password;
-      resolve(true);
-    }, 500);
-  });
-};
 
 const getAllhistory = async (user: UserInfo): Promise<Dialog[]> => {
   return new Promise(resolve => {
@@ -395,7 +378,8 @@ const configParams = ref<ConfigParams>({
 onMounted(async () => {
   try {
     isLoading.value = true;
-    if (await login(mockUser)) {
+    // 判断用户是否登录
+    if (localStorage.getItem('userProfile')) {
       dialogList.value = await getAllhistory(mockUser);
       if (dialogList.value.length > 0) {
         currentDialog.value = await getDialogDetail(dialogList.value[0].id);
@@ -425,6 +409,13 @@ function showCreate() {
 function showConfig() {
   showCreateDialog.value = false
   showConfigDialog.value = true
+}
+
+//处理退出逻辑
+function logout() {
+  localStorage.removeItem('userProfile');
+  localStorage.removeItem('token');
+  router.push('/account');
 }
 
 // 发送问题处理
