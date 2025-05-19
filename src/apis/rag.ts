@@ -5,9 +5,21 @@ export interface QueryInfo {
     similarity: number;
 }
 
+export interface AnswerInfo {
+    answer: string;
+    sourceDoc: SourceDoc[];
+}
+
+export interface SourceDoc {
+    source: string;
+    category: string;
+    content: string;
+}
+
 export interface Content {
     text: string;
     role: 'USER' | 'RAG';
+    sourceDoc?: SourceDoc[];
 }
 
 export interface Dialog {

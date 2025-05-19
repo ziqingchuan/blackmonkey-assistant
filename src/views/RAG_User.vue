@@ -47,14 +47,43 @@
             <div
                 v-for="(content, index) in currentDialog.contentList"
                 :key="index"
-                :class="[
-                'message-bubble',
-                content.role === 'USER' ? 'user' : 'rag'
-              ]"
+                :class="['message-container', content.role === 'USER' ? 'user' : 'rag']"
             >
-              <div class="message-content">{{ content.text }}</div>
-              <div class="message-role">
-                {{ content.role === 'USER' ? '天命人' : '造化玉碟' }}
+              <!-- 头像 -->
+              <div class="role-avatar">
+                <Taiji v-if="content.role === 'RAG'" />
+                <Jingu v-if="content.role === 'USER'" />
+              </div>
+
+              <!-- 消息内容 -->
+              <div class="message-content-wrapper">
+                <div class="message-bubble">
+                  <div class="message-text">{{ content.text }}</div>
+
+                  <!-- SourceDoc下拉区域 -->
+                  <div v-if="content.role === 'RAG' && content.sourceDoc" class="source-doc-container">
+                    <button
+                        class="source-toggle"
+                        @click="toggleSourceDoc(index)"
+                    >
+                      <span>天机来源</span>
+                      <span :class="['arrow', sourceDocVisibility[index] && 'open']">▼</span>
+                    </button>
+
+                    <transition name="slide">
+                      <div v-show="sourceDocVisibility[index]" class="source-doc-content">
+                        <div v-for="(doc, docIndex) in content.sourceDoc" :key="docIndex" class="doc-item">
+                          <div class="doc-header">
+                            <span class="doc-source">{{ doc.source }}</span>
+                            <span class="doc-category">{{ doc.category }}</span>
+                          </div>
+                          <div class="doc-content">{{ doc.content }}</div>
+                          <div v-if="docIndex < content.sourceDoc.length - 1" class="doc-divider"></div>
+                        </div>
+                      </div>
+                    </transition>
+                  </div>
+                </div>
               </div>
             </div>
           </template>
@@ -182,12 +211,14 @@ import { useRouter } from 'vue-router';
 import Logo from '../assets/icons/logo.vue';
 import Send from "../assets/icons/send.vue";
 import { type UserInfo } from '../apis/user.ts';
-import type { Dialog, QueryInfo, ConfigParams } from '../apis/rag.ts';
+import type {Dialog, QueryInfo, ConfigParams, AnswerInfo} from '../apis/rag.ts';
 import CloudUnderLogo from "../assets/icons/Cloud-under-logo.vue";
 import CloudUnderInput from "../assets/icons/Cloud-under-input.vue";
 import CloudBeforeTitle from "../assets/icons/Cloud-before-title.vue";
 import CloudBeforeList from "../assets/icons/Cloud-before-list.vue";
-import {dialogProps} from "element-plus";
+import Taiji from "../assets/icons/Taiji.vue";
+import Jingu from "../assets/icons/Jingu.vue";
+
 // ==================== Mock数据 ====================
 const mockUser: UserInfo = {
   userName: '齐天大圣',
@@ -196,118 +227,175 @@ const mockUser: UserInfo = {
 localStorage.setItem('userProfile', JSON.stringify(mockUser));
 
 const mockDialogs: Dialog[] = [
-  {
-    id: 1,
-    userId: 1,
-    title: '蟠桃园之劫',
-    createTime: new Date('2024-05-20'),
-    contentList: [
-      {
-        text: '如何辨认九千年蟠桃？',
-        role: 'USER'
-      },
-      {
-        text: '九千年蟠桃紫纹缃核，食之与天地齐寿日月同庚',
-        role: 'RAG'
-      }
-    ]
-  },
-  {
-    id: 2,
-    userId: 1,
-    title: '炼丹炉问答',
-    createTime: new Date('2024-05-21'),
-    contentList: [
-      {
-        text: '三昧真火如何修炼？',
-        role: 'USER'
-      },
-      {
-        text: '需集精气神三昧炼成，非大罗金仙不可妄修',
-        role: 'RAG'
-      }
-    ]
-  },
-  {
-    id: 3,
-    userId: 1,
-    title: '定海神针之谜',
-    createTime: new Date('2024-05-22'),
-    contentList: [
-      {
-        text: '如意金箍棒可有哪些变化神通？',
-        role: 'USER'
-      },
-      {
-        text: '大可撑天柱，小如绣花针，变化随心意，重逾万三千。此乃老君炉之造化，禹王定海之神物。',
-        role: 'RAG'
-      }
-    ]
-  },
-  {
-    id: 4,
-    userId: 1,
-    title: '地府生死簿',
-    createTime: new Date('2024-05-23'),
-    contentList: [
-      {
-        text: '如何修改生死簿阳寿记录？',
-        role: 'USER'
-      },
-      {
-        text: '须持判官笔，蘸幽冥墨，于子时三刻勾画。然逆天改命者，必遭十殿阎罗追魂索。',
-        role: 'RAG'
-      }
-    ]
-  },
-  {
-    id: 5,
-    userId: 1,
-    title: '七十二变精要',
-    createTime: new Date('2024-05-24'),
-    contentList: [
-      {
-        text: '变化之术可能避三灾否？',
-        role: 'USER'
-      },
-      {
-        text: '八九玄功虽妙，然天雷、阴火、赑风三劫乃天地法则，唯金丹大道可渡。',
-        role: 'RAG'
-      }
-    ]
-  },
-  {
-    id: 6,
-    userId: 1,
-    title: '天罡战阵',
-    createTime: new Date('2024-05-25'),
-    contentList: [
-      {
-        text: '破二十八星宿阵当取何位？',
-        role: 'USER'
-      },
-      {
-        text: '东方青龙角木蛟为阵眼，然需先破西方奎木狼牙旗，此乃虚则实之的兵法要诀。',
-        role: 'RAG'
-      }
-    ]
-  },
-  {
-    id: 7,
-    userId: 1,
-    title: '筋斗云驾驭法',
-    createTime: new Date('2024-05-26'),
-    contentList: [
-      {
-        text: '为何我的筋斗云时有颠簸？',
-        role: 'USER'
-      },
-      {
-        text: '云气不顺皆因心念不纯，需凝神静气，念《冲虚真经》第三卷调合云灵。',
-        role: 'RAG'
-      }
-    ]
-  }
+    {
+      id: 1,
+      userId: 1,
+      title: '蟠桃园之劫',
+      createTime: new Date('2024-05-20'),
+      contentList: [
+        {
+          text: '如何辨认九千年蟠桃？',
+          role: 'USER'
+        },
+        {
+          text: '九千年蟠桃紫纹缃核，食之与天地齐寿日月同庚',
+          role: 'RAG',
+          sourceDoc: [
+            {
+              source: "蟠桃园仙籍",
+              category: "仙果志",
+              content: "紫纹细核者，九千年一熟，人吃了与天地齐寿，日月同庚"
+            },
+            {
+              source: "齐天要术",
+              category: "修炼典籍",
+              content: "第三章第五篇载：九千年蟠桃需用三昧真火淬炼方可完全吸收"
+            }
+          ]
+        },
+      ]
+    },
+    {
+      id: 2,
+      userId: 1,
+      title: '炼丹炉问答',
+      createTime: new Date('2024-05-21'),
+      contentList: [
+        {
+          text: '三昧真火如何修炼？',
+          role: 'USER'
+        },
+        {
+          text: '需集精气神三昧炼成，非大罗金仙不可妄修',
+          role: 'RAG',
+          sourceDoc: [
+            {
+              source: "太上丹经",
+              category: "炼丹秘要",
+              content: "卷七载：三昧者，精为下昧，气为中昧，神为上昧，三火合一可焚天地"
+            },
+            {
+              source: "火部正法",
+              category: "神通法典",
+              content: "修炼需于离位设坛，每日午时采太阳真火淬炼，持续七七四十九日"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 3,
+      userId: 1,
+      title: '定海神针之谜',
+      createTime: new Date('2024-05-22'),
+      contentList: [
+        {
+          text: '如意金箍棒可有哪些变化神通？',
+          role: 'USER'
+        },
+        {
+          text: '大可撑天柱，小如绣花针，变化随心意，重逾万三千。此乃老君炉之造化，禹王定海之神物。',
+          role: 'RAG',
+          sourceDoc: [
+            {
+              source: "神器谱",
+              category: "法宝志异",
+              content: "第五章：定海神铁受日月精华，念大禹敕令，可随心意变化大小"
+            },
+            {
+              source: "齐天圣传",
+              category: "仙真纪事",
+              content: "第三回载：悟空捻诀念咒，那针儿便碗来粗细，直插九霄云外"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 4,
+      userId: 1,
+      title: '地府生死簿',
+      createTime: new Date('2024-05-23'),
+      contentList: [
+        {
+          text: '如何修改生死簿阳寿记录？',
+          role: 'USER'
+        },
+        {
+          text: '须持判官笔，蘸幽冥墨，于子时三刻勾画。然逆天改命者，必遭十殿阎罗追魂索。',
+          role: 'RAG',
+          sourceDoc: [
+            {
+              source: "幽冥录",
+              category: "阴司律令",
+              content: "卷十九第三条：擅改阳寿者，当受十八层地狱轮回之苦"
+            },
+            {
+              source: "判官手札",
+              category: "地府文书",
+              content: "甲子年注：判官笔需配合阎君印信方显神效，否则只是寻常朱笔"
+            }
+          ]
+        }
+      ]
+    },
+    // 后续对话补充同理...
+    {
+      id: 5,
+      userId: 1,
+      title: '七十二变精要',
+      createTime: new Date('2024-05-24'),
+      contentList: [
+        {
+          text: '变化之术可能避三灾否？',
+          role: 'USER'
+        },
+        {
+          text: '八九玄功虽妙，然天雷、阴火、赑风三劫乃天地法则，唯金丹大道可渡。',
+          role: 'RAG',
+          sourceDoc: [
+            {
+              source: "渡劫真解",
+              category: "修炼纲要",
+              content: "第四章明示：三灾乃天道循环，变化之术可暂避不可永除"
+            },
+            {
+              source: "菩提心经",
+              category: "心法要诀",
+              content: "金丹九转之时，自生护体神光，可消灾劫于无形"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 7,
+      userId: 1,
+      title: '筋斗云驾驭法',
+      createTime: new Date('2024-05-26'),
+      contentList: [
+        {
+          text: '为何我的筋斗云时有颠簸？',
+          role: 'USER'
+        },
+        {
+          text: '云气不顺皆因心念不纯，需凝神静气，念《冲虚真经》第三卷调合云灵。',
+          role: 'RAG',
+          sourceDoc: [
+            {
+              source: "腾云策",
+              category: "驾云术",
+              content: "第五章第九诀：云驾不稳时，当观想周天星斗稳定云核"
+            },
+            {
+              source: "心斋录",
+              category: "心法要义",
+              content: "卷三记：云随心动，气海翻腾时需默念清心咒三遍"
+            }
+          ]
+        }
+      ]
+    }
 ];
 
 const createDialog = async (title: string, userId: number): Promise<boolean> => {
@@ -345,15 +433,58 @@ const getDialogDetail = async (id: number): Promise<Dialog | undefined> => {
   });
 };
 
-const getAnswer = async (info: QueryInfo): Promise<string> => {
+const getAnswer = async (info: QueryInfo): Promise<AnswerInfo> => {
   return new Promise(resolve => {
     setTimeout(() => {
-      const answers = [
-        '此乃天地玄机，需渡九九八十一劫方可知晓',
-        '大道无形，生育天地；大道无情，运行日月',
-        '金箍棒重一万三千五百斤，可大可小随心变化'
+      const answerList = [
+        {
+          answer: '此乃天地玄机，需渡九九八十一劫方可知晓',
+          sourceDoc: [
+            {
+              source: "天机卷",
+              category: "天道法则",
+              content: "第八十一章载：九九之数乃天道极数，非大功德者不可逾越"
+            },
+            {
+              source: "渡劫真解",
+              category: "修炼纲要",
+              content: "每劫需历时四十九日，需集五行精气护体方能安然度过"
+            }
+          ]
+        },
+        {
+          answer: '大道无形，生育天地；大道无情，运行日月',
+          sourceDoc: [
+            {
+              source: "道德真经",
+              category: "天道本源",
+              content: "第一章首句：道可道，非常道；名可名，非常名"
+            },
+            {
+              source: "玄门秘录",
+              category: "心法总纲",
+              content: "卷三注：大道运行不以物喜不以己悲，此谓无情而至公"
+            }
+          ]
+        },
+        {
+          answer: '金箍棒重一万三千五百斤，可大可小随心变化',
+          sourceDoc: [
+            {
+              source: "神器谱",
+              category: "法宝志异",
+              content: "定海神铁条目：禹王治水时丈量四海之定子，重一万三千五百斤"
+            },
+            {
+              source: "齐天圣传",
+              category: "仙真纪事",
+              content: "第七回记载：悟空使法咒，那棒子顿时小如绣花针藏于耳内"
+            }
+          ]
+        }
       ];
-      resolve(answers[Math.floor(Math.random() * answers.length)]);
+
+      resolve(answerList[Math.floor(Math.random() * answerList.length)]);
     }, 1000);
   });
 };
@@ -368,6 +499,7 @@ const router = useRouter()
 const showCreateDialog = ref(false)
 const showConfigDialog = ref(false)
 const newDialogTitle = ref('')
+const sourceDocVisibility = ref<Record<number, boolean>>({});
 const configParams = ref<ConfigParams>({
   searchStrategy: 0,
   resultCount: 5,
@@ -452,13 +584,22 @@ const sendQuestion = async () => {
     });
 
     currentDialog.value.contentList.push({
-      text: answer,
+      text: answer.answer,
+      sourceDoc: answer.sourceDoc,
       role: 'RAG'
     });
   } finally {
     isLoading.value = false;
     question.value = '';
   }
+};
+
+// 切换SourceDoc显示
+const toggleSourceDoc = (index: number) => {
+  sourceDocVisibility.value = {
+    ...sourceDocVisibility.value,
+    [index]: !sourceDocVisibility.value[index]
+  };
 };
 </script>
 
@@ -675,37 +816,94 @@ input {
   padding: 20px;
   color: #7a6a4a;
 }
-
-.message-bubble {
-  margin: 12px 0;
-  padding: 12px 16px;
-  border-radius: 8px;
-  max-width: 80%;
-  position: relative;
+/* 消息容器 */
+.message-container {
+  display: flex;
+  gap: 15px;
+  margin: 20px 0;
+  max-width: 90%;
 }
 
-.message-bubble.user {
-  background: rgba(79, 79, 84, 0.9);
+/* 用户消息居右 */
+.message-container.user {
+  flex-direction: row-reverse;
   margin-left: auto;
-  border: 1px solid #3a3a3f;
 }
 
-.message-bubble.rag {
+/* 头像样式 */
+.role-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #c0aa6a 20%, #7a6a4a 80%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #3a3a3f;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+}
+
+/* 消息内容容器 */
+.message-content-wrapper {
+  max-width: calc(100% - 50px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 消息气泡 */
+.message-bubble {
+  padding: 15px 20px;
+  border-radius: 12px;
+  position: relative;
+  max-width: 900px;
+}
+
+/* 用户气泡 */
+.user .message-bubble {
+  background: rgba(79, 79, 84, 0.9);
+  border: 1px solid #3a3a3f;
+  border-top-right-radius: 4px;
+}
+
+/* 系统气泡 */
+.rag .message-bubble {
   background: rgba(40, 40, 45, 0.9);
   border: 1px solid #3a3a3f;
+  border-top-left-radius: 4px;
 }
 
-.message-content {
+/* 气泡箭头 */
+.message-bubble::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+}
+
+.user .message-bubble::after {
+  right: -8px;
+  top: 10px;
+  border-left-color: rgba(79, 79, 84, 0.9);
+  border-right: 0;
+}
+
+.rag .message-bubble::after {
+  left: -8px;
+  top: 10px;
+  border-right-color: rgba(40, 40, 45, 0.9);
+  border-left: 0;
+}
+
+.message-text {
   font-size: 18px;
   color: #d3b479;
   line-height: 1.6;
-}
-
-.message-role {
-  font-size: 15px;
-  color: #a99369;
-  text-align: right;
-  margin-top: 8px;
+  /* 新增换行处理 */
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .loading-container {
@@ -867,5 +1065,90 @@ input {
 .xuan-btn:hover {
   border-color: #c0aa6a;
   color: #c0aa6a;
+}
+
+/* SourceDoc样式 */
+.source-doc-container {
+  margin-top: 15px;
+  border-top: 1px solid #3a3a3f;
+  padding-top: 12px;
+}
+
+.source-toggle {
+  background: none;
+  border: none;
+  color: #a99369;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  font-family: 'Ma Shan Zheng', cursive;
+  transition: all 0.3s;
+}
+
+.source-toggle:hover {
+  color: #c0aa6a;
+}
+
+.arrow {
+  font-size: 0.8em;
+  transition: transform 0.3s;
+}
+
+.arrow.open {
+  transform: rotate(180deg);
+}
+
+.source-doc-content {
+  margin-top: 10px;
+  background: rgba(28, 28, 31, 0.9);
+  border-radius: 6px;
+  padding: 12px;
+  border: 1px solid #3a3a3f;
+}
+
+.doc-item {
+  padding: 8px 0;
+}
+
+.doc-header {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 8px;
+}
+
+.doc-source {
+  color: #c0aa6a;
+  font-size: 0.9em;
+}
+
+.doc-category {
+  color: #7a6a4a;
+  font-size: 0.8em;
+}
+
+.doc-content {
+  color: #d3b479;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.doc-divider {
+  height: 1px;
+  background: #3a3a3f;
+  margin: 12px 0;
+}
+
+.slide-enter-active, .slide-leave-active {
+  transition: all 0.3s ease;
+  max-height: 500px;
+  overflow: hidden;
+}
+
+.slide-enter-from, .slide-leave-to {
+  max-height: 0;
+  opacity: 0;
+  padding: 0 12px;
 }
 </style>
