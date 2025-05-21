@@ -1,5 +1,42 @@
-# Vue 3 + TypeScript + Vite
+# 前端代码规范
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## 1. 模板部分 (`<template>`)
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+在编写模板代码时，请遵循以下规范：
+
+### 类名命名
+- 使用有意义且描述性的类名。
+- 遵循一致的命名约定，以提高可读性和可维护性。
+
+### 整体结构
+- 确保模板的整体结构清晰。
+- 包含注释以解释每个部分的目的。可以参考 `RagUser.vue` 文件作为清晰度的风格指南。
+
+## 2. 脚本部分 (`<script>`)
+
+在组件的脚本部分，请注意以下规则：
+
+### 导入语句
+- 保持导入语句的组织性和清晰性，将相关的导入分组在一起。
+- 确保导入组件的名称有意义，并能够反映其功能。
+
+### 函数文档
+- 为每个函数添加注释，详细说明其目的和使用方法。
+- 在调用 API 时，必须使用异步函数。
+- 适当处理异常以防止运行时错误，提高可靠性。
+
+### 变量命名
+- 使用有意义的变量名，清楚地表达其用途。
+- 在整个代码中遵循一致的命名约定（例如，使用 camelCase）。
+
+## 3. 样式部分 (`<style>`)
+
+在编写样式代码时，请遵循以下规范：
+
+### SCSS 语法
+- 严格按照 SCSS 语法规范编写样式代码。
+- 适当使用嵌套规则，以保持样式结构的清晰和整洁。
+
+### 注释
+- 在样式部分包含注释，以解释复杂的样式或布局决策。
+- 可以参考 `RagUser.vue` 文件，以获得良好注释的样式部分示例。

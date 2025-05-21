@@ -14,13 +14,13 @@ const routes = [
     {
         path: '/rag-user',
         name: 'rag-user',
-        component: () => import('../views/RAG_User.vue'),
+        component: () => import('../views/RagUser.vue'),
         meta: { title: '用户端' }
     },
     {
         path: '/rag-admin',
         name: 'rag-admin',
-        component: () => import('../views/RAG_Admin.vue'),
+        component: () => import('../views/RagAdmin.vue'),
         meta: { title: '管理员端' }
     },
 ];

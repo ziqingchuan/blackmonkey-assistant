@@ -1,0 +1,231 @@
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import Logo from '../assets/icons/logo.vue';
+import Send from "../assets/icons/send.vue";
+import CloudUnderLogo from "../assets/icons/Cloud-under-logo.vue";
+import CloudUnderInput from "../assets/icons/Cloud-under-input.vue";
+import CloudBeforeTitle from "../assets/icons/Cloud-before-title.vue";
+import CloudBeforeList from "../assets/icons/Cloud-before-list.vue";
+import Taiji from "../assets/icons/Taiji.vue";
+import Jingu from "../assets/icons/Jingu.vue";
+import { type UserInfo } from '../apis/user.ts';
+import { type ConfigParams } from '../apis/rag.ts';
+import { type Dialog, type Content, type SourceDoc } from '../apis/dialog.ts';
+
+// ==================== 模拟数据 ====================
+const mockSourceDocs: SourceDoc[] = [
+  {
+    source: "《西游记》第27回",
+    category: "文学",
+    content: "三打白骨精的故事讲述了孙悟空火眼金睛识破妖怪变化的故事。"
+  },
+  {
+    source: "《西游记》第59回",
+    category: "文学",
+    content: "三借芭蕉扇讲述了孙悟空智取芭蕉扇，过火焰山的故事。"
+  },
+  {
+    source: "《道教神话》",
+    category: "宗教",
+    content: "齐天大圣是道教神话中的重要角色，象征反抗与自由。"
+  }
+];
+
+const mockContents: Content[] = [
+  {
+    text: "你好，我是孙悟空，有什么可以帮你的？",
+    role: "RAG",
+    sourceDoc: [mockSourceDocs[0]]
+  },
+  {
+    text: "我想了解一下三打白骨精的故事",
+    role: "USER"
+  },
+  {
+    text: "三打白骨精是《西游记》中的经典故事，讲述了唐僧师徒四人西行取经途中，白骨精三次变化为不同人物企图加害唐僧，但都被孙悟空识破并打死的故事。",
+    role: "RAG",
+    sourceDoc: [mockSourceDocs[0], mockSourceDocs[1]]
+  }
+];
+
+const mockDialogs: Dialog[] = [
+  {
+    id: 1,
+    userId: 1,
+    title: "关于西游记的讨论",
+    createTime: new Date('2023-10-01'),
+    contentList: [...mockContents]
+  },
+  {
+    id: 2,
+    userId: 1,
+    title: "道教神话咨询",
+    createTime: new Date('2023-10-02'),
+    contentList: [
+      {
+        text: "您好，想了解齐天大圣的来历",
+        role: "USER"
+      },
+      {
+        text: "齐天大圣是中国古代神话传说中的重要角色，最早出现在《西游记》中。他本是花果山的一块仙石孕育的石猴，后拜师学艺，大闹天宫，被如来佛祖压在五行山下五百年，最终保护唐僧西天取经。",
+        role: "RAG",
+        sourceDoc: [mockSourceDocs[2]]
+      }
+    ]
+  }
+];
+
+// ==================== 变量声明 ====================
+const currentUser = ref<UserInfo>({
+  id: 1,
+  userName: '孙悟空',
+  password: '金箍棒'
+});
+
+const dialogList = ref<Dialog[]>(mockDialogs);
+const currentDialog = ref<Dialog>(mockDialogs[0]);
+const question = ref('');
+const isLoading = ref(false);
+const router = useRouter();
+const showCreateDialog = ref(false);
+const showConfigDialog = ref(false);
+const newDialogTitle = ref('');
+const sourceDocVisibility = ref<Record<number, boolean>>({});
+const configParams = ref<ConfigParams>({
+  searchStrategy: 0,
+  resultCount: 5,
+  similarity: 0.7
+});
+
+// ==================== 模拟API函数 ====================
+const mockGetAnswer = async (query: any): Promise<any> => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve({
+        answer: `这是关于"${query.question}"的模拟回答。孙悟空是中国古典名著《西游记》中的主要角色之一，法号行者，是唐僧的大徒弟。`,
+        sourceDoc: [mockSourceDocs[Math.floor(Math.random() * mockSourceDocs.length)]]
+      });
+    }, 800);
+  });
+};
+
+const mockCreateDialog = async (title: string): Promise<boolean> => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const newDialog: Dialog = {
+        id: dialogList.value.length + 1,
+        userId: currentUser.value.id || 1,
+        title: title || '新的对话',
+        createTime: new Date(),
+        contentList: []
+      };
+      dialogList.value.unshift(newDialog);
+      resolve(true);
+    }, 500);
+  });
+};
+
+// ==================== 函数声明 ====================
+const createNewDialog = async (title: string) => {
+  try {
+    const success = await mockCreateDialog(title);
+    if (success && dialogList.value.length > 0) {
+      currentDialog.value = dialogList.value[0];
+    }
+    return success;
+  } catch (error) {
+    console.error(error);
+    return false;
+  } finally {
+    showCreateDialog.value = false;
+  }
+};
+
+const loadDialog = async (id: number) => {
+  try {
+    isLoading.value = true;
+    const dialog = dialogList.value.find(d => d.id === id);
+    if (dialog) {
+      currentDialog.value = dialog;
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const sendQuestion = async () => {
+  if (!question.value.trim()) return;
+
+  if (dialogList.value.length === 0) {
+    await createNewDialog('新的对话');
+  }
+
+  if (currentDialog.value) {
+    // 添加用户问题
+    currentDialog.value.contentList.push({
+      text: question.value,
+      role: 'USER'
+    });
+
+    try {
+      isLoading.value = true;
+      // 使用模拟回答
+      const answer = await mockGetAnswer({
+        question: question.value,
+        dialogId: currentDialog.value.id
+      });
+
+      // 添加系统回答
+      currentDialog.value.contentList.push({
+        text: answer.answer,
+        sourceDoc: answer.sourceDoc,
+        role: 'RAG'
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      isLoading.value = false;
+      question.value = '';
+    }
+  }
+};
+
+const toggleSourceDoc = (index: number) => {
+  sourceDocVisibility.value = {
+    ...sourceDocVisibility.value,
+    [index]: !sourceDocVisibility.value[index]
+  };
+};
+
+function showCreate() {
+  showCreateDialog.value = true;
+  showConfigDialog.value = false;
+}
+
+function showConfig() {
+  showCreateDialog.value = false;
+  showConfigDialog.value = true;
+}
+
+function logout() {
+  localStorage.removeItem('userProfile');
+  localStorage.removeItem('token');
+  router.push('/account');
+}
+
+// 初始化加载
+onMounted(async () => {
+  try {
+    isLoading.value = true;
+    // 使用模拟数据，不需要从localStorage读取
+  } catch(error) {
+    console.error(error);
+  } finally {
+    isLoading.value = false;
+  }
+});
+</script>
