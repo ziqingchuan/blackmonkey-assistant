@@ -118,7 +118,7 @@
           />
           <button
               class="btn-send"
-              :disabled="isLoading || !question"
+              :disabled="isLoading || !inputValue"
               @click="sendQuestion"
           >
             <span class="icon-container">
@@ -214,8 +214,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import Logo from '../assets/icons/logo.vue'; // 左上角悟空logo
-import Send from "../assets/icons/send.vue"; // 发送按钮祥云
+import Logo from '../assets/icons/Logo.vue'; // 左上角悟空logo
+import Send from "../assets/icons/Send.vue"; // 发送按钮祥云
 import CloudUnderLogo from "../assets/icons/Cloud-under-logo.vue"; // 左上角logo下方祥云
 import CloudUnderInput from "../assets/icons/Cloud-under-input.vue"; // 输入框下方祥云
 import CloudBeforeTitle from "../assets/icons/Cloud-before-title.vue"; // 对话标题前的祥云
@@ -240,8 +240,8 @@ const router = useRouter()
 const showCreateDialog = ref(false) // 控制新建对话弹窗的显示
 const showConfigDialog = ref(false) // 控制参数设置弹窗的显示
 const newDialogTitle = ref('') // 新建对话的标题
-const sourceDocVisibility = ref<Record<number, boolean>>({}); // 记录SourceDoc的显示状态（折叠与收起）
 const customAlert = ref(); // 获取弹窗组件的引用
+const sourceDocVisibility = ref<Record<number, boolean>>({}); // 记录SourceDoc的显示状态（折叠与收起）
 const configParams = ref<ConfigParams>({ // 初始化参数配置信息
   searchStrategy: 0,
   resultCount: 5,
@@ -262,6 +262,7 @@ const createNewDialog = async (title: string) => {
     }
     return createSuccessfully
   } catch (error) {
+    showAlert("创建失败，请稍后再试");
     console.error(error);
     return false;
   } finally {
@@ -278,6 +279,7 @@ const loadDialog = async (id: number) => {
     currentDialog.value = await getDialogDetail(id);
     displayContentList.value = convertToDisplayFormat(currentDialog.value.contentList); // 转换数据格式
   } catch (error) {
+    showAlert("加载失败，请稍后再试");
     console.log(error);
   } finally {
     isLoading.value = false;
@@ -317,14 +319,19 @@ const formatDateTime = (isoString: string): string => {
 
 // 处理用户发送新问题
 const sendQuestion = async () => {
-  if (!inputValue.value.trim()) return;
+  if (!inputValue.value.trim())return;
   // 将输入框的值赋给 question
   question.value = inputValue.value;
   // 立即清空输入框
   inputValue.value = '';
   // 如果该用户没有任何对话记录，自动创建一个
   if (dialogList.value.length === 0) {
-    await createNewDialog('一段新的劫难');
+    try {
+      await createNewDialog('一段新的劫难');
+    } catch (error) {
+      showAlert("求问失败，请稍后再试");
+      console.error(error);
+    }
   }
   if(currentDialog.value){
     // 添加用户问题
@@ -350,11 +357,14 @@ const sendQuestion = async () => {
         role: 'RAG'
       });
     } catch (error) {
+      showAlert("系统繁忙，请稍后再试");
       console.error(error);
     } finally {
       isLoading.value = false;
       question.value = ''; // 清空问题内容
     }
+  } else {
+    showAlert("请先选择或开启新的劫难");
   }
 };
 
@@ -378,17 +388,17 @@ function showConfig() {
   showConfigDialog.value = true
 }
 
-// 显示弹窗
-const showAlert = (message: string) => {
-  customAlert.value.show(message);
-};
-
 //处理退出逻辑
 function logout() {
   localStorage.removeItem('userProfile');
   localStorage.removeItem('token');
-  router.push('/account');
+  router.push('/index');
 }
+
+// 显示弹窗
+const showAlert = (message: string) => {
+  customAlert.value.show(message);
+};
 
 // 界面初始化加载
 onMounted(async () => {
@@ -400,7 +410,6 @@ onMounted(async () => {
       currentUser.value = JSON.parse(localStorage.getItem('userProfile') || '');
       token.value =localStorage.getItem('token');
       console.log('当前用户信息：', currentUser.value, token.value)
-      // showAlert(`欢迎天命人 ${currentUser.value.username} 归来！继续踏上求问征途吧`)
       // 获取全部的对话信息
       dialogList.value = await getAllHistory(currentUser.value);
       console.log('全部对话信息：', dialogList.value)
@@ -411,7 +420,7 @@ onMounted(async () => {
         displayContentList.value = convertToDisplayFormat(currentDialog.value.contentList); // 转换数据格式
       }
     } else {
-      console.log('用户未登录!');
+      showAlert('天命人，请您先去登录，再来求问');
     }
   } catch(error) {
     console.error(error);
@@ -424,7 +433,6 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-
 /* 全局样式 */
 input, button {
   font-family: 'Ma Shan Zheng', cursive;
@@ -544,7 +552,7 @@ input, button {
             font-size: 16px;
             color: #a9956a;
             margin-top: 10px;
-            margin-left: 100px;
+            margin-left: 150px;
           }
         }
         .dialog-item.active {

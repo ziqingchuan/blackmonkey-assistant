@@ -1,5 +1,6 @@
 <template>
   <CustomAlert ref="customAlert" />
+  <!-- 主体 -->
   <div class="body">
     <div class="container" id="container" :class="{ 'right-panel-active': rightPanelActive }">
       <div class="form-container sign-up-container">
@@ -217,6 +218,8 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
+
+@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap');
 /* 全局样式 */
 input {
   background-color: white;
