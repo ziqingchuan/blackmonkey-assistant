@@ -218,7 +218,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-
 @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap');
 /* 全局样式 */
 input {
@@ -292,23 +291,27 @@ button.ghost {
 /* 主体样式 */
 .body {
   display: flex;
-  background: linear-gradient(to right, #484849, #0f0f10);
+  background: #1a1a1a;
   justify-content: center;
   align-items: center;
   font-family: 'Montserrat', sans-serif;
+  height: 90vh;
+  padding-top: 30px;
+  padding-bottom: 30px;
 
   .container {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
     0 10px 10px rgba(0, 0, 0, 0.22);
     position: relative;
     overflow: hidden;
-    width: 100%;
-    height: 60vh;
+    width: 95%;
+    height: 600px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: 'Ma Shan Zheng', cursive;
     font-size: 24px;
+    border-radius: 20px;
 
     .form {
       background-image: url('/form-bkg.jpg');
@@ -389,7 +392,6 @@ button.ghost {
       overflow: hidden;
       transition: transform 0.6s ease-in-out;
       z-index: 100;
-
       .overlay {
         background-image: url('/login-bkg.jpg');
         background-repeat: no-repeat;

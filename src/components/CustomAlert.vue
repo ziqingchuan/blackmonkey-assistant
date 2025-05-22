@@ -3,11 +3,9 @@
     <div class="custom-alert">
       <!-- 新增头部区域 -->
       <div class="custom-alert-header">
-        <CloudUnderInput/>
+        <RedCloudLeft/>
         <div class="header-title">提示</div>
-        <CloudUnderInput/>
-        <div class="header-ornament left"></div>
-        <div class="header-ornament right"></div>
+        <RedCloudRight/>
       </div>
 
       <!-- 内容区域 -->
@@ -28,7 +26,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import CloudUnderInput from "../assets/icons/Cloud-under-input.vue";
+import RedCloudLeft from "../assets/icons/RedCloud-Left.vue";
+import RedCloudRight from "../assets/icons/RedCloud-Right.vue";
 
 const isVisible = ref(false);
 const message = ref('');
@@ -46,7 +45,7 @@ defineExpose({ show });
 </script>
 
 <style lang="scss" scoped>
-
+@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap');
 .custom-alert-overlay {
   position: fixed;
   top: 0;
@@ -62,12 +61,9 @@ defineExpose({ show });
   .custom-alert {
     width: 380px;
     min-height: 280px;
-    background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
+    background: linear-gradient(to bottom,  rgba(40, 40, 45, 0.8), #1a1a1a);
     border-radius: 12px;
-    border: 1px solid #8a6d3b;
-    box-shadow:
-        0 0 30px rgba(231, 204, 128, 0.3),
-        inset 0 0 10px rgba(138, 109, 59, 0.3);
+    border: 1px solid #e7cc80;
     display: flex;
     flex-direction: column;
     padding: 0;
@@ -78,12 +74,13 @@ defineExpose({ show });
 
     .custom-alert-header {
       height: 50px;
-      background: linear-gradient(to bottom, #3a2a0f, #1a1408);
-      border-bottom: 1px solid #8a6d3b;
+      background: linear-gradient(to bottom, rgba(40, 40, 45, 0.8), #1a1a1a);
+      border-bottom: 1px solid #e7cc80;
       display: flex;
       justify-content: center;
       align-items: center;
       position: relative;
+      gap: 30px;
 
       .header-title {
         font-size: 22px;
@@ -92,22 +89,6 @@ defineExpose({ show });
         position: relative;
         z-index: 1;
         padding: 10px;
-      }
-
-      .header-ornament {
-        position: absolute;
-        top: 0;
-        width: 60px;
-        height: 100%;
-
-        &.left {
-          left: 20px;
-          transform: scaleX(-1);
-        }
-
-        &.right {
-          right: 20px;
-        }
       }
     }
 
@@ -120,9 +101,6 @@ defineExpose({ show });
       font-size: 18px;
       padding: 30px 30px 0;
       line-height: 1.6;
-      background-image:
-          radial-gradient(circle at 10% 20%, rgba(138, 109, 59, 0.1) 0%, transparent 20%),
-          radial-gradient(circle at 90% 80%, rgba(138, 109, 59, 0.1) 0%, transparent 20%);
     }
 
     .custom-alert-footer {
@@ -131,11 +109,12 @@ defineExpose({ show });
       justify-content: center;
 
       .custom-alert-button {
-        background: linear-gradient(to bottom, #3a2a0f, #1a1408);
-        border: 1px solid #8a6d3b;
+        background: linear-gradient(to bottom, #2d2517, rgba(40, 40, 45, 0.8));
+        border: 1px solid #e7cc80;
+        width: 300px;
         color: #e7cc80;
         padding: 8px 40px;
-        border-radius: 8px;
+        border-radius: 20px;
         cursor: pointer;
         transition: all 0.3s;
         font-family: 'Ma Shan Zheng', cursive;
@@ -163,7 +142,6 @@ defineExpose({ show });
         }
 
         &:hover {
-          background: linear-gradient(to bottom, #4a3a1f, #2a2408);
           box-shadow: 0 0 8px rgba(231, 204, 128, 0.7);
 
           .button-decoration {

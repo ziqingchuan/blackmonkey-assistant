@@ -3,8 +3,20 @@
   <div class="page-container">
     <!-- 玄铁侧栏 -->
     <div class="sidebar">
-      <Logo/>
-      <CloudUnderLogo />
+      <Logo
+          class="Logo"
+          :class="{ 'hovered': isLogoHovered }"
+          @mouseenter="isLogoHovered = true"
+          @mouseleave="isLogoHovered = false"
+          @click="isDialogListVisible = !isDialogListVisible"
+      />
+      <CloudUnderLogo
+          class="Logo"
+          :class="{ 'hovered': isLogoHovered }"
+          @mouseenter="isLogoHovered = true"
+          @mouseleave="isLogoHovered = false"
+          @click="isDialogListVisible = !isDialogListVisible"
+      />
       <div class="btn-group">
         <button class="btn" @click="showCreate" title="新建对话">
           <span class="btn-origin-text">开劫</span>
@@ -24,7 +36,7 @@
     <!-- 三界主体 -->
     <div class="main-container">
       <!-- 千劫万难 -->
-      <div class="dialog-list">
+      <div class="dialog-list" v-if="isDialogListVisible">
         <div class="list-title">
           <CloudBeforeList class="cloud-decoration" />
           <span class="title-text">千劫万难</span>
@@ -128,9 +140,9 @@
           </button>
         </div>
         <div class="footer">
-          <CloudUnderInput />
+          <RedCloudLeft />
           <span> 历劫证道 · 天机自现 </span>
-          <CloudUnderInput />
+          <RedCloudRight />
         </div>
       </div>
     </div>
@@ -217,7 +229,8 @@ import { useRouter } from 'vue-router';
 import Logo from '../assets/icons/Logo.vue'; // 左上角悟空logo
 import Send from "../assets/icons/Send.vue"; // 发送按钮祥云
 import CloudUnderLogo from "../assets/icons/Cloud-under-logo.vue"; // 左上角logo下方祥云
-import CloudUnderInput from "../assets/icons/Cloud-under-input.vue"; // 输入框下方祥云
+import RedCloudLeft from "../assets/icons/RedCloud-Left.vue";
+import RedCloudRight from "../assets/icons/RedCloud-Right.vue"; // 输入框下方祥云
 import CloudBeforeTitle from "../assets/icons/Cloud-before-title.vue"; // 对话标题前的祥云
 import CloudBeforeList from "../assets/icons/Cloud-before-list.vue"; // 对话列表前的祥云
 import Taiji from "../assets/icons/Taiji.vue"; // 对话区域太极头像
@@ -241,6 +254,8 @@ const showCreateDialog = ref(false) // 控制新建对话弹窗的显示
 const showConfigDialog = ref(false) // 控制参数设置弹窗的显示
 const newDialogTitle = ref('') // 新建对话的标题
 const customAlert = ref(); // 获取弹窗组件的引用
+const isLogoHovered = ref(false); // 记录左上角logo是否被鼠标悬停
+const isDialogListVisible = ref(false); // 记录对话列表的显示状态
 const sourceDocVisibility = ref<Record<number, boolean>>({}); // 记录SourceDoc的显示状态（折叠与收起）
 const configParams = ref<ConfigParams>({ // 初始化参数配置信息
   searchStrategy: 0,
@@ -259,6 +274,7 @@ const createNewDialog = async (title: string) => {
       newDialogTitle.value   = '';
       dialogList.value = await getAllHistory(currentUser.value);
       currentDialog.value = dialogList.value[0]; // 直接设置为第一个对话
+      loadDialog(dialogList.value[0].id);
     }
     return createSuccessfully
   } catch (error) {
@@ -433,6 +449,7 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap');
 /* 全局样式 */
 input, button {
   font-family: 'Ma Shan Zheng', cursive;
@@ -451,6 +468,17 @@ input, button {
     align-items: center;
     padding: 20px 0;
     box-shadow: 3px 0 15px rgba(0,0,0,0.5);
+    .Logo {
+      cursor: pointer;
+      :deep(path) {
+        transition: fill 0.3s ease;
+        fill: #c0aa6a;
+      }
+
+      &.hovered :deep(path) {
+        fill: #ffffff;
+      }
+    }
     .btn-group {
       display: flex;
       flex-direction: column;
@@ -552,7 +580,7 @@ input, button {
             font-size: 16px;
             color: #a9956a;
             margin-top: 10px;
-            margin-left: 150px;
+            text-align: end;
           }
         }
         .dialog-item.active {
@@ -860,7 +888,7 @@ input, button {
         align-items: center;
         gap: 10px;
         padding-top: 15px;
-        font-size: 14px;
+        font-size: 16px;
         color: #a48c5e;
         letter-spacing: 1px;
         border-top: 1px solid #3a3a3f;
