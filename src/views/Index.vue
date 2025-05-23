@@ -33,9 +33,9 @@
         <button @click="navigateToAccount">即刻问道</button>
       </div>
       <div class="video-container">
-        <video autoplay loop muted playsinline>
+        <video autoplay loop muted playsinline disablePictureInPicture>
           <source src="/index.mp4" type="video/mp4">
-          您的浏览器不支持HTML5视频
+          您的浏览器不支持播放该视频
         </video>
       </div>
     </div>
@@ -79,11 +79,13 @@
     <!-- 页脚 -->
     <footer>
       <div class="footer-container">
+        <FooterCloudLeft/>
         <div class="footer-section">
           <h2>联系我们</h2>
           <p>邮箱: 221250108@smail.nju.edu.cn &nbsp; &nbsp; &nbsp;电话: 182-4518-7102</p>
           <p>地址: 南京市 鼓楼区 汉口路 22号</p>
         </div>
+        <FooterCloudRight/>
       </div>
       <div class="footer-bottom">
         <RedCloudLeft/>
@@ -100,6 +102,8 @@ import { ref, onMounted } from "vue";
 import RedCloudLeft from "../assets/icons/RedCloud-Left.vue";
 import RedCloudRight from "../assets/icons/RedCloud-Right.vue";
 import CloudOfIndexHeader from "../assets/icons/CloudOfIndexHeader.vue";
+import FooterCloudLeft from "../assets/icons/FooterCloudLeft.vue";
+import FooterCloudRight from "../assets/icons/FooterCloudRight.vue";
 const isLogoHovered = ref(false);
 const router = useRouter();
 
@@ -162,6 +166,12 @@ button {
   background: #1a1a1d;
   margin: 0;
   padding: 0;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+  }
   /* 页头样式 */
   .header {
     background: #1a1a1a;
@@ -219,19 +229,13 @@ button {
 
   /* 主内容样式 */
   .banner {
-    background-image:
-        linear-gradient(to bottom, #1a1a1a, rgba(47, 47, 47, 0.98)),
-        url("/wukong.png");
+    background: linear-gradient(to bottom, #1a1a1a, rgba(47, 47, 47, 0.98));
     border-bottom: 1px solid #c0aa6a;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: left;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 50px;
-    padding-left: 50px;
-    padding-right: 50px;
+    padding: 30px 50px;
     height: 600px;
 
     .banner-text {
@@ -327,7 +331,6 @@ button {
 
     .footer-section {
       flex: 1;
-      width: 100%;
       text-align: center;
       display: flex;
       flex-direction: column;

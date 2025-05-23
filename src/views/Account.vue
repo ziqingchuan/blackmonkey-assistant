@@ -122,8 +122,8 @@ const validateEmail = () => {
 };
 
 // 显示弹窗
-const showAlert = (message: string) => {
-  customAlert.value.show(message);
+const showAlert = (message: string, type: number) => {
+  customAlert.value.show(message, type);
 };
 
 const sendValidCode = async () => {
@@ -132,10 +132,10 @@ const sendValidCode = async () => {
   try {
     await getValidCode(formData.value.email);
     startCountdown();
-    showAlert('仙符已发送至玉简，请查收');
+    showAlert('仙符已发送至玉简，请查收', 0);
   } catch (error) {
     console.error(error);
-    showAlert('仙符发送失败，请稍后再试');
+    showAlert('仙符发送失败，请稍后再试', 0);
   }
 };
 
@@ -177,7 +177,7 @@ const handleLogin = async () => {
     });
   } catch (error) {
     console.error(error);
-    showAlert('登录失败，请检查邮箱或密码是否正确');
+    showAlert('登录失败，请检查邮箱或密码是否正确', 0);
   }
 };
 
@@ -193,11 +193,11 @@ const handleRegister = async () => {
     }).then((res) => {
       console.log("注册返回信息:", res.data);
     });
-    showAlert('注册成功！请登录');
+    showAlert('注册成功！请登录', 0);
     signIn();
   } catch (error) {
     console.error(error);
-    showAlert('注册失败，邮箱可能已被注册或验证码错误');
+    showAlert('注册失败，邮箱可能已被注册或验证码错误', 0);
   }
 };
 

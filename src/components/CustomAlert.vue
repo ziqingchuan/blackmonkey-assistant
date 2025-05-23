@@ -1,21 +1,33 @@
 <template>
   <div v-if="isVisible" class="custom-alert-overlay">
     <div class="custom-alert">
-      <!-- 新增头部区域 -->
+      <!-- 头部提示 -->
       <div class="custom-alert-header">
         <RedCloudLeft/>
         <div class="header-title">提示</div>
         <RedCloudRight/>
       </div>
 
-      <!-- 内容区域 -->
+      <!-- 主内容 -->
       <div class="custom-alert-content">
         {{ message }}
       </div>
 
       <!-- 底部按钮 -->
       <div class="custom-alert-footer">
-        <button class="custom-alert-button" @click="close">
+        <button
+            v-if="type === 1"
+            class="custom-alert-button cancel-button"
+            @click="handleCancel"
+        >
+          <span class="button-text">取 消</span>
+          <span class="button-decoration"></span>
+        </button>
+        <button
+            class="custom-alert-button"
+            @click="handleConfirm"
+            :class="{ 'single-button': type === 0 }"
+        >
           <span class="button-text">确 认</span>
           <span class="button-decoration"></span>
         </button>
@@ -31,14 +43,31 @@ import RedCloudRight from "../assets/icons/RedCloud-Right.vue";
 
 const isVisible = ref(false);
 const message = ref('');
+const type = ref(0); // 0：普通弹窗，1：带取消按钮弹窗
+const resolvePromise = ref<((value: boolean) => void) | null>(null);
 
-const show = (msg: string) => {
+const show = (msg: string, alertType: number = 0): Promise<boolean> => {
   message.value = msg;
+  type.value = alertType;
   isVisible.value = true;
+
+  return new Promise((resolve) => {
+    resolvePromise.value = resolve;
+  });
 };
 
-const close = () => {
+const handleConfirm = () => {
   isVisible.value = false;
+  if (resolvePromise.value) {
+    resolvePromise.value(true);
+  }
+};
+
+const handleCancel = () => {
+  isVisible.value = false;
+  if (resolvePromise.value) {
+    resolvePromise.value(false);
+  }
 };
 
 defineExpose({ show });
@@ -61,7 +90,7 @@ defineExpose({ show });
   .custom-alert {
     width: 380px;
     min-height: 280px;
-    background: linear-gradient(to bottom,  rgba(40, 40, 45, 0.8), #1a1a1a);
+    background: rgba(18, 18, 20, 0.95);
     border-radius: 12px;
     border: 1px solid #e7cc80;
     display: flex;
@@ -74,7 +103,7 @@ defineExpose({ show });
 
     .custom-alert-header {
       height: 50px;
-      background: linear-gradient(to bottom, rgba(40, 40, 45, 0.8), #1a1a1a);
+      background: rgba(18, 18, 20, 0.95);
       border-bottom: 1px solid #e7cc80;
       display: flex;
       justify-content: center;
@@ -107,14 +136,15 @@ defineExpose({ show });
       padding: 20px;
       display: flex;
       justify-content: center;
+      gap: 20px;
 
       .custom-alert-button {
         background: linear-gradient(to bottom, #2d2517, rgba(40, 40, 45, 0.8));
         border: 1px solid #e7cc80;
-        width: 300px;
+        width: 120px;
         color: #e7cc80;
-        padding: 8px 40px;
-        border-radius: 20px;
+        padding: 8px 20px;
+        border-radius: 8px;
         cursor: pointer;
         transition: all 0.3s;
         font-family: 'Ma Shan Zheng', cursive;
@@ -125,6 +155,14 @@ defineExpose({ show });
         display: flex;
         flex-direction: column;
         align-items: center;
+
+        &.single-button {
+          width: 300px;
+        }
+
+        &.cancel-button {
+          background: linear-gradient(to bottom, rgba(40, 40, 45, 0.8), #2d1717);
+        }
 
         .button-text {
           position: relative;

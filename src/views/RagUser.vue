@@ -3,20 +3,17 @@
   <div class="page-container">
     <!-- 玄铁侧栏 -->
     <div class="sidebar">
-      <Logo
-          class="Logo"
-          :class="{ 'hovered': isLogoHovered }"
-          @mouseenter="isLogoHovered = true"
-          @mouseleave="isLogoHovered = false"
-          @click="isDialogListVisible = !isDialogListVisible"
-      />
-      <CloudUnderLogo
-          class="Logo"
-          :class="{ 'hovered': isLogoHovered }"
-          @mouseenter="isLogoHovered = true"
-          @mouseleave="isLogoHovered = false"
-          @click="isDialogListVisible = !isDialogListVisible"
-      />
+      <div class="logo-container">
+        <Logo/>
+        <CloudUnderLogo style="margin-top: -25px;"/>
+        <MenuBtn
+            class="menu-btn"
+            :class="{ 'hovered': isLogoHovered }"
+            @mouseenter="isLogoHovered = true"
+            @mouseleave="isLogoHovered = false"
+            @click="isDialogListVisible = !isDialogListVisible"
+        />
+      </div>
       <div class="btn-group">
         <button class="btn" @click="showCreate" title="新建对话">
           <span class="btn-origin-text">开劫</span>
@@ -64,8 +61,13 @@
       <!-- 问道之境 -->
       <div class="dialog-container">
         <div class="dialog-header">
-          <CloudBeforeTitle />
-          <span class="dialog-title">{{ currentDialog?.title || "新劫难" }}</span>
+          <div class="header-left">
+            <CloudBeforeTitle />
+            <span class="dialog-title">{{ currentDialog?.title || "一段新的新劫难" }}</span>
+          </div>
+          <div class="header-right">
+            <span class="user-name">天命人：{{ currentUser.username }}</span>
+          </div>
         </div>
         <div class="dialog-content">
           <template v-if="currentDialog">
@@ -159,6 +161,7 @@
           class="xuan-input"
           maxlength="20"
           placeholder="输入劫难名..."
+          @keyup.enter="createNewDialog(newDialogTitle)"
       />
       <div class="xuan-button-group">
         <button class="xuan-btn" @click="createNewDialog(newDialogTitle)">开劫</button>
@@ -235,13 +238,15 @@ import CloudBeforeTitle from "../assets/icons/Cloud-before-title.vue"; // 对话
 import CloudBeforeList from "../assets/icons/Cloud-before-list.vue"; // 对话列表前的祥云
 import Taiji from "../assets/icons/Taiji.vue"; // 对话区域太极头像
 import Jingu from "../assets/icons/Jingu.vue"; // 对话区域金箍头像
+import CustomAlert from "../components/CustomAlert.vue"; // 自定义弹窗组件
+import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
 import { type LoginInfo } from '../apis/user.ts';
 import { getAnswer, type ConfigParams} from '../apis/rag.ts';
 import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent } from '../apis/dialog.ts';
-import CustomAlert from "../components/CustomAlert.vue";
+import UserLogo from "../assets/icons/UserLogo.vue";
 
 // ==================== 变量声明 ====================
-const currentUser = ref<LoginInfo>({ userName: '', password: '' });  // 当前用户信息
+const currentUser = ref<any>([]);  // 当前用户信息
 const token = ref(''); // 用户登录token
 const dialogList = ref<Dialog[]>([]); // 存储全部对话列表
 const displayContentList = ref<DisplayContent[]>([]); // 用于存储转换结构后的对话列表
@@ -267,18 +272,21 @@ const configParams = ref<ConfigParams>({ // 初始化参数配置信息
 // 创建新对话
 const createNewDialog = async (title: string) => {
   try {
+    if(title.trim() === '') {
+      title = '一段新的劫难';
+    }
     const createSuccessfully = await createDialog(title);
     // 刷新对话列表
     if(createSuccessfully) {
-      showCreateDialog.value = false;
-      newDialogTitle.value   = '';
+      showCreateDialog.value = false; // 关闭新建对话弹窗
+      newDialogTitle.value   = ''; // 清空新建对话标题
+      isDialogListVisible.value = true; // 显示对话列表
       dialogList.value = await getAllHistory(currentUser.value);
-      currentDialog.value = dialogList.value[0]; // 直接设置为第一个对话
-      loadDialog(dialogList.value[0].id);
+      await loadDialog(dialogList.value[0].id); // 加载最新的对话
     }
     return createSuccessfully
   } catch (error) {
-    showAlert("创建失败，请稍后再试");
+    showAlert("创建失败，请稍后再试", 0);
     console.error(error);
     return false;
   } finally {
@@ -295,7 +303,7 @@ const loadDialog = async (id: number) => {
     currentDialog.value = await getDialogDetail(id);
     displayContentList.value = convertToDisplayFormat(currentDialog.value.contentList); // 转换数据格式
   } catch (error) {
-    showAlert("加载失败，请稍后再试");
+    showAlert("加载失败，请稍后再试", 0);
     console.log(error);
   } finally {
     isLoading.value = false;
@@ -345,7 +353,7 @@ const sendQuestion = async () => {
     try {
       await createNewDialog('一段新的劫难');
     } catch (error) {
-      showAlert("求问失败，请稍后再试");
+      showAlert("求问失败，请稍后再试", 0);
       console.error(error);
     }
   }
@@ -373,14 +381,14 @@ const sendQuestion = async () => {
         role: 'RAG'
       });
     } catch (error) {
-      showAlert("系统繁忙，请稍后再试");
+      showAlert("系统繁忙，请稍后再试", 0);
       console.error(error);
     } finally {
       isLoading.value = false;
       question.value = ''; // 清空问题内容
     }
   } else {
-    showAlert("请先选择或开启新的劫难");
+    showAlert("请先选择或开启新的劫难", 0);
   }
 };
 
@@ -406,14 +414,18 @@ function showConfig() {
 
 //处理退出逻辑
 function logout() {
-  localStorage.removeItem('userProfile');
-  localStorage.removeItem('token');
-  router.push('/index');
+  showAlert('天命人，确认要离开吗？', 1).then((res) => {
+    if(res) { // 点击确认
+      localStorage.removeItem('userProfile');
+      localStorage.removeItem('token');
+      router.push('/index');
+    }
+  });
 }
 
 // 显示弹窗
-const showAlert = (message: string) => {
-  customAlert.value.show(message);
+const showAlert = (message: string, type: number) => {
+  return customAlert.value.show(message, type);
 };
 
 // 界面初始化加载
@@ -436,7 +448,9 @@ onMounted(async () => {
         displayContentList.value = convertToDisplayFormat(currentDialog.value.contentList); // 转换数据格式
       }
     } else {
-      showAlert('天命人，请您先去登录，再来求问');
+      showAlert('天命人，请您先去登录，再来求问', 0).then(() => {
+          router.push('/account'); // 跳转到登录页面
+      });
     }
   } catch(error) {
     console.error(error);
@@ -465,40 +479,52 @@ input, button {
     background: rgba(18, 18, 20, 0.95);
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     padding: 20px 0;
+    border-right: 1px solid #3a3a3f;
     box-shadow: 3px 0 15px rgba(0,0,0,0.5);
-    .Logo {
-      cursor: pointer;
-      :deep(path) {
-        transition: fill 0.3s ease;
-        fill: #c0aa6a;
-      }
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      .menu-btn {
+        background: #37373d;
+        border: #d3b479 1.5px solid;
+        padding: 10px;
+        border-radius: 30%;
+        cursor: pointer;
+        margin-top: 30px;
+        :deep(path) {
+          transition: fill 0.3s ease;
+          fill: #d3b479;
+        }
 
-      &.hovered :deep(path) {
-        fill: #ffffff;
+        &.hovered :deep(path) {
+          fill: rgb(216, 54, 42);
+        }
       }
     }
     .btn-group {
       display: flex;
       flex-direction: column;
       gap: 25px;
-      margin-top: 62vh;
       .btn {
         width: 50px;
         height: 50px;
-        border-radius: 50%;
-        background: #37373d url("/xianyunshan.png");
+        border-radius: 30%;
+        background: #37373d;
         font-family: 'Ma Shan Zheng', cursive;
         color: #e7cc80;
         font-size: 14px;
         font-weight: bold;
-        border: 1px solid #3a3a3f;
+        border: 1.5px solid #d3b479;
         cursor: pointer;
         transition: all 0.3s;
         box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         &:hover {
-          transform: scale(1.5);
+          transform: scale(1.2);
           border-color: #c0aa6a;
         }
         &:hover .btn-origin-text {
@@ -603,14 +629,37 @@ input, button {
       .dialog-header {
         display: flex;
         flex-direction: row;
-        align-items: center;
-        gap: 10px;
-        .dialog-title {
+        justify-content: space-between;
+        .header-left {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          .dialog-title {
+            font-size: 18px;
+            letter-spacing: 2px;
+            color: #d3b479;
+            border-bottom: 2px solid #c0aa6a;
+            padding-bottom: 10px;
+          }
+        }
+        .header-right {
+          display: flex;
+          align-items: center;
+          justify-content: center;
           font-size: 18px;
           letter-spacing: 2px;
           color: #d3b479;
           border-bottom: 2px solid #c0aa6a;
-          padding-bottom: 10px;
+          .user-name {
+            padding-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+
+            &:hover {
+              color: #fff2ce;
+            }
+          }
         }
       }
       .dialog-content {
@@ -661,13 +710,6 @@ input, button {
               border-radius: 12px;
               position: relative;
               max-width: 900px;
-              &::after {
-                content: '';
-                position: absolute;
-                width: 0;
-                height: 0;
-                border: 8px solid transparent;
-              }
               .message-text {
                 font-size: 18px;
                 color: #d3b479;
@@ -770,27 +812,37 @@ input, button {
         /* 用户气泡 */
         .user .message-bubble {
           background: rgba(79, 79, 84, 0.9);
-          border: 1px solid #3a3a3f;
           border-top-right-radius: 4px;
         }
         /* 系统气泡 */
         .rag .message-bubble {
-          background: rgba(40, 40, 45, 0.9);
-          border: 1px solid #3a3a3f;
+          background: #333336;
           border-top-left-radius: 4px;
         }
 
+        /* 用户消息气泡箭头（居右） */
         .user .message-bubble::after {
+          content: '';
+          position: absolute;
           right: -8px;
-          top: 10px;
+          top: 15px;
+          width: 0;
+          height: 0;
+          border: 8px solid transparent;
           border-left-color: rgba(79, 79, 84, 0.9);
           border-right: 0;
         }
 
+        /* 系统消息气泡箭头（居左） */
         .rag .message-bubble::after {
+          content: '';
+          position: absolute;
           left: -8px;
-          top: 10px;
-          border-right-color: rgba(40, 40, 45, 0.9);
+          top: 15px;
+          width: 0;
+          height: 0;
+          border: 8px solid transparent;
+          border-right-color: #333336;
           border-left: 0;
         }
 
@@ -889,7 +941,7 @@ input, button {
         gap: 10px;
         padding-top: 15px;
         font-size: 16px;
-        color: #a48c5e;
+        color: #c0aa6a;
         letter-spacing: 1px;
         border-top: 1px solid #3a3a3f;
         margin-top: 20px;
