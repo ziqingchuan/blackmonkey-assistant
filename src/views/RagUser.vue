@@ -231,11 +231,11 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Logo from '../assets/icons/Logo.vue'; // 左上角悟空logo
 import Send from "../assets/icons/Send.vue"; // 发送按钮祥云
-import CloudUnderLogo from "../assets/icons/Cloud-under-logo.vue"; // 左上角logo下方祥云
-import RedCloudLeft from "../assets/icons/RedCloud-Left.vue";
-import RedCloudRight from "../assets/icons/RedCloud-Right.vue"; // 输入框下方祥云
-import CloudBeforeTitle from "../assets/icons/Cloud-before-title.vue"; // 对话标题前的祥云
-import CloudBeforeList from "../assets/icons/Cloud-before-list.vue"; // 对话列表前的祥云
+import CloudUnderLogo from "../assets/icons/Clouds/Cloud-under-logo.vue"; // 左上角logo下方祥云
+import RedCloudLeft from "../assets/icons/Clouds/RedCloud-Left.vue";
+import RedCloudRight from "../assets/icons/Clouds/RedCloud-Right.vue"; // 输入框下方祥云
+import CloudBeforeTitle from "../assets/icons/Clouds/Cloud-before-title.vue"; // 对话标题前的祥云
+import CloudBeforeList from "../assets/icons/Clouds/Cloud-before-list.vue"; // 对话列表前的祥云
 import Taiji from "../assets/icons/Taiji.vue"; // 对话区域太极头像
 import Jingu from "../assets/icons/Jingu.vue"; // 对话区域金箍头像
 import CustomAlert from "../components/CustomAlert.vue"; // 自定义弹窗组件
@@ -502,7 +502,7 @@ input, button {
         }
 
         &.hovered :deep(path) {
-          fill: rgb(216, 54, 42);
+          fill: white;
         }
       }
     }
@@ -657,7 +657,7 @@ input, button {
             transition: all 0.3s;
 
             &:hover {
-              color: #fff2ce;
+              color: #fff;
             }
           }
         }

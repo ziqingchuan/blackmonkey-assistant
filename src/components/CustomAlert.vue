@@ -38,8 +38,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import RedCloudLeft from "../assets/icons/RedCloud-Left.vue";
-import RedCloudRight from "../assets/icons/RedCloud-Right.vue";
+import RedCloudLeft from "../assets/icons/Clouds/RedCloud-Left.vue";
+import RedCloudRight from "../assets/icons/Clouds/RedCloud-Right.vue";
 
 const isVisible = ref(false);
 const message = ref('');

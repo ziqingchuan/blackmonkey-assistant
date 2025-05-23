@@ -43,35 +43,15 @@
     <div class="features">
       <h2>我们能为天命人提供什么？</h2>
       <div class="features-container">
-        <div class="feature-item">
-          <img src="/scene1.jpg" alt="智能问答" />
-          <h3>三界问答</h3>
-          <p>
-            解答游戏中的一切疑难<br>
-            从基础操作到高阶技巧<br>
-            从主线剧情到隐藏支线<br>
-            助你参透游戏玄机
-          </p>
-        </div>
-        <div class="feature-item">
-          <img src="/scene2.jpg" alt="游戏成就" />
-          <h3>功德成就</h3>
-          <p>
-            查看游戏全成就系统<br>
-            追踪你的修行进度<br>
-            了解解锁条件与奖励<br>
-            助你圆满功德金身
-          </p>
-        </div>
-        <div class="feature-item">
-          <img src="/scene3.jpg" alt="平台管理" />
-          <h3>玄门法度</h3>
-          <p>
-            管理员专用通道<br>
-            维护知识库清净<br>
-            更新游戏新内容<br>
-            确保解答如法如律
-          </p>
+        <div class="feature-item" v-for="(feature, index) in features" :key="index">
+          <div class="image-container"
+               @mouseenter="feature.isHovered = true"
+               @mouseleave="feature.isHovered = false">
+            <img v-if="!feature.isHovered" :src="feature.image" :alt="feature.title" />
+            <img v-else :src="feature.hoverImage" :alt="feature.title" />
+          </div>
+          <h3>{{ feature.title }}</h3>
+          <p v-html="feature.description"></p>
         </div>
       </div>
     </div>
@@ -99,14 +79,13 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
-import RedCloudLeft from "../assets/icons/RedCloud-Left.vue";
-import RedCloudRight from "../assets/icons/RedCloud-Right.vue";
-import CloudOfIndexHeader from "../assets/icons/CloudOfIndexHeader.vue";
-import FooterCloudLeft from "../assets/icons/FooterCloudLeft.vue";
-import FooterCloudRight from "../assets/icons/FooterCloudRight.vue";
+import RedCloudLeft from "../assets/icons/Clouds/RedCloud-Left.vue";
+import RedCloudRight from "../assets/icons/Clouds/RedCloud-Right.vue";
+import CloudOfIndexHeader from "../assets/icons/Clouds/CloudOfIndexHeader.vue";
+import FooterCloudLeft from "../assets/icons/Clouds/FooterCloudLeft.vue";
+import FooterCloudRight from "../assets/icons/Clouds/FooterCloudRight.vue";
 const isLogoHovered = ref(false);
 const router = useRouter();
-
 // 页面跳转
 const navigateToAccount = () => {
   router.push("/account");
@@ -135,9 +114,36 @@ const getHeaderText = () => {
   return currentHeaderText.value;
 };
 
+// 功能介绍数据
+const features = ref([
+  {
+    title: "三界问答",
+    image: "/scene1.jpg",
+    hoverImage: "/dialog.png",
+    description: "解答游戏中的一切疑难<br>从基础操作到高阶技巧<br>从主线剧情到隐藏支线<br>助你参透游戏玄机",
+    isHovered: false
+  },
+  {
+    title: "功德成就",
+    image: "/scene2.jpg",
+    hoverImage: "/dialog.png",
+    description: "查看游戏全成就系统<br>追踪你的修行进度<br>了解解锁条件与奖励<br>助你圆满功德金身",
+    isHovered: false
+  },
+  {
+    title: "玄门法度",
+    image: "/scene3.jpg",
+    hoverImage: "/dialog.png",
+    description: "管理员专用通道<br>维护知识库清净<br>更新游戏新内容<br>确保解答如法如律",
+    isHovered: false
+  }
+]);
+
+
 // 组件挂载时获取一次随机文案
 onMounted(() => {
   getHeaderText();
+
 });
 </script>
 <style lang="scss" scoped>
@@ -292,21 +298,23 @@ button {
       gap: 100px;
 
       .feature-item {
+        overflow: hidden;
+        transition: all 0.3s ease;
         text-align: center;
-        max-width: 400px;
-
-        img {
-          width: 100%;
-          border-radius: 10px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        width: 500px;
+        .image-container {
+          overflow: hidden;
+          cursor: pointer;
+          height: 200px;
+          img {
+            width: 100%;
+          }
         }
-
         h3 {
           margin-top: 10px;
           color: #d3b479;
           font-size: 24px;
         }
-
         p {
           font-size: 18px;
           color: #a9956a;
