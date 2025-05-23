@@ -92,7 +92,8 @@ defineExpose({ show });
     min-height: 280px;
     background: rgba(18, 18, 20, 0.95);
     border-radius: 12px;
-    border: 1px solid #e7cc80;
+    border: 2px solid #c0aa6a;
+    box-shadow: 0 0 20px rgba(192, 170, 106, 0.2);
     display: flex;
     flex-direction: column;
     padding: 0;
@@ -109,7 +110,7 @@ defineExpose({ show });
       justify-content: center;
       align-items: center;
       position: relative;
-      gap: 30px;
+      gap: 20px;
 
       .header-title {
         font-size: 22px;

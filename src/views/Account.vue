@@ -1,5 +1,25 @@
 <template>
   <CustomAlert ref="customAlert" />
+  <!-- 页头 -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">
+        <img src="/wukong-header.png" alt="黑神话悟空" />
+        <span>问答助手</span>
+      </div>
+      <div class="header-right">
+        <CloudOfIndexHeader
+            class="cloud"
+            :class="{ 'hovered': isLogoHovered }"
+            @mouseenter="isLogoHovered = true"
+            @mouseleave="isLogoHovered = false"
+            @click="getHeaderText"
+        />
+        <span class="welcome-text">{{ currentHeaderText  }}</span>
+        <button @click="router.push('/index')">返回首页</button>
+      </div>
+    </div>
+  </header>
   <!-- 主体 -->
   <div class="body">
     <div class="container" id="container" :class="{ 'right-panel-active': rightPanelActive }">
@@ -85,15 +105,38 @@
       </div>
     </div>
   </div>
+  <!-- 页脚 -->
+  <footer>
+    <div class="footer-container">
+      <FooterCloudLeft/>
+      <div class="footer-section">
+        <h2>联系我们</h2>
+        <p>邮箱: 221250108@smail.nju.edu.cn &nbsp; &nbsp; &nbsp;电话: 182-4518-7102</p>
+        <p>地址: 南京市 鼓楼区 汉口路 22号</p>
+      </div>
+      <FooterCloudRight/>
+    </div>
+    <div class="footer-bottom">
+      <RedCloudLeft/>
+      <h3>&copy; 2025 黑神话悟空问答助手. 版权所有 | 玄门证道</h3>
+      <RedCloudRight/>
+    </div>
+  </footer>
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount } from 'vue';
+import {ref, onBeforeUnmount, onMounted} from 'vue';
 import { useRouter } from 'vue-router';
 import { login, register, getSalt, getValidCode, type RegisterInfo, type LoginInfo } from '../apis/user';
 import sha256 from 'crypto-js/sha256'; // 用来加密的库
 import { genSaltSync } from 'bcryptjs';// 用来生成盐值的库
-import CustomAlert from "../components/CustomAlert.vue";// 自定义弹窗组件
+import CustomAlert from "../components/CustomAlert.vue";
+import CloudOfIndexHeader from "../assets/icons/Clouds/CloudOfIndexHeader.vue";
+import RedCloudLeft from "../assets/icons/Clouds/RedCloud-Left.vue";
+import FooterCloudRight from "../assets/icons/Clouds/FooterCloudRight.vue";
+import FooterCloudLeft from "../assets/icons/Clouds/FooterCloudLeft.vue";
+import RedCloudRight from "../assets/icons/Clouds/RedCloud-Right.vue";
+const isLogoHovered = ref(false);
 
 // ==================== 变量声明 ====================
 const rightPanelActive = ref(false);
@@ -114,11 +157,34 @@ const loginInfo = ref<LoginInfo>({
   email: '',
   password: ''
 });
+// 备选文案数组
+const headerTexts = [
+  "「心生，则种种魔生」",
+  "「苦海无边，问即回头」",
+  "「你来了，因果早定」",
+  "「这一棒，教你灰飞烟灭」",
+  "「念念回首处，即是灵山」",
+  "「劫火燃尽，问答始生」",
+  "「汝之疑问，可是天命？」",
+  "「八万四千法门，此间可问」",
+  "「前路妖雾重，何不问老孙？」"
+];
+
+// 当前显示的文案
+const currentHeaderText = ref("");
+
 
 // ==================== 函数声明 ====================
 const validateEmail = () => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   isEmailValid.value = emailRegex.test(formData.value.email);
+};
+
+// 获取随机文案
+const getHeaderText = () => {
+  const randomIndex = Math.floor(Math.random() * headerTexts.length);
+  currentHeaderText.value = headerTexts[randomIndex];
+  return currentHeaderText.value;
 };
 
 // 显示弹窗
@@ -209,6 +275,11 @@ const signIn = () => {
   rightPanelActive.value = false;
 };
 
+onMounted(() => {
+  // 获取随机文案
+  getHeaderText();
+})
+
 onBeforeUnmount(() => {
   // 清除定时器
   if (countdownTimer) {
@@ -287,29 +358,100 @@ button.ghost {
     background-color: rgba(145, 143, 143, 0.18);
   }
 }
+/* 页头样式 */
+.header {
+  background: #1a1a1a;
+  color: #d3b479;
+  padding: 20px 100px;
+  border-bottom: 2px solid #c0aa6a;
+  button {
+    padding: 8px 16px;
+    background: rgba(159, 157, 153, 0.2);
+    border: 1px solid #c0aa6a;
+    border-radius: 20px;
+    cursor: pointer;
+    color: #d3b479;
+    font-family: "Ma Shan Zheng", cursive;
+    transition: background 0.3s;
+    font-size: 16px;
+    font-weight: bold;
 
+    &:hover {
+      background: rgba(246, 213, 150, 0.34);
+    }
+  }
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    .cloud {
+      cursor: pointer;
+      :deep(path) {
+        transition: fill 0.3s ease;
+      }
+
+      &.hovered :deep(path) {
+        fill: #FFFFFF;
+      }
+    }
+    .welcome-text {
+      color: #d3b479;
+      font-size: 18px;
+      text-shadow: 2px 2px 5px #f6d596;
+      letter-spacing: 1px;
+    }
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    img {
+      width: 50px;
+    }
+
+    span {
+      font-size: 24px;
+      font-weight: bold;
+    }
+  }
+
+  .nav ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+  }
+}
 /* 主体样式 */
 .body {
   display: flex;
-  background: linear-gradient(to right, #484849, #1d1d1e);
+  background: #1a1a1b;
   justify-content: center;
   align-items: center;
   font-family: 'Montserrat', sans-serif;
   height: 100vh;
-
+  padding-left: 100px;
+  padding-right: 100px;
+  padding-top: 10px;
   .container {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
     0 10px 10px rgba(0, 0, 0, 0.22);
     position: relative;
     overflow: hidden;
-    width: 98%;
-    height: 90vh;
+    width: 100%;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: 'Ma Shan Zheng', cursive;
     font-size: 24px;
-    border-radius: 20px;
+    border-radius: 5px;
 
     .form {
       background-image: url('/form-bkg.jpg');
@@ -462,6 +604,46 @@ button.ghost {
       opacity: 1;
       z-index: 5;
     }
+  }
+}
+/* 页脚样式 */
+footer {
+  background: #1a1a1a;
+  padding: 0 30px 30px;
+  color: #d3b479;
+  border-top: 2px solid #c0aa6a;
+
+  .footer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .footer-section {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    h2 {
+      color: #c0aa6a;
+      width: 50%;
+      border-bottom: 1px solid #c0aa6a;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 14px;
+    color: #a9956a;
+    gap: 20px;
   }
 }
 </style>

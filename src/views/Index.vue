@@ -301,7 +301,7 @@ button {
         overflow: hidden;
         transition: all 0.3s ease;
         text-align: center;
-        width: 500px;
+        width: 25vw;
         .image-container {
           overflow: hidden;
           cursor: pointer;
