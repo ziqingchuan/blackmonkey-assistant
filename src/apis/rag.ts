@@ -5,7 +5,7 @@ import {RAG_MODULE} from "./index.ts";
 export interface QueryInfo {
     dialogId: number;
     question: string;
-    searchStrategy: number; // 0 | 1: 0代表混合检索；1代表仅向量检索
+    searchStrategy: number; // 0 | 1: 0 代表混合检索；1 代表仅向量检索
     resultCount: number;
     similarity: number; // 0-1,以0.05为最小单位
 }
@@ -27,7 +27,7 @@ export interface ConfigParams {
     similarity: number;
 }
 
-export const getAnswer = (queryInfo: QueryInfo): Promise<AnswerInfo> => {
+export const getAnswer = async (queryInfo: QueryInfo): Promise<AnswerInfo> => {
     return axios.post<AnswerInfo>(`${RAG_MODULE}/get`, queryInfo, {
         headers: {
             'Content-Type': 'application/json',

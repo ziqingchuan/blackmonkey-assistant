@@ -61,14 +61,25 @@
       <!-- 问道之境 -->
       <div class="dialog-container">
         <div class="dialog-header">
+
+          <!-- 头部左侧 -->
           <div class="header-left">
             <CloudBeforeTitle />
             <span class="dialog-title">{{ currentDialog?.title || "一段新的新劫难" }}</span>
           </div>
+
+          <!-- 成就按钮 -->
           <div class="header-right">
-            <span class="user-name">天命人：{{ currentUser.username }}</span>
+            <button class="achieve-btn" @click="toAcheivementPage">
+            <span class="icon-container">
+              <CloudOfAchieve />
+            </span>
+              <span class="text-container">点击查看<br>功德成就</span>
+            </button>
           </div>
         </div>
+
+        <!-- 对话内容 -->
         <div class="dialog-content">
           <template v-if="currentDialog">
             <div
@@ -99,7 +110,7 @@
                     <!--天机来源组件-->
                     <transition name="slide">
                       <div v-show="sourceDocVisibility[index]" class="source-doc-content">
-                        <div v-for="(doc, docIndex) in content.sourceDoc" :key="docIndex" class="doc-item">
+                        <div v-for="(doc, docIndex) in content?.sourceDoc || []" :key="docIndex" class="doc-item">
                           <div class="doc-header">
                             <span class="doc-source">{{ doc.source }}</span>
                             <span class="doc-category">{{ doc.category }}</span>
@@ -240,10 +251,9 @@ import Taiji from "../assets/icons/Taiji.vue"; // 对话区域太极头像
 import Jingu from "../assets/icons/Jingu.vue"; // 对话区域金箍头像
 import CustomAlert from "../components/CustomAlert.vue"; // 自定义弹窗组件
 import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
-import { type LoginInfo } from '../apis/user.ts';
 import { getAnswer, type ConfigParams} from '../apis/rag.ts';
-import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent } from '../apis/dialog.ts';
-import UserLogo from "../assets/icons/UserLogo.vue";
+import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../apis/dialog.ts';
+import CloudOfAchieve from "../assets/icons/Clouds/CloudOfAchieve.vue";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -414,7 +424,7 @@ function showConfig() {
 
 //处理退出逻辑
 function logout() {
-  showAlert('天命人，确认要离开吗？', 1).then((res) => {
+  showAlert('天命人，确认要离开吗？', 1).then((res: any) => {
     if(res) { // 点击确认
       localStorage.removeItem('userProfile');
       localStorage.removeItem('token');
@@ -428,6 +438,11 @@ const showAlert = (message: string, type: number) => {
   return customAlert.value.show(message, type);
 };
 
+// 进入成就页面
+const toAcheivementPage = () => {
+  router.push('/achievement');
+}
+
 // 界面初始化加载
 onMounted(async () => {
   try {
@@ -436,7 +451,7 @@ onMounted(async () => {
     // 判断用户是否登录
     if (localStorage.getItem('userProfile')) {
       currentUser.value = JSON.parse(localStorage.getItem('userProfile') || '');
-      token.value =localStorage.getItem('token');
+      token.value = localStorage.getItem('token') || '';
       console.log('当前用户信息：', currentUser.value, token.value)
       // 获取全部的对话信息
       dialogList.value = await getAllHistory(currentUser.value);
@@ -626,6 +641,7 @@ input, button {
       display: flex;
       flex-direction: column;
       padding: 30px;
+
       .dialog-header {
         display: flex;
         flex-direction: row;
@@ -650,15 +666,44 @@ input, button {
           font-size: 18px;
           letter-spacing: 2px;
           color: #d3b479;
-          border-bottom: 2px solid #c0aa6a;
-          .user-name {
-            padding-bottom: 10px;
+
+          .achieve-btn {
+            width: 100px;
+            height: 50px;
+            font-family: 'Ma Shan Zheng', cursive;
+            color: #c0aa6a;
+            border-radius: 10%;
+            background: #0e0e11;
+            border: none;
             cursor: pointer;
             transition: all 0.3s;
-
-            &:hover {
-              color: #fff;
+            position: relative;
+            overflow: hidden;
+            .icon-container {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              transition: opacity 0.3s ease;
             }
+
+            .text-container {
+              font-size: 16px;
+              font-weight: bold;
+              color: #d3b479;
+              opacity: 0;
+              transition: opacity 0.3s ease;
+              font-family: 'Ma Shan Zheng', cursive;
+            }
+
+            &:hover .icon-container {
+              opacity: 0;
+            }
+
+            &:hover .text-container {
+              opacity: 1;
+            }
+
           }
         }
       }
@@ -900,8 +945,8 @@ input, button {
           border: 1px solid #3a3a3f;
           cursor: pointer;
           transition: all 0.3s;
-          position: relative; /* 用于定位图标和文字 */
-          overflow: hidden; /* 确保内容不超出按钮范围 */
+          position: relative;
+          overflow: hidden;
           &:hover {
             background: #37373d;
             border-color: #c0aa6a;

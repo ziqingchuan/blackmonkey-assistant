@@ -29,6 +29,12 @@ const routes = [
         component: () => import('../views/RagAdmin.vue'),
         meta: { title: '管理员端' }
     },
+    {
+        path: '/achievement',
+        name: 'achievement',
+        component: () => import('../views/Achievement.vue'),
+        meta: { title: '成就页面' }
+    },
 ];
 
 export const router = createRouter({

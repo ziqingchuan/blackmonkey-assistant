@@ -4,7 +4,7 @@
     <!-- 页头 -->
     <header class="header">
       <div class="header-container">
-        <div class="logo">
+        <div class="logo" @click="router.push('/index')">
           <img src="/wukong-header.png" alt="黑神话悟空" />
           <span>问答助手</span>
         </div>
@@ -198,8 +198,8 @@ const sendValidCode = async () => {
   if (!isEmailValid.value) return;
 
   try {
-    await getValidCode(formData.value.email);
     startCountdown();
+    await getValidCode(formData.value.email);
     showAlert('仙符已发送至玉简，请查收', 0);
   } catch (error) {
     console.error(error);
@@ -241,7 +241,11 @@ const handleLogin = async () => {
       const token = res.data.token.access_token;
       localStorage.setItem('token', token);
       localStorage.setItem('userProfile', JSON.stringify(res.data));
-      router.push({ name: 'rag-user' });
+      if(res.data.user_type === 'user'){
+        router.push({ name: 'rag-user' });
+      } else {
+        router.push({ name: 'rag-admin' });
+      }
     });
   } catch (error) {
     console.error(error);
@@ -376,7 +380,7 @@ button {
       color: #d3b479;
       font-family: "Ma Shan Zheng", cursive;
       transition: background 0.3s;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: bold;
 
       &:hover {
@@ -411,6 +415,7 @@ button {
       }
     }
     .logo {
+      cursor: pointer;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -554,7 +559,6 @@ button {
         .overlay {
           background-size: cover;
           background: url('src/assets/BlackMonkey/img_bg_introduce_4_b.png') no-repeat;
-          //background: linear-gradient(to bottom, #1a1a1a, rgba(47, 47, 47, 0.98), #1a1a1a);
           color: #d3b479;
           text-shadow: 3px 3px 2px #5d523c;
           position: relative;

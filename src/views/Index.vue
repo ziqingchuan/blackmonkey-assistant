@@ -25,9 +25,11 @@
       <div class="banner-text">
         <h1 class="float-up float-delay-1">黑神话：悟空 · 玄机问答</h1>
         <p class="float-up float-delay-2">
-          踏破三界迷雾，参透西游真谛。此间问答，专为求道者解惑而生。<br>
+          踏破三界迷雾，参透西游真谛。<br>
+          此间问答，专为求道者解惑而生。<br>
           从五行山下到灵山佛境，从七十二变到八十一难，<br>
-          无论是妖魔图鉴、法宝妙用，还是关卡玄机、隐藏机缘，<br>
+          无论是妖魔图鉴、法宝妙用；<br>
+          亦或是关卡玄机、隐藏机缘，<br>
           皆可在此寻得真解。
         </p>
         <button class="float-up float-delay-3" @click="navigateToAccount">即刻问道</button>
@@ -42,7 +44,7 @@
       <div class="feature-text" style="background: url('../../src/assets/BlackMonkey/img_bg_introduce_1_a.png') no-repeat center center; background-size: cover;">
         <div class="text1-container">
           <h1 class="float-up">三界问答</h1>
-          <p class="float-up float-delay-1">解答游戏中的一切疑难<br>从基础操作到高阶技巧<br>从主线剧情到隐藏支线<br>助你参透游戏玄机</p>
+          <p class="float-up float-delay-1">解答游戏中的一切疑难<br>从基础操作到高阶技巧<br>从主线剧情到隐藏支线<br>助天命人参透游戏玄机</p>
         </div>
       </div>
     </div>
@@ -51,7 +53,7 @@
       <div class="feature-text" style="background: url('../../src/assets/BlackMonkey/img_bg_introduce_3_a.png') no-repeat center center; background-size: cover;">
         <div class="text2-container">
           <h1 class="float-up">功德成就</h1>
-          <p class="float-up float-delay-1">查看游戏全成就系统<br>追踪你的修行进度<br>了解解锁条件与奖励<br>助你圆满功德金身</p>
+          <p class="float-up float-delay-1">查看游戏全成就系统<br>追踪天命人修行进度<br>了解解锁条件与奖励<br>助早日圆满功德金身</p>
         </div>
       </div>
     </div>
@@ -59,8 +61,8 @@
     <div class="feature-container" style="background: url('src/assets/BlackMonkey/img_bg_introduce_4_b.png') no-repeat center center; background-size: cover;">
       <div class="feature-text" style="background: url('../../src/assets/BlackMonkey/img_bg_introduce_4_a.png') no-repeat center center; background-size: cover;">
         <div class="text3-container">
-          <h1 class="float-up">玄门法度</h1>
-          <p class="float-up float-delay-1">管理员专用通道<br>维护知识库清净<br>更新游戏新内容<br>确保解答如法如律</p>
+          <h1 class="float-up">神通攻略</h1>
+          <p class="float-up float-delay-1">独家游戏闯关指南<br>解析关卡设计玄机<br>传授高效通关秘诀<br>最终修得无上神通</p>
         </div>
       </div>
     </div>
@@ -249,7 +251,6 @@ button {
   /* 主内容样式 */
   .banner {
     background: linear-gradient(to right, #1a1a1a, #050506);
-    border-bottom: 1px solid #c0aa6a;
     display: flex;
     align-items: center;
     justify-content: start;
@@ -280,6 +281,7 @@ button {
         color: #d3bb74;
         text-shadow: 1px 1px 15px #f3dcad;
         margin-top: 10px;
+        text-align: center;
       }
       button {
         height: 40px;

@@ -25,7 +25,7 @@ export const getValidCode = (email: string) => {
     });
 };
 
-export const register = (userInfo: UserInfo) => {
+export const register = (userInfo: RegisterInfo) => {
     return axios.post(`${API_MODULE}/register`, userInfo, {
         headers: { 'Content-Type': 'application/json' }
     });
