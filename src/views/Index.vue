@@ -9,11 +9,11 @@
         </div>
         <div class="header-right">
           <CloudOfIndexHeader
-          class="cloud"
-          :class="{ 'hovered': isLogoHovered }"
-          @mouseenter="isLogoHovered = true"
-          @mouseleave="isLogoHovered = false"
-          @click="getHeaderText"
+              class="cloud"
+              :class="{ 'hovered': isLogoHovered }"
+              @mouseenter="isLogoHovered = true"
+              @mouseleave="isLogoHovered = false"
+              @click="getHeaderText"
           />
           <span class="welcome-text">{{ currentHeaderText  }}</span>
           <button @click="navigateToAccount">注册 / 登录</button>
@@ -32,26 +32,33 @@
         </p>
         <button @click="navigateToAccount">即刻问道</button>
       </div>
-      <div class="video-container">
-        <video autoplay loop muted playsinline disablePictureInPicture>
-          <source src="/index.mp4" type="video/mp4">
-          您的浏览器不支持播放该视频
-        </video>
-      </div>
+      <video autoplay loop muted playsinline disablePictureInPicture>
+        <source src="/wukong.mp4" type="video/mp4">
+        您的浏览器不支持播放该视频
+      </video>
     </div>
     <!-- 功能介绍 -->
-    <div class="features">
-      <h2>我们能为天命人提供什么？</h2>
-      <div class="features-container">
-        <div class="feature-item" v-for="(feature, index) in features" :key="index">
-          <div class="image-container"
-               @mouseenter="feature.isHovered = true"
-               @mouseleave="feature.isHovered = false">
-            <img v-if="!feature.isHovered" :src="feature.image" :alt="feature.title" />
-            <img v-else :src="feature.hoverImage" :alt="feature.title" />
-          </div>
-          <h3>{{ feature.title }}</h3>
-          <p v-html="feature.description"></p>
+    <div class="feature-container" style="background: url('src/assets/BlackMonkey/img_bg_introduce_1_b.png') no-repeat center center; background-size: cover;">
+      <div class="feature-text" style="background: url('../../src/assets/BlackMonkey/img_bg_introduce_1_a.png') no-repeat center center; background-size: cover;">
+        <div class="text1-container">
+          <h1>三界问答</h1>
+          <p>解答游戏中的一切疑难<br>从基础操作到高阶技巧<br>从主线剧情到隐藏支线<br>助你参透游戏玄机</p>
+        </div>
+      </div>
+    </div>
+    <div class="feature-container" style="background: url('src/assets/BlackMonkey/img_bg_introduce_3_b.png') no-repeat center center; background-size: cover;">
+      <div class="feature-text" style="background: url('../../src/assets/BlackMonkey/img_bg_introduce_3_a.png') no-repeat center center; background-size: cover;">
+        <div class="text2-container">
+          <h1>功德成就</h1>
+          <p>查看游戏全成就系统<br>追踪你的修行进度<br>了解解锁条件与奖励<br>助你圆满功德金身</p>
+        </div>
+      </div>
+    </div>
+    <div class="feature-container" style="background: url('src/assets/BlackMonkey/img_bg_introduce_4_b.png') no-repeat center center; background-size: cover;">
+      <div class="feature-text" style="background: url('../../src/assets/BlackMonkey/img_bg_introduce_4_a.png') no-repeat center center; background-size: cover;">
+        <div class="text3-container">
+          <h1>玄门法度</h1>
+          <p>管理员专用通道<br>维护知识库清净<br>更新游戏新内容<br>确保解答如法如律</p>
         </div>
       </div>
     </div>
@@ -113,32 +120,6 @@ const getHeaderText = () => {
   currentHeaderText.value = headerTexts[randomIndex];
   return currentHeaderText.value;
 };
-
-// 功能介绍数据
-const features = ref([
-  {
-    title: "三界问答",
-    image: "/scene1.jpg",
-    hoverImage: "/dialog.png",
-    description: "解答游戏中的一切疑难<br>从基础操作到高阶技巧<br>从主线剧情到隐藏支线<br>助你参透游戏玄机",
-    isHovered: false
-  },
-  {
-    title: "功德成就",
-    image: "/scene2.jpg",
-    hoverImage: "/dialog.png",
-    description: "查看游戏全成就系统<br>追踪你的修行进度<br>了解解锁条件与奖励<br>助你圆满功德金身",
-    isHovered: false
-  },
-  {
-    title: "玄门法度",
-    image: "/scene3.jpg",
-    hoverImage: "/dialog.png",
-    description: "管理员专用通道<br>维护知识库清净<br>更新游戏新内容<br>确保解答如法如律",
-    isHovered: false
-  }
-]);
-
 
 // 组件挂载时获取一次随机文案
 onMounted(() => {
@@ -207,7 +188,7 @@ button {
       .welcome-text {
         color: #d3b479;
         font-size: 18px;
-        text-shadow: 2px 2px 5px #f6d596;
+        text-shadow: 2px 2px 9px #f6d596;
         letter-spacing: 1px;
       }
     }
@@ -221,46 +202,51 @@ button {
       }
 
       span {
-        font-size: 24px;
+        font-size: 30px;
+        text-shadow: 3px 3px 2px #504632;
         font-weight: bold;
       }
-    }
-
-    .nav ul {
-      display: flex;
-      gap: 20px;
-      list-style: none;
     }
   }
 
   /* 主内容样式 */
   .banner {
-    background: linear-gradient(to bottom, #1a1a1a, rgba(47, 47, 47, 0.98));
+    background: linear-gradient(to right, #1a1a1a, #050506);
     border-bottom: 1px solid #c0aa6a;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 50px;
-    padding: 30px 50px;
-    height: 600px;
+    justify-content: start;
+    position: relative;
+    height: 100%;
 
     .banner-text {
+      background: rgba(0, 0, 0, 0.5);
+      padding-left: 50px;
+      padding-right: 50px;
+      height: 100vh;
+      position: relative;
+      z-index: 2;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      align-items: center;
+      margin-left: 50%;
       h1 {
-        font-size: 36px;
-        color: #c0aa6a;
+        font-size: 40px;
+        color: #d3bb74;
+        text-shadow: 1px 1px 15px #f3dcad;
+        letter-spacing: 1px;
       }
 
       p {
+        font-size: 28px;
+        color: #d3bb74;
+        text-shadow: 1px 1px 15px #f3dcad;
         margin-top: 10px;
-        font-size: 18px;
-        line-height: 2;
-        color: #a9956a;
       }
       button {
         height: 40px;
+        width: 150px;
         font-size: 18px;
         font-weight: bold;
         background: rgba(255, 255, 255, 0.17);
@@ -271,54 +257,78 @@ button {
         border: 1px solid #c0aa6a;
       }
     }
-    .video-container {
-      width: 60%;
-      video {
-        border-radius: 10px;
-        width: 100%;
-      }
+    video {
+      position: absolute;
+      z-index: 1;
+      height: 100%;
     }
   }
 
-  .features {
-    background: linear-gradient(to top, #1a1a1a, rgba(47, 47, 47, 0.98));
-    padding: 50px 20px;
+  .feature-container {
+    width: 100%;
+    height: 100%;
 
-    h2 {
-      text-align: center;
-      margin-bottom: 40px;
-      font-size: 28px;
-      color: #c0aa6a;
-    }
 
-    .features-container {
+    .feature-text {
+      width: 100%;
+      height: 100%;
       display: flex;
-      flex-direction: row;
-      justify-content: center;
-      gap: 100px;
+      align-items: center;
+      .text1-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 15%;
+        h1 {
+          font-size: 52px;
+          color: #d3bb74;
+          text-shadow: 1px 1px 15px #f3dcad;
+          letter-spacing: 1px;
+        }
 
-      .feature-item {
-        overflow: hidden;
-        transition: all 0.3s ease;
-        text-align: center;
-        width: 25vw;
-        .image-container {
-          overflow: hidden;
-          cursor: pointer;
-          height: 200px;
-          img {
-            width: 100%;
-          }
-        }
-        h3 {
-          margin-top: 10px;
-          color: #d3b479;
-          font-size: 24px;
-        }
         p {
-          font-size: 18px;
-          color: #a9956a;
-          line-height: 2;
+          font-size: 34px;
+          color: #d3bb74;
+          text-shadow: 1px 1px 15px #f3dcad;
+          margin-top: 10px;
+        }
+      }
+      .text2-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 65%;
+        h1 {
+          font-size: 50px;
+          color: #d3bb74;
+          text-shadow: 1px 1px 15px #f3dcad;
+          letter-spacing: 1px;
+        }
+
+        p {
+          font-size: 34px;
+          color: #d3bb74;
+          text-shadow: 1px 1px 15px #f3dcad;
+          margin-top: 10px;
+        }
+      }
+      .text3-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 15%;
+        h1 {
+          font-size: 50px;
+          color: #d3bb74;
+          text-shadow: 1px 1px 15px #f3dcad;
+          letter-spacing: 1px;
+        }
+
+        p {
+          font-size: 34px;
+          color: #d3bb74;
+          text-shadow: 1px 1px 15px #f3dcad;
+          margin-top: 10px;
         }
       }
     }

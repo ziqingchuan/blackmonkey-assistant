@@ -1,134 +1,136 @@
 <template>
   <CustomAlert ref="customAlert" />
-  <!-- 页头 -->
-  <header class="header">
-    <div class="header-container">
-      <div class="logo">
-        <img src="/wukong-header.png" alt="黑神话悟空" />
-        <span>问答助手</span>
+  <div class="account-page">
+    <!-- 页头 -->
+    <header class="header">
+      <div class="header-container">
+        <div class="logo">
+          <img src="/wukong-header.png" alt="黑神话悟空" />
+          <span>问答助手</span>
+        </div>
+        <div class="header-right">
+          <CloudOfIndexHeader
+              class="cloud"
+              :class="{ 'hovered': isLogoHovered }"
+              @mouseenter="isLogoHovered = true"
+              @mouseleave="isLogoHovered = false"
+              @click="getHeaderText"
+          />
+          <span class="welcome-text">{{ currentHeaderText  }}</span>
+          <button class="header-btn" @click="router.push('/index')">返回首页</button>
+        </div>
       </div>
-      <div class="header-right">
-        <CloudOfIndexHeader
-            class="cloud"
-            :class="{ 'hovered': isLogoHovered }"
-            @mouseenter="isLogoHovered = true"
-            @mouseleave="isLogoHovered = false"
-            @click="getHeaderText"
-        />
-        <span class="welcome-text">{{ currentHeaderText  }}</span>
-        <button @click="router.push('/index')">返回首页</button>
+    </header>
+    <!-- 主体 -->
+    <div class="body">
+      <div class="container" id="container" :class="{ 'right-panel-active': rightPanelActive }">
+        <div class="form-container sign-up-container">
+          <div class="form" style="background-image: url('/sing-up-bkg.jpg')">
+            <h1>凝聚元神，重铸法身</h1>
+            <div class="input-container">
+              <div class="input-tips">邮&nbsp;箱：</div>
+              <input
+                  v-model="formData.email"
+                  type="email"
+                  required
+                  placeholder="玉简传讯，留尔天机"
+                  @input="validateEmail"
+              />
+              <button
+                  class="send-code-btn"
+                  :disabled="!isEmailValid || isCountingDown"
+                  @click="sendValidCode"
+              >
+                {{ countdown > 0 ? `${countdown}秒后重试` : '获取仙符' }}
+              </button>
+            </div>
+            <div class="input-container">
+              <div class="input-tips">验证码：</div>
+              <input
+                  v-model="formData.validCode"
+                  type="text"
+                  maxlength="6"
+                  placeholder="仙符验证，输入天机"
+              />
+            </div>
+            <div class="input-container">
+              <div class="input-tips">密&nbsp;码：</div>
+              <input
+                  v-model="formData.password"
+                  type="password"
+                  maxlength="20"
+                  required
+                  placeholder="六道轮回，密令自显"
+              />
+            </div>
+            <button @click="handleRegister">注册</button>
+          </div>
+        </div>
+        <div class="form-container sign-in-container">
+          <div class="form" style="background-image: url('/sing-in-bkg.jpg')">
+            <h1>大圣归来，再战苍穹</h1>
+            <div class="input-container">
+              <div class="input-tips">邮&nbsp;箱：</div>
+              <input
+                  v-model="formData.email"
+                  type="email"
+                  required
+                  placeholder="元神印记，显化真形"
+              />
+            </div>
+            <div class="input-container">
+              <div class="input-tips">密&nbsp;码：</div>
+              <input
+                  v-model="formData.password"
+                  type="password"
+                  required
+                  placeholder="法宝秘钥，谨记于心"
+              />
+            </div>
+            <button @click="handleLogin">登录</button>
+          </div>
+        </div>
+        <div class="overlay-container">
+          <div class="overlay">
+            <div class="overlay-panel overlay-left">
+              <h1>劫波渡尽，故人依旧</h1>
+              <p>已有元神印记？此去灵山十万路，且凭金身踏祥云</p>
+              <button @click="signIn">去登录</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+              <h1>初入三界，造化新生</h1>
+              <p>尚无功德文牒？此间因果待书写，且结善缘证菩提</p>
+              <button @click="signUp">去注册</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </header>
-  <!-- 主体 -->
-  <div class="body">
-    <div class="container" id="container" :class="{ 'right-panel-active': rightPanelActive }">
-      <div class="form-container sign-up-container">
-        <div class="form">
-          <h1>凝聚元神，重铸法身</h1>
-          <div class="input-container">
-            <div class="input-tips">邮&nbsp;箱：</div>
-            <input
-                v-model="formData.email"
-                type="email"
-                required
-                placeholder="玉简传讯，留尔天机"
-                @input="validateEmail"
-            />
-            <button
-                class="send-code-btn"
-                :disabled="!isEmailValid || isCountingDown"
-                @click="sendValidCode"
-            >
-              {{ countdown > 0 ? `${countdown}秒后重试` : '获取仙符' }}
-            </button>
-          </div>
-          <div class="input-container">
-            <div class="input-tips">验证码：</div>
-            <input
-                v-model="formData.validCode"
-                type="text"
-                maxlength="6"
-                placeholder="仙符验证，输入天机"
-            />
-          </div>
-          <div class="input-container">
-            <div class="input-tips">密&nbsp;码：</div>
-            <input
-                v-model="formData.password"
-                type="password"
-                maxlength="20"
-                required
-                placeholder="六道轮回，密令自显"
-            />
-          </div>
-          <button class="ghost" @click="handleRegister">注册</button>
+    <!-- 页脚 -->
+    <footer>
+      <div class="footer-container">
+        <FooterCloudLeft/>
+        <div class="footer-section">
+          <h2>联系我们</h2>
+          <p>邮箱: 221250108@smail.nju.edu.cn &nbsp; &nbsp; &nbsp;电话: 182-4518-7102</p>
+          <p>地址: 南京市 鼓楼区 汉口路 22号</p>
         </div>
+        <FooterCloudRight/>
       </div>
-      <div class="form-container sign-in-container">
-        <div class="form">
-          <h1>大圣归来，再战苍穹</h1>
-          <div class="input-container">
-            <div class="input-tips">邮&nbsp;箱：</div>
-            <input
-                v-model="formData.email"
-                type="email"
-                required
-                placeholder="元神印记，显化真形"
-            />
-          </div>
-          <div class="input-container">
-            <div class="input-tips">密&nbsp;码：</div>
-            <input
-                v-model="formData.password"
-                type="password"
-                required
-                placeholder="法宝秘钥，谨记于心"
-            />
-          </div>
-          <button class="ghost" @click="handleLogin">登录</button>
-        </div>
+      <div class="footer-bottom">
+        <RedCloudLeft/>
+        <h3>&copy; 2025 黑神话悟空问答助手. 版权所有 | 玄门证道</h3>
+        <RedCloudRight/>
       </div>
-      <div class="overlay-container">
-        <div class="overlay">
-          <div class="overlay-panel overlay-left">
-            <h1>劫波渡尽，故人依旧</h1>
-            <p>已有元神印记？此去灵山十万路，且凭金身踏祥云</p>
-            <button class="ghost" id="signIn" @click="signIn">去登录</button>
-          </div>
-          <div class="overlay-panel overlay-right">
-            <h1>初入三界，造化新生</h1>
-            <p>尚无功德文牒？此间因果待书写，且结善缘证菩提</p>
-            <button class="ghost" id="signUp" @click="signUp">去注册</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    </footer>
   </div>
-  <!-- 页脚 -->
-  <footer>
-    <div class="footer-container">
-      <FooterCloudLeft/>
-      <div class="footer-section">
-        <h2>联系我们</h2>
-        <p>邮箱: 221250108@smail.nju.edu.cn &nbsp; &nbsp; &nbsp;电话: 182-4518-7102</p>
-        <p>地址: 南京市 鼓楼区 汉口路 22号</p>
-      </div>
-      <FooterCloudRight/>
-    </div>
-    <div class="footer-bottom">
-      <RedCloudLeft/>
-      <h3>&copy; 2025 黑神话悟空问答助手. 版权所有 | 玄门证道</h3>
-      <RedCloudRight/>
-    </div>
-  </footer>
 </template>
 
 <script setup lang="ts">
 import {ref, onBeforeUnmount, onMounted} from 'vue';
 import { useRouter } from 'vue-router';
 import { login, register, getSalt, getValidCode, type RegisterInfo, type LoginInfo } from '../apis/user';
-import sha256 from 'crypto-js/sha256'; // 用来加密的库
+import CryptoJS from 'crypto-js'; // 用来加密的库
 import { genSaltSync } from 'bcryptjs';// 用来生成盐值的库
 import CustomAlert from "../components/CustomAlert.vue";
 import CloudOfIndexHeader from "../assets/icons/Clouds/CloudOfIndexHeader.vue";
@@ -226,7 +228,7 @@ const handleLogin = async () => {
     const saltResponse = await getSalt(formData.value.email);
     const salt = saltResponse.data.salt;
     console.log("获取到的salt:", salt);
-    const hashedPassword = sha256(`${formData.value.password}${salt}`).toString();
+    const hashedPassword = CryptoJS.SHA256(`${formData.value.password}${salt}`).toString();
     console.log("登录加密后的密码:", hashedPassword);
 
     loginInfo.value = {
@@ -254,7 +256,7 @@ const handleRegister = async () => {
     await register({
       email: formData.value.email,
       salt: formData.value.salt,
-      password: sha256(`${formData.value.password}${formData.value.salt}`).toString(),
+      password: CryptoJS.SHA256(`${formData.value.password}${formData.value.salt}`).toString(),
       validCode: formData.value.validCode
     }).then((res) => {
       console.log("注册返回信息:", res.data);
@@ -333,317 +335,333 @@ a {
 
 button {
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  color: #FFFFFF;
   font-size: 16px;
   font-weight: bold;
   padding: 12px 40px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  transition: transform 80ms ease-in;
+  transition: background 0.3s;
   cursor: pointer;
   font-family: 'Ma Shan Zheng', cursive;
-  &:active {
-    transform: scale(0.95);
-  }
-  &:focus {
-    outline: none;
-  }
-}
-
-button.ghost {
-  background-color: rgba(63, 62, 62, 0.44);
-  border-color: #FFFFFF;
+  color: #f1cb82;
+  background: rgba(159, 157, 153, 0.2);
+  border: 1px solid #f1cb82;
+  z-index: 1;
   &:hover {
-    background-color: rgba(145, 143, 143, 0.18);
+    background: rgba(246, 213, 150, 0.34);
   }
 }
-/* 页头样式 */
-.header {
-  background: #1a1a1a;
-  color: #d3b479;
-  padding: 20px 100px;
-  border-bottom: 2px solid #c0aa6a;
-  button {
-    padding: 8px 16px;
-    background: rgba(159, 157, 153, 0.2);
-    border: 1px solid #c0aa6a;
-    border-radius: 20px;
-    cursor: pointer;
+
+
+.account-page {
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+  }
+
+  /* 页头样式 */
+  .header {
+    background: #1a1a1a;
     color: #d3b479;
-    font-family: "Ma Shan Zheng", cursive;
-    transition: background 0.3s;
-    font-size: 16px;
-    font-weight: bold;
-
-    &:hover {
-      background: rgba(246, 213, 150, 0.34);
-    }
-  }
-
-  .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    .cloud {
+    padding: 20px 100px;
+    border-bottom: 2px solid #c0aa6a;
+    .header-btn {
+      padding: 8px 16px;
+      background: rgba(159, 157, 153, 0.2);
+      border: 1px solid #c0aa6a;
+      border-radius: 20px;
       cursor: pointer;
-      :deep(path) {
-        transition: fill 0.3s ease;
-      }
-
-      &.hovered :deep(path) {
-        fill: #FFFFFF;
-      }
-    }
-    .welcome-text {
       color: #d3b479;
-      font-size: 18px;
-      text-shadow: 2px 2px 5px #f6d596;
-      letter-spacing: 1px;
-    }
-  }
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    img {
-      width: 50px;
-    }
-
-    span {
-      font-size: 24px;
+      font-family: "Ma Shan Zheng", cursive;
+      transition: background 0.3s;
+      font-size: 16px;
       font-weight: bold;
+
+      &:hover {
+        background: rgba(246, 213, 150, 0.34);
+      }
     }
-  }
 
-  .nav ul {
-    display: flex;
-    gap: 20px;
-    list-style: none;
-  }
-}
-/* 主体样式 */
-.body {
-  display: flex;
-  background: #1a1a1b;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Montserrat', sans-serif;
-  height: 100vh;
-  padding-left: 100px;
-  padding-right: 100px;
-  padding-top: 10px;
-  .container {
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
-    0 10px 10px rgba(0, 0, 0, 0.22);
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Ma Shan Zheng', cursive;
-    font-size: 24px;
-    border-radius: 5px;
-
-    .form {
-      background-image: url('/form-bkg.jpg');
-      background-repeat: no-repeat;
-      background-size: cover;
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-right {
       display: flex;
       align-items: center;
+      gap: 5px;
+      .cloud {
+        cursor: pointer;
+        :deep(path) {
+          transition: fill 0.3s ease;
+        }
+
+        &.hovered :deep(path) {
+          fill: #FFFFFF;
+        }
+      }
+      .welcome-text {
+        color: #d3b479;
+        font-size: 18px;
+        text-shadow: 2px 2px 9px #f6d596;
+        letter-spacing: 1px;
+      }
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      img {
+        width: 50px;
+      }
+
+      span {
+        font-size: 30px;
+        text-shadow: 3px 3px 2px #504632;
+        font-weight: bold;
+      }
+    }
+  }
+  /* 主体样式 */
+  .body {
+    display: flex;
+    background: linear-gradient(to bottom, #1a1a1a, rgba(47, 47, 47, 0.98), #1a1a1a);
+    justify-content: center;
+    align-items: center;
+    font-family: 'Montserrat', sans-serif;
+    padding: 10px 10px;
+
+    .container {
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
+      0 10px 10px rgba(0, 0, 0, 0.22);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      height: 75vh;
+      display: flex;
       justify-content: center;
-      flex-direction: column;
-      padding: 0 50px;
-      height: 100%;
-      text-align: center;
-      color: white;
+      align-items: center;
       font-family: 'Ma Shan Zheng', cursive;
       font-size: 24px;
+      border-radius: 5px;
 
-      .input-container {
-        display: flex;
-        flex-direction: row;
-        justify-content: end;
-        align-items: center;
-        width: 100%;
-        .input-tips {
-          width: 130px;
-        }
-        .send-code-btn {
-          border-radius: 20px;
-          height: 40px;
-          position: absolute;
-          margin-right: 2px;
-          padding: 10px;
-          border: 1px solid rgba(255, 255, 255, 0.65);
-          background-color: rgb(79, 104, 124);
-          color: #FFFFFF;
-          font-size: 16px;
-          cursor: pointer;
-          font-family: 'Ma Shan Zheng', cursive;
-          transition: all 0.3s;
-
-          &:hover:not(:disabled) {
-            background-color: rgb(132, 152, 169);
-          }
-
-          &:disabled {
-            background-color: rgba(58, 57, 57, 0.65);
-            opacity: 0.6;
-            cursor: not-allowed;
-          }
-        }
-      }
-    }
-
-    .sign-in-container {
-      left: 0;
-      width: 50%;
-      z-index: 2;
-    }
-
-    .sign-up-container {
-      left: 0;
-      width: 50%;
-      opacity: 0;
-      z-index: 1;
-    }
-    .form-container {
-      position: absolute;
-      top: 0;
-      height: 100%;
-      transition: all 0.6s ease-in-out;
-    }
-
-    .overlay-container {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 50%;
-      height: 100%;
-      overflow: hidden;
-      transition: transform 0.6s ease-in-out;
-      z-index: 100;
-      .overlay {
-        background-image: url('/login-bkg.jpg');
+      .form {
         background-repeat: no-repeat;
         background-size: cover;
-        background-position: 0 0;
-        color: #FFFFFF;
-        position: relative;
-        left: -100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 0 50px;
         height: 100%;
-        width: 200%;
-        transform: translateX(0);
-        transition: transform 0.6s ease-in-out;
+        text-align: center;
+        color: white;
+        font-family: 'Ma Shan Zheng', cursive;
+        font-size: 24px;
 
-        .overlay-panel {
+        &::before {
+          content: '';
           position: absolute;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-direction: column;
-          padding: 0 40px;
-          text-align: center;
           top: 0;
-          height: 100%;
-          width: 50%;
-          transform: translateX(0);
-          transition: transform 0.6s ease-in-out;
-        }
-
-        .overlay-left {
-          transform: translateX(-10%);
-        }
-
-        .overlay-right {
+          left: 0;
           right: 0;
-          transform: translateX(0);
+          bottom: 0;
+          background-color: rgba(79, 78, 78, 0.6);
+          z-index: 0;
         }
+
+        h1 {
+          z-index: 1;
+          color: #f1cb82;
+          text-shadow: 3px 3px 2px #2d2a22;
+        }
+
+        .input-container {
+          display: flex;
+          flex-direction: row;
+          justify-content: end;
+          align-items: center;
+          width: 100%;
+          z-index: 1;
+          input {
+            background-color: #fff;
+            border: 2px solid #f1cb82;
+          }
+          .input-tips {
+            width: 130px;
+            color: #f1cb82;
+            text-shadow: 3px 3px 2px #2d2a22;
+          }
+          .send-code-btn {
+            border-radius: 20px;
+            height: 40px;
+            position: absolute;
+            margin-right: 2px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            background-color: rgb(79, 104, 124);
+            color: #FFFFFF;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'Ma Shan Zheng', cursive;
+            transition: all 0.3s;
+
+            &:hover:not(:disabled) {
+              background-color: rgb(132, 152, 169);
+            }
+
+            &:disabled {
+              background-color: rgba(58, 57, 57, 0.65);
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+          }
+        }
+      }
+
+      .sign-in-container {
+        left: 0;
+        width: 50%;
+        z-index: 2;
+      }
+
+      .sign-up-container {
+        left: 0;
+        width: 50%;
+        opacity: 0;
+        z-index: 1;
+      }
+      .form-container {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .overlay-container {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 50%;
+        height: 100%;
+        overflow: hidden;
+        transition: transform 0.3s ease-in-out;
+        z-index: 100;
+        .overlay {
+          background: linear-gradient(to bottom, #1a1a1a, rgba(47, 47, 47, 0.98), #1a1a1a);
+          color: #d3b479;
+          text-shadow: 3px 3px 2px #5d523c;
+          position: relative;
+          left: -100%;
+          height: 100%;
+          width: 200%;
+          transform: translateX(0);
+          transition: transform 0.3s ease-in-out;
+
+          .overlay-panel {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 40px;
+            text-align: center;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            transform: translateX(0);
+            transition: transform 0.3s ease-in-out;
+          }
+
+          .overlay-left {
+            transform: translateX(-10%);
+          }
+
+          .overlay-right {
+            right: 0;
+            transform: translateX(0);
+          }
+        }
+      }
+
+    }
+
+    .container.right-panel-active .sign-in-container {
+      transform: translateX(100%);
+    }
+    .container.right-panel-active .sign-up-container {
+      transform: translateX(100%);
+      opacity: 1;
+      z-index: 5;
+      animation: show 0.3s;
+    }
+    .container.right-panel-active .overlay-container {
+      transform: translateX(-100%);
+    }
+    .container.right-panel-active .overlay {
+      transform: translateX(50%);
+    }
+    .container.right-panel-active .overlay-left {
+      transform: translateX(0);
+    }
+    .container.right-panel-active .overlay-right {
+      transform: translateX(20%);
+    }
+    @keyframes show {
+      0%, 49.99% {
+        opacity: 0;
+        z-index: 1;
+      }
+
+      50%, 100% {
+        opacity: 1;
+        z-index: 5;
+      }
+    }
+  }
+  /* 页脚样式 */
+  footer {
+    background: #1a1a1a;
+    padding: 0 30px 30px;
+    color: #d3b479;
+    border-top: 2px solid #c0aa6a;
+
+    .footer-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .footer-section {
+      flex: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      h2 {
+        color: #c0aa6a;
+        width: 50%;
+        border-bottom: 1px solid #c0aa6a;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
       }
     }
 
-  }
-
-  .container.right-panel-active .sign-in-container {
-    transform: translateX(100%);
-  }
-  .container.right-panel-active .sign-up-container {
-    transform: translateX(100%);
-    opacity: 1;
-    z-index: 5;
-    animation: show 0.6s;
-  }
-  .container.right-panel-active .overlay-container {
-    transform: translateX(-100%);
-  }
-  .container.right-panel-active .overlay {
-    transform: translateX(50%);
-  }
-  .container.right-panel-active .overlay-left {
-    transform: translateX(0);
-  }
-  .container.right-panel-active .overlay-right {
-    transform: translateX(20%);
-  }
-  @keyframes show {
-    0%, 49.99% {
-      opacity: 0;
-      z-index: 1;
+    .footer-bottom {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 14px;
+      color: #a9956a;
+      gap: 20px;
     }
-
-    50%, 100% {
-      opacity: 1;
-      z-index: 5;
-    }
-  }
-}
-/* 页脚样式 */
-footer {
-  background: #1a1a1a;
-  padding: 0 30px 30px;
-  color: #d3b479;
-  border-top: 2px solid #c0aa6a;
-
-  .footer-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .footer-section {
-    flex: 1;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    h2 {
-      color: #c0aa6a;
-      width: 50%;
-      border-bottom: 1px solid #c0aa6a;
-      padding-bottom: 10px;
-      margin-bottom: 10px;
-    }
-  }
-
-  .footer-bottom {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-size: 14px;
-    color: #a9956a;
-    gap: 20px;
   }
 }
 </style>
