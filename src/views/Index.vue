@@ -21,44 +21,46 @@
       </div>
     </header>
     <!-- 欢迎横幅 -->
-    <div  class="banner">
+    <div class="banner">
       <div class="banner-text">
-        <h1>黑神话：悟空 · 玄机问答</h1>
-        <p>
+        <h1 class="float-up float-delay-1">黑神话：悟空 · 玄机问答</h1>
+        <p class="float-up float-delay-2">
           踏破三界迷雾，参透西游真谛。此间问答，专为求道者解惑而生。<br>
           从五行山下到灵山佛境，从七十二变到八十一难，<br>
           无论是妖魔图鉴、法宝妙用，还是关卡玄机、隐藏机缘，<br>
           皆可在此寻得真解。
         </p>
-        <button @click="navigateToAccount">即刻问道</button>
+        <button class="float-up float-delay-3" @click="navigateToAccount">即刻问道</button>
       </div>
       <video autoplay loop muted playsinline disablePictureInPicture>
         <source src="/wukong.mp4" type="video/mp4">
         您的浏览器不支持播放该视频
       </video>
     </div>
-    <!-- 功能介绍 -->
+    <!-- 功能介绍部分 -->
     <div class="feature-container" style="background: url('src/assets/BlackMonkey/img_bg_introduce_1_b.png') no-repeat center center; background-size: cover;">
       <div class="feature-text" style="background: url('../../src/assets/BlackMonkey/img_bg_introduce_1_a.png') no-repeat center center; background-size: cover;">
         <div class="text1-container">
-          <h1>三界问答</h1>
-          <p>解答游戏中的一切疑难<br>从基础操作到高阶技巧<br>从主线剧情到隐藏支线<br>助你参透游戏玄机</p>
+          <h1 class="float-up">三界问答</h1>
+          <p class="float-up float-delay-1">解答游戏中的一切疑难<br>从基础操作到高阶技巧<br>从主线剧情到隐藏支线<br>助你参透游戏玄机</p>
         </div>
       </div>
     </div>
+
     <div class="feature-container" style="background: url('src/assets/BlackMonkey/img_bg_introduce_3_b.png') no-repeat center center; background-size: cover;">
       <div class="feature-text" style="background: url('../../src/assets/BlackMonkey/img_bg_introduce_3_a.png') no-repeat center center; background-size: cover;">
         <div class="text2-container">
-          <h1>功德成就</h1>
-          <p>查看游戏全成就系统<br>追踪你的修行进度<br>了解解锁条件与奖励<br>助你圆满功德金身</p>
+          <h1 class="float-up">功德成就</h1>
+          <p class="float-up float-delay-1">查看游戏全成就系统<br>追踪你的修行进度<br>了解解锁条件与奖励<br>助你圆满功德金身</p>
         </div>
       </div>
     </div>
+
     <div class="feature-container" style="background: url('src/assets/BlackMonkey/img_bg_introduce_4_b.png') no-repeat center center; background-size: cover;">
       <div class="feature-text" style="background: url('../../src/assets/BlackMonkey/img_bg_introduce_4_a.png') no-repeat center center; background-size: cover;">
         <div class="text3-container">
-          <h1>玄门法度</h1>
-          <p>管理员专用通道<br>维护知识库清净<br>更新游戏新内容<br>确保解答如法如律</p>
+          <h1 class="float-up">玄门法度</h1>
+          <p class="float-up float-delay-1">管理员专用通道<br>维护知识库清净<br>更新游戏新内容<br>确保解答如法如律</p>
         </div>
       </div>
     </div>
@@ -121,15 +123,50 @@ const getHeaderText = () => {
   return currentHeaderText.value;
 };
 
+function setupFloatAnimation() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        // 可选：动画完成后取消观察
+        // observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1, // 当元素10%进入视口时触发
+    rootMargin: '0px 0px -50px 0px' // 底部margin，可以提前触发
+  });
+
+  // 观察所有带有.float-up类的元素
+  document.querySelectorAll('.float-up').forEach(el => {
+    observer.observe(el);
+  });
+}
 // 组件挂载时获取一次随机文案
 onMounted(() => {
   getHeaderText();
-
+  setupFloatAnimation()
 });
 </script>
 <style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap');
+
 /* 全局样式 */
+.float-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 为不同元素设置不同的延迟 */
+.float-delay-1 { transition-delay: 0.2s; }
+.float-delay-2 { transition-delay: 0.4s; }
+.float-delay-3 { transition-delay: 0.6s; }
 button {
   padding: 8px 16px;
   background: rgba(159, 157, 153, 0.2);
