@@ -335,7 +335,7 @@ a {
 
 button {
   border-radius: 20px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   padding: 12px 40px;
   letter-spacing: 1px;
@@ -405,7 +405,7 @@ button {
       }
       .welcome-text {
         color: #d3b479;
-        font-size: 18px;
+        font-size: 22px;
         text-shadow: 2px 2px 9px #f6d596;
         letter-spacing: 1px;
       }
@@ -552,7 +552,9 @@ button {
         transition: transform 0.3s ease-in-out;
         z-index: 100;
         .overlay {
-          background: linear-gradient(to bottom, #1a1a1a, rgba(47, 47, 47, 0.98), #1a1a1a);
+          background-size: cover;
+          background: url('src/assets/BlackMonkey/img_bg_introduce_4_b.png') no-repeat;
+          //background: linear-gradient(to bottom, #1a1a1a, rgba(47, 47, 47, 0.98), #1a1a1a);
           color: #d3b479;
           text-shadow: 3px 3px 2px #5d523c;
           position: relative;
@@ -583,7 +585,7 @@ button {
 
           .overlay-right {
             right: 0;
-            transform: translateX(0);
+            transform: translateX(10%);
           }
         }
       }

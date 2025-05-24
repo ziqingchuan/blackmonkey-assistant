@@ -176,7 +176,7 @@ button {
   color: #d3b479;
   font-family: "Ma Shan Zheng", cursive;
   transition: background 0.3s;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
 
   &:hover {
@@ -224,7 +224,7 @@ button {
       }
       .welcome-text {
         color: #d3b479;
-        font-size: 18px;
+        font-size: 22px;
         text-shadow: 2px 2px 9px #f6d596;
         letter-spacing: 1px;
       }
