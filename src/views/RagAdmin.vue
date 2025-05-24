@@ -253,7 +253,7 @@ import CustomAlert from "../components/CustomAlert.vue"; // 自定义弹窗组�
 import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
 import { getAnswer, type ConfigParams} from '../apis/rag.ts';
 import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../apis/dialog.ts';
-import CloudOfAchieve from "../assets/icons/Clouds/CloudOfAchieve.vue";
+import Achieve from "../assets/icons/Achieve.vue";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息

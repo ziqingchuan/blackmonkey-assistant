@@ -72,9 +72,9 @@
           <div class="header-right">
             <button class="achieve-btn" @click="toAcheivementPage">
             <span class="icon-container">
-              <CloudOfAchieve />
+              <Achieve />
             </span>
-              <span class="text-container">点击查看<br>功德成就</span>
+              <span class="text-container">功德成就</span>
             </button>
           </div>
         </div>
@@ -249,11 +249,11 @@ import CloudBeforeTitle from "../assets/icons/Clouds/Cloud-before-title.vue"; //
 import CloudBeforeList from "../assets/icons/Clouds/Cloud-before-list.vue"; // 对话列表前的祥云
 import Taiji from "../assets/icons/Taiji.vue"; // 对话区域太极头像
 import Jingu from "../assets/icons/Jingu.vue"; // 对话区域金箍头像
+import Achieve from "../assets/icons/Achieve.vue"; // 成就按钮图标
 import CustomAlert from "../components/CustomAlert.vue"; // 自定义弹窗组件
 import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
 import { getAnswer, type ConfigParams} from '../apis/rag.ts';
 import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../apis/dialog.ts';
-import CloudOfAchieve from "../assets/icons/Clouds/CloudOfAchieve.vue";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -640,7 +640,7 @@ input, button {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 30px;
+      padding: 20px 30px 30px;
 
       .dialog-header {
         display: flex;
@@ -666,9 +666,10 @@ input, button {
           font-size: 18px;
           letter-spacing: 2px;
           color: #d3b479;
-
+          border-bottom: 2px solid #c0aa6a;
+          margin-bottom: 10px;
           .achieve-btn {
-            width: 100px;
+            width: 50px;
             height: 50px;
             font-family: 'Ma Shan Zheng', cursive;
             color: #c0aa6a;
