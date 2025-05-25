@@ -85,7 +85,7 @@ defineExpose({ show });
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 10000;
 
   .custom-alert {
     width: 380px;

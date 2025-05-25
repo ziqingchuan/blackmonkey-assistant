@@ -65,7 +65,7 @@
           <!-- 头部左侧 -->
           <div class="header-left">
             <CloudBeforeTitle />
-            <span class="dialog-title">{{ currentDialog?.title || "一段新的新劫难" }}</span>
+            <span class="dialog-title">{{ currentDialog?.title || "一段新的劫难" }}</span>
           </div>
 
           <!-- 成就按钮 -->

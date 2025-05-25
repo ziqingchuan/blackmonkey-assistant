@@ -1,5 +1,15 @@
 <template>
+  <GlobalLoading :is-loading="isWaiting" />
   <CustomAlert ref="customAlert" />
+  <EditWukongDataForm
+      v-model:visible="isEditing"
+      :editing-data="editingDB"
+      @confirm="handleUpdate"
+  />
+  <AddWukongDataForm
+      v-model:visible="isUploading"
+      @confirm="handleInsert"
+  />
   <div class="page-container">
     <!-- 玄铁侧栏 -->
     <div class="sidebar">
@@ -11,17 +21,13 @@
             :class="{ 'hovered': isLogoHovered }"
             @mouseenter="isLogoHovered = true"
             @mouseleave="isLogoHovered = false"
-            @click="isDialogListVisible = !isDialogListVisible"
+            @click="isDBListVisible = !isDBListVisible"
         />
       </div>
       <div class="btn-group">
-        <button class="btn" @click="showCreate" title="新建对话">
-          <span class="btn-origin-text">开劫</span>
-          <span class="btn-new-text">新建对话</span>
-        </button>
-        <button class="btn" @click="showConfig" title="参数设置">
-          <span class="btn-origin-text">造化</span>
-          <span class="btn-new-text">参数设置</span>
+        <button class="btn" @click="isUploading = true" title="上传数据">
+          <span class="btn-origin-text">纂天</span>
+          <span class="btn-new-text">上传数据</span>
         </button>
         <button class="btn" @click="logout" title="退出">
           <span class="btn-origin-text">归尘</span>
@@ -30,397 +36,257 @@
       </div>
     </div>
 
-    <!-- 三界主体 -->
+    <!-- 主体 -->
     <div class="main-container">
-      <!-- 千劫万难 -->
-      <div class="dialog-list" v-if="isDialogListVisible">
+      <!-- 数据库列表 -->
+      <div class="DB-list" v-if="isDBListVisible">
         <div class="list-title">
           <CloudBeforeList class="cloud-decoration" />
-          <span class="title-text">千劫万难</span>
+          <span class="title-text">数据库列表</span>
         </div>
-        <div class="dialog-list-container">
+        <div class="DB-list-wrapper">
           <div
-              v-if="dialogList.length > 0"
-              v-for="dialog in dialogList"
-              :key="dialog.id"
-              class="dialog-item"
-              :class="{ active: currentDialog?.id === dialog.id }"
-              @click="loadDialog(dialog.id)"
+              v-if=" DBlist.length > 0"
+              v-for="DBitem in DBlist"
+              :key="DBitem.id"
+              class="database-item"
+              :class="{ active: currentDB?.id === DBitem.id }"
+              @click="loadDataBase(DBitem.id)"
           >
-            <div class="dialog-title">{{ dialog.title.length > 9 ? dialog.title.slice(0, 9) + '...' : dialog.title }}</div>
-            <div class="dialog-time">
-              {{ formatDateTime(dialog.createTime.toString()) }}
-            </div>
+            <div class="database-name">{{ DBitem.name.length > 9 ? DBitem.name.slice(0, 9) + '...' : DBitem.name }}</div>
           </div>
-          <div v-if="dialogList.length === 0" class="empty-tip">
-            无往生记录，请开启新劫难
+          <div v-if="DBlist.length === 0" class="empty-tip">
+            暂无数据库
           </div>
         </div>
       </div>
 
-      <!-- 问道之境 -->
-      <div class="dialog-container">
-        <div class="dialog-header">
-
-          <!-- 头部左侧 -->
-          <div class="header-left">
+      <!-- 数据库信息 -->
+      <div class="database-container">
+        <!-- 头部 -->
+        <div class="database-header">
+          <div class="header-container">
             <CloudBeforeTitle />
-            <span class="dialog-title">{{ currentDialog?.title || "一段新的新劫难" }}</span>
-          </div>
-
-          <!-- 成就按钮 -->
-          <div class="header-right">
-            <button class="achieve-btn" @click="toAcheivementPage">
-            <span class="icon-container">
-              <CloudOfAchieve />
-            </span>
-              <span class="text-container">点击查看<br>功德成就</span>
-            </button>
+            <span class="database-title">数据库: {{ currentDB?.name || "请选择数据库" }},&nbsp;&nbsp;共{{ currentDB?.database.length || 0 }}条数据</span>
           </div>
         </div>
 
-        <!-- 对话内容 -->
-        <div class="dialog-content">
-          <template v-if="currentDialog">
-            <div
-                v-for="(content, index) in displayContentList"
-                :key="index"
-                :class="['message-container', content.role === 'USER' ? 'user' : 'rag']"
-            >
-              <!-- 头像 -->
-              <div class="role-avatar">
-                <Taiji v-if="content.role === 'RAG'" />
-                <Jingu v-if="content.role === 'USER'" />
-              </div>
-              <!-- 消息内容 -->
-              <div class="message-content-wrapper">
-                <div class="message-bubble">
-                  <div class="message-text">{{ content.text }}</div>
+        <!-- 数据库主内容 -->
+        <div class="DB-information">
+          <!-- 数据表格展示区 -->
+          <div class="data-table-container">
+            <div class="table-header">
+              <div class="header-item" style="width: 55%">文本内容</div>
+              <div class="header-item" style="width: 15%">数据类别</div>
+              <div class="header-item" style="width: 15%">数据来源</div>
+              <div class="header-item" style="width: 15%">操作</div>
+            </div>
 
-                  <!-- SourceDoc下拉区域 -->
-                  <div v-if="content.role === 'RAG' && content.sourceDoc" class="source-doc-container">
-                    <button
-                        class="source-toggle"
-                        @click="toggleSourceDoc(index)"
-                    >
-                      <span>天机来源</span>
-                      <span :class="['arrow', sourceDocVisibility[index] && 'open']">▼</span>
-                    </button>
-
-                    <!--天机来源组件-->
-                    <transition name="slide">
-                      <div v-show="sourceDocVisibility[index]" class="source-doc-content">
-                        <div v-for="(doc, docIndex) in content?.sourceDoc || []" :key="docIndex" class="doc-item">
-                          <div class="doc-header">
-                            <span class="doc-source">{{ doc.source }}</span>
-                            <span class="doc-category">{{ doc.category }}</span>
-                          </div>
-                          <div class="doc-content">{{ doc.content }}</div>
-                          <div v-if="docIndex < content.sourceDoc.length - 1" class="doc-divider"></div>
-                        </div>
-                      </div>
-                    </transition>
-                  </div>
+            <div class="table-body">
+              <div
+                  v-for="(item, index) in paginatedData"
+                  :key="index"
+                  class="data-row"
+                  :class="{ 'odd-row': index % 2 === 0 }"
+              >
+                <div class="data-cell" style="width: 55%">
+                  <div class="scrollable-text">{{ item.text }}</div>
+                </div>
+                <div class="data-cell" style="width: 15%">
+                  <span class="category-tag">{{ item.category }}</span>
+                </div>
+                <div class="data-cell" style="width: 15%">
+                  <span class="source-text">{{ item.source }}</span>
+                </div>
+                <div class="data-cell operations" style="width: 15%">
+                  <button
+                      class="operation-btn edit-btn"
+                      @click="editItem(item)"
+                      title="修改天机"
+                  >
+                    修改
+                  </button>
+                  <button
+                      class="operation-btn delete-btn"
+                      @click="deleteItem(item)"
+                      title="删除数据"
+                  >
+                    删除
+                  </button>
                 </div>
               </div>
+              <div v-if="paginatedData.length === 0" class="empty-tip">
+                暂无数据
+              </div>
             </div>
-          </template>
-          <div v-else class="empty-dialog">请选择或开启新的劫难</div>
-          <div v-if="isLoading" class="loading-container">
-            <div class="loading-dot"></div>
-            <div class="loading-dot"></div>
-            <div class="loading-dot"></div>
+
+            <!-- 分页控制器 -->
+            <div class="pagination-container">
+              <button
+                  class="pagination-btn"
+                  :disabled="currentPage === 1"
+                  @click="currentPage--"
+              >
+                ‹ 前页
+              </button>
+
+              <span class="page-info">
+        第 {{ currentPage }} 页 / 共 {{ totalPages }} 页
+      </span>
+
+              <button
+                  class="pagination-btn"
+                  :disabled="currentPage >= totalPages"
+                  @click="currentPage++"
+              >
+                后页 ›
+              </button>
+            </div>
           </div>
         </div>
-        <div class="dialog-input">
-          <input
-              v-model.trim="inputValue"
-              type="text"
-              class="input-text"
-              placeholder="请输入你的劫难..."
-              :disabled="isLoading"
-              @keyup.enter="sendQuestion"
-          />
-          <button
-              class="btn-send"
-              :disabled="isLoading || !inputValue"
-              @click="sendQuestion"
-          >
-            <span class="icon-container">
-              <Send />
-            </span>
-            <span class="text-container">求问</span>
-          </button>
-        </div>
+
+        <!-- 底部 -->
         <div class="footer">
           <RedCloudLeft />
-          <span> 历劫证道 · 天机自现 </span>
+          <span> 玄铁锻锋 · 天书易篆 </span>
           <RedCloudRight />
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- 新建对话弹窗 -->
-  <div v-if="showCreateDialog" class="xuan-window">
-    <div class="xuan-content">
-      <h3 class="xuan-title">开劫度人</h3>
-      <p>点击开劫，创建一条新的求问之路！</p>
-      <p>若尚未决断，就请遁去吧......</p>
-      <input
-          v-model="newDialogTitle"
-          class="xuan-input"
-          maxlength="20"
-          placeholder="输入劫难名..."
-          @keyup.enter="createNewDialog(newDialogTitle)"
-      />
-      <div class="xuan-button-group">
-        <button class="xuan-btn" @click="createNewDialog(newDialogTitle)">开劫</button>
-        <button class="xuan-btn" @click="showCreateDialog = false">遁去</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 参数设置弹窗 -->
-  <div v-if="showConfigDialog" class="xuan-window">
-    <div class="xuan-content">
-      <h3 class="xuan-title">造化玉碟</h3>
-
-      <div class="xuan-config-item">
-        <span class="xuan-label">寻法之道：</span>
-        <div class="strategy-switch">
-          <button
-              :class="['xuan-switch-btn', configParams.searchStrategy === 0 && 'active']"
-              @click="configParams.searchStrategy = 0"
-          >
-            混元无极
-            (混合检索)
-          </button>
-          <button
-              :class="['xuan-switch-btn', configParams.searchStrategy === 1 && 'active']"
-              @click="configParams.searchStrategy = 1"
-          >
-            虚空造化
-            (向量检索)
-          </button>
-        </div>
-      </div>
-
-      <div class="xuan-config-item">
-        <span class="xuan-label">参考天机：</span>
-        <input
-            v-model.number="configParams.resultCount"
-            type="number"
-            min="1"
-            max="10"
-            class="xuan-number-input"
-        />
-        条
-      </div>
-
-      <div class="xuan-config-item">
-        <span class="xuan-label">道韵相似：{{ (configParams.similarity * 100).toFixed(0) }} % </span>
-        <input
-            v-model.number="configParams.similarity"
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            class="xuan-slider"
-        />
-      </div>
-
-      <div class="xuan-button-group">
-        <button class="xuan-btn" @click="showConfigDialog = false">合道</button>
       </div>
     </div>
   </div>
 
 </template>
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import { useRouter } from 'vue-router';
 import Logo from '../assets/icons/Logo.vue'; // 左上角悟空logo
-import Send from "../assets/icons/Send.vue"; // 发送按钮祥云
 import CloudUnderLogo from "../assets/icons/Clouds/Cloud-under-logo.vue"; // 左上角logo下方祥云
 import RedCloudLeft from "../assets/icons/Clouds/RedCloud-Left.vue";
-import RedCloudRight from "../assets/icons/Clouds/RedCloud-Right.vue"; // 输入框下方祥云
+import RedCloudRight from "../assets/icons/Clouds/RedCloud-Right.vue";
 import CloudBeforeTitle from "../assets/icons/Clouds/Cloud-before-title.vue"; // 对话标题前的祥云
 import CloudBeforeList from "../assets/icons/Clouds/Cloud-before-list.vue"; // 对话列表前的祥云
-import Taiji from "../assets/icons/Taiji.vue"; // 对话区域太极头像
-import Jingu from "../assets/icons/Jingu.vue"; // 对话区域金箍头像
 import CustomAlert from "../components/CustomAlert.vue"; // 自定义弹窗组件
+import GlobalLoading from '../components/GlobalLoading.vue'; // 全局加载组件
+import EditWukongDataForm from "../components/EditWukongDataForm.vue";
+import AddWukongDataForm from "../components/AddWukongDataForm.vue";
 import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
-import { getAnswer, type ConfigParams} from '../apis/rag.ts';
-import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../apis/dialog.ts';
-import Achieve from "../assets/icons/Achieve.vue";
+import type { WukongDBInfo, DataBase, insertWukongDBInfo } from "../apis/database.ts";
+
+// ==================== 模拟数据相关功能导入 ==========
+import { getAllWukongData, insertWukongData, deleteWukongData, updateWukongData } from '../mocks/ragAdmin.ts';
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
 const token = ref(''); // 用户登录token
-const dialogList = ref<Dialog[]>([]); // 存储全部对话列表
-const displayContentList = ref<DisplayContent[]>([]); // 用于存储转换结构后的对话列表
-const currentDialog = ref<Dialog>(); // 当前对话信息
-const inputValue = ref(''); // 用于绑定输入框
-const question = ref(''); // 记录用户输入的问题
-const isLoading = ref(false); // 记录加载状态
+const currentDB = ref<DataBase>(); // 当前操纵的数据库
+const isWaiting = ref(false); // 记录加载状态
 const router = useRouter()
-const showCreateDialog = ref(false) // 控制新建对话弹窗的显示
-const showConfigDialog = ref(false) // 控制参数设置弹窗的显示
-const newDialogTitle = ref('') // 新建对话的标题
 const customAlert = ref(); // 获取弹窗组件的引用
-const isLogoHovered = ref(false); // 记录左上角logo是否被鼠标悬停
-const isDialogListVisible = ref(false); // 记录对话列表的显示状态
-const sourceDocVisibility = ref<Record<number, boolean>>({}); // 记录SourceDoc的显示状态（折叠与收起）
-const configParams = ref<ConfigParams>({ // 初始化参数配置信息
-  searchStrategy: 0,
-  resultCount: 5,
-  similarity: 0.7
-})
+const isLogoHovered = ref(false); // 记录展开目录图标是否被鼠标悬停
+const isDBListVisible = ref(false); // 记录数据库列表的显示状态
+const wukongDB = ref<WukongDBInfo[]>([]); // 用于存储wukong数据库信息，后续会添加其他xxxDB
+const editingDB = ref<WukongDBInfo>(); // 用于存储正在编辑修改的数据
+const isEditing = ref(false); // 记录编辑弹窗是否显示
+const isUploading = ref(false); // 记录新增数据弹窗是否显示
+const DBlist = ref<DataBase[]>([
+  {
+    id: 0,
+    name: 'wukong',
+    database: wukongDB
+  },
+  {
+    id: 1,
+    name: 'wukong2',
+    database: []
+  },
+])
+// 分页相关逻辑
+const currentPage = ref(1);
+const itemsPerPage = 10;
 
 // ==================== 函数声明 ====================
-// 创建新对话
-const createNewDialog = async (title: string) => {
+
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return currentDB.value?.database.slice(start, end) || [];
+});
+
+const totalPages = computed(() => {
+  return Math.ceil((currentDB.value?.database.length || 0) / itemsPerPage);
+});
+
+// 操作函数
+const editItem = (item: WukongDBInfo) => {
+  editingDB.value = item;
+  isEditing.value = true; // 打开编辑弹窗
+};
+
+// 修改wukong数据库内容
+const handleUpdate = async (data: WukongDBInfo) => {
   try {
-    if(title.trim() === '') {
-      title = '一段新的劫难';
-    }
-    const createSuccessfully = await createDialog(title);
-    // 刷新对话列表
-    if(createSuccessfully) {
-      showCreateDialog.value = false; // 关闭新建对话弹窗
-      newDialogTitle.value   = ''; // 清空新建对话标题
-      isDialogListVisible.value = true; // 显示对话列表
-      dialogList.value = await getAllHistory(currentUser.value);
-      await loadDialog(dialogList.value[0].id); // 加载最新的对话
-    }
-    return createSuccessfully
+    isWaiting.value = true;
+    await updateWukongData(data);
+    await fetchAllWukongData();
+    showAlert('修改数据成功!', 0);
   } catch (error) {
-    showAlert("创建失败，请稍后再试", 0);
-    console.error(error);
-    return false;
+    console.error('修改失败:', error);
+    showAlert('数据修改失败，请稍后再试', 0);
   } finally {
-    showConfigDialog.value = false;
+    isWaiting.value = false;
   }
 };
 
-// 加载具体对话
-const loadDialog = async (id: number) => {
+// 新增wukong数据库内容
+const handleInsert = async (data: insertWukongDBInfo) => {
   try {
-    // 进入加载状态
-    isLoading.value = true;
-    // 获取对话详情
-    currentDialog.value = await getDialogDetail(id);
-    displayContentList.value = convertToDisplayFormat(currentDialog.value.contentList); // 转换数据格式
+    isWaiting.value = true;
+    await insertWukongData(data);
+    await fetchAllWukongData();
+    showAlert('数据导入成功！', 0);
+  } catch (error) {
+    showAlert('数据导入失败，请稍后再试', 0);
+  } finally {
+    isWaiting.value = false;
+  }
+};
+
+
+// 删除函数
+const deleteItem = async (item: WukongDBInfo) => {
+  const confirmed = await showAlert(`确定要删除该条数据吗？`, 1);
+  if (!confirmed) return;
+
+  try {
+    isWaiting.value = true;
+    await deleteWukongData(item.pk);
+    await fetchAllWukongData();
+
+    showAlert('删除数据成功!', 0);
+  } catch (error) {
+    console.error('删除失败:', error);
+    showAlert('删除失败，请稍后再试', 0);
+  } finally {
+    isWaiting.value = false;
+    console.log('结束删除，加载状态:', isWaiting.value);
+  }
+};
+
+// 加载具体数据库
+const loadDataBase = (id: number) => {
+  currentPage.value = 1; // 重置分页
+  try {
+    // 进入等待状态
+    isWaiting.value = true;
+    currentDB.value = DBlist.value[id];
   } catch (error) {
     showAlert("加载失败，请稍后再试", 0);
     console.log(error);
   } finally {
-    isLoading.value = false;
+    isWaiting.value = false;
   }
 };
-
-// 将后端数据转换为前端显示格式
-const convertToDisplayFormat = (contentList: Content[]) => {
-  return contentList.reduce((acc: DisplayContent[], content) => {
-    // 将每个QA对转换为两条消息（用户问题和RAG回答）
-    acc.push({
-      text: content.question,
-      role: 'USER'
-    });
-    acc.push({
-      text: content.answer,
-      role: 'RAG',
-      sourceDoc: content.sourceDoc
-    });
-    return acc;
-  }, []);
-};
-
-// 格式化日期
-const formatDateTime = (isoString: string): string => {
-  const date = new Date(isoString);
-
-  // 提取年月日时分
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1; // 月份从0开始
-  const day = date.getDate();
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-
-  return `${year}.${month}.${day} ${hours}:${minutes}`;
-};
-
-// 处理用户发送新问题
-const sendQuestion = async () => {
-  if (!inputValue.value.trim())return;
-  // 将输入框的值赋给 question
-  question.value = inputValue.value;
-  // 立即清空输入框
-  inputValue.value = '';
-  // 如果该用户没有任何对话记录，自动创建一个
-  if (dialogList.value.length === 0) {
-    try {
-      await createNewDialog('一段新的劫难');
-    } catch (error) {
-      showAlert("求问失败，请稍后再试", 0);
-      console.error(error);
-    }
-  }
-  if(currentDialog.value){
-    // 添加用户问题
-    displayContentList.value.push({
-      text: question.value,
-      role: 'USER'
-    });
-    try {
-      isLoading.value = true;
-      // 获取回答
-      console.log('参数信息：', configParams.value);
-      const answer = await getAnswer({
-        dialogId: currentDialog.value.id,
-        question: question.value,
-        searchStrategy: configParams.value.searchStrategy,
-        resultCount: configParams.value.resultCount,
-        similarity: configParams.value.similarity
-      });
-      // 塞到对话列表中
-      displayContentList.value.push({
-        text: answer.answer,
-        sourceDoc: answer.sourceDoc,
-        role: 'RAG'
-      });
-    } catch (error) {
-      showAlert("系统繁忙，请稍后再试", 0);
-      console.error(error);
-    } finally {
-      isLoading.value = false;
-      question.value = ''; // 清空问题内容
-    }
-  } else {
-    showAlert("请先选择或开启新的劫难", 0);
-  }
-};
-
-// 切换SourceDoc的显示状态
-const toggleSourceDoc = (index: number) => {
-  sourceDocVisibility.value = {
-    ...sourceDocVisibility.value,
-    [index]: !sourceDocVisibility.value[index]
-  };
-};
-
-//处理新建对话弹窗逻辑
-function showCreate() {
-  showCreateDialog.value = true
-  showConfigDialog.value = false
-}
-
-//处理参数设置弹窗逻辑
-function showConfig() {
-  showCreateDialog.value = false
-  showConfigDialog.value = true
-}
 
 //处理退出逻辑
 function logout() {
@@ -438,32 +304,34 @@ const showAlert = (message: string, type: number) => {
   return customAlert.value.show(message, type);
 };
 
-// 进入成就页面
-const toAcheivementPage = () => {
-  router.push('/achievement');
-}
+const fetchAllWukongData = async () => {
+  try {
+    const res = await getAllWukongData();
+    console.log('获取数据结果:', res);
+    DBlist.value[0].database = res;
+    currentDB.value = DBlist.value[0];
+    console.log('当前显示的数据库:', currentDB.value)
+  } catch (error) {
+    console.error('数据获取失败:', error);
+    showAlert('获取数据失败，请稍后再试', 0);
+    throw error;  // 保持错误传递
+  }
+};
 
 // 界面初始化加载
 onMounted(async () => {
   try {
     // 进入加载状态
-    isLoading.value = true;
+    isWaiting.value = true;
     // 判断用户是否登录
     if (localStorage.getItem('userProfile')) {
       currentUser.value = JSON.parse(localStorage.getItem('userProfile') || '');
       token.value = localStorage.getItem('token') || '';
       console.log('当前用户信息：', currentUser.value, token.value)
-      // 获取全部的对话信息
-      dialogList.value = await getAllHistory(currentUser.value);
-      console.log('全部对话信息：', dialogList.value)
-      if (dialogList.value.length > 0) {
-        // 初始化默认的对话
-        currentDialog.value = await getDialogDetail(dialogList.value[0].id);
-        console.log('当前对话信息：', currentDialog.value)
-        displayContentList.value = convertToDisplayFormat(currentDialog.value.contentList); // 转换数据格式
-      }
+      // 默认加载wukong数据库
+      await fetchAllWukongData();
     } else {
-      showAlert('天命人，请您先去登录，再来求问', 0).then(() => {
+      showAlert('管理员，请您先去登录，再来查看数据库', 0).then(() => {
         router.push('/account'); // 跳转到登录页面
       });
     }
@@ -471,7 +339,7 @@ onMounted(async () => {
     console.error(error);
   } finally {
     // 取消加载状态
-    isLoading.value = false;
+    isWaiting.value = false;
   }
 });
 
@@ -564,7 +432,7 @@ input, button {
   .main-container {
     flex: 1;
     display: flex;
-    .dialog-list {
+    .DB-list {
       width: 250px;
       background-image: url('/dragon.png');
       background-repeat: no-repeat;
@@ -589,7 +457,7 @@ input, button {
           font-family: 'Ma Shan Zheng', cursive;
         }
       }
-      .dialog-list-container {
+      .DB-list-wrapper {
         overflow-y: auto;
         height: 90%;
         scrollbar-width: none; /* Firefox */
@@ -598,7 +466,7 @@ input, button {
         &::-webkit-scrollbar {
           display: none; /* Chrome/Safari/Opera */
         }
-        .dialog-item {
+        .database-item {
           padding: 12px;
           margin: 8px 0;
           background: rgba(40, 40, 45, 0.8);
@@ -610,21 +478,14 @@ input, button {
             background: rgba(50, 50, 55, 0.9);
             border-color: #c0aa6a33;
           }
-          .dialog-title {
+          .database-name {
             font-size: 18px;
             letter-spacing: 2px;
             color: #d3b479;
-            border-bottom: 2px solid #c0aa6a;
             padding-bottom: 10px;
           }
-          .dialog-time {
-            font-size: 16px;
-            color: #a9956a;
-            margin-top: 10px;
-            text-align: end;
-          }
         }
-        .dialog-item.active {
+        .database-item.active {
           background: rgba(60, 60, 65, 0.9);
           border-color: #c0aa6a;
         }
@@ -636,22 +497,22 @@ input, button {
       }
     }
 
-    .dialog-container {
+    .database-container {
       flex: 1;
       display: flex;
       flex-direction: column;
       padding: 30px;
 
-      .dialog-header {
+      .database-header {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        .header-left {
+        .header-container {
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 10px;
-          .dialog-title {
+          .database-title {
             font-size: 18px;
             letter-spacing: 2px;
             color: #d3b479;
@@ -659,55 +520,8 @@ input, button {
             padding-bottom: 10px;
           }
         }
-        .header-right {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 18px;
-          letter-spacing: 2px;
-          color: #d3b479;
-
-          .achieve-btn {
-            width: 100px;
-            height: 50px;
-            font-family: 'Ma Shan Zheng', cursive;
-            color: #c0aa6a;
-            border-radius: 10%;
-            background: #0e0e11;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            .icon-container {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              transition: opacity 0.3s ease;
-            }
-
-            .text-container {
-              font-size: 16px;
-              font-weight: bold;
-              color: #d3b479;
-              opacity: 0;
-              transition: opacity 0.3s ease;
-              font-family: 'Ma Shan Zheng', cursive;
-            }
-
-            &:hover .icon-container {
-              opacity: 0;
-            }
-
-            &:hover .text-container {
-              opacity: 1;
-            }
-
-          }
-        }
       }
-      .dialog-content {
+      .DB-information {
         background-image: url('/wukong.png');
         background-repeat: no-repeat;
         background-position-x: center;
@@ -723,260 +537,167 @@ input, button {
         border-radius: 8px;
         padding: 20px;
         margin-bottom: 20px;
-        /* 消息容器 */
-        .message-container {
-          display: flex;
-          gap: 15px;
-          margin: 20px 0;
-          max-width: 90%;
-          /* 头像样式 */
-          .role-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(145deg, #c0aa6a 20%, #7a6a4a 80%);
+
+        .data-table-container {
+          width: 100%;
+          height: 100%;
+          background: rgba(30, 30, 35, 0.7);
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+          .table-header {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #3a3a3f;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            flex-shrink: 0;
+            padding: 12px 15px;
+            background: linear-gradient(to right, #2a1e10 0%, #3a2a14 100%);
+            border-bottom: 1px solid #c0aa6a;
+
+            .header-item {
+              color: #d3b479;
+              font-size: 16px;
+              letter-spacing: 1px;
+              text-shadow: 0 0 5px rgba(211, 180, 128, 0.3);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              text-align: center;
+            }
           }
 
-          /* 消息内容容器 */
-          .message-content-wrapper {
-            max-width: calc(100% - 50px);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            /* 消息气泡 */
-            .message-bubble {
-              padding: 15px 20px;
-              border-radius: 12px;
-              position: relative;
-              max-width: 900px;
-              .message-text {
-                font-size: 18px;
-                color: #d3b479;
-                line-height: 1.6;
-                /* 新增换行处理 */
-                word-wrap: break-word;
-                white-space: pre-wrap;
+          .table-body {
+            max-height: calc(100% - 100px);
+            overflow-y: auto;
+
+            .data-row {
+              display: flex;
+              padding: 12px 15px;
+              border-bottom: 1px solid #3a3a3f;
+              transition: background 0.3s;
+              cursor: pointer;
+              &:hover {
+                background: rgba(60, 55, 45, 0.3);
               }
 
-              /* SourceDoc样式 */
-              .source-doc-container {
-                margin-top: 15px;
-                border-top: 1px solid #3a3a3f;
-                padding-top: 12px;
 
-                .source-toggle {
-                  background: none;
-                  border: none;
-                  color: #a99369;
-                  cursor: pointer;
-                  display: flex;
-                  align-items: center;
-                  gap: 8px;
-                  padding: 4px 8px;
-                  font-family: 'Ma Shan Zheng', cursive;
-                  transition: all 0.3s;
-                  &:hover {
-                    color: #c0aa6a;
+              .data-cell {
+                color: #e7cc80;
+                font-size: 14px;
+                display: flex;
+                justify-content: center;
+                text-align: center;
+                align-items: center;
+
+                .scrollable-text {
+                  max-height: 60px;
+                  overflow-y: auto;
+                  line-height: 1.5;
+                  scrollbar-width: thin;
+                  scrollbar-color: #c0aa6a transparent;
+                  text-align: left;
+                  justify-content: flex-start;
+
+                  &::-webkit-scrollbar {
+                    width: 4px;
                   }
 
-                  .arrow {
-                    font-size: 0.8em;
-                    transition: transform 0.3s;
-                  }
-
-                  .arrow.open {
-                    transform: rotate(180deg);
+                  &::-webkit-scrollbar-thumb {
+                    background-color: #c0aa6a;
+                    border-radius: 2px;
                   }
                 }
 
-                .source-doc-content {
-                  margin-top: 10px;
-                  background: rgba(28, 28, 31, 0.9);
-                  border-radius: 6px;
-                  padding: 12px;
-                  border: 1px solid #3a3a3f;
-                  .doc-item {
-                    padding: 8px 0;
-                    .doc-header {
-                      display: flex;
-                      gap: 15px;
-                      margin-bottom: 8px;
-                      .doc-source {
-                        color: #c0aa6a;
-                        font-size: 0.9em;
+                .category-tag {
+                  background: rgba(192, 170, 106, 0.15);
+                  padding: 4px 8px;
+                  border-radius: 4px;
+                  border: 1px solid #c0aa6a33;
+                }
+
+                .source-text {
+                  font-style: italic;
+                  color: #a89c7c;
+                }
+
+                &.operations {
+                  justify-content: center;
+                  gap: 8px;
+
+                  .operation-btn {
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    border: 1px solid transparent;
+
+                    &.edit-btn {
+                      background: rgba(106, 170, 192, 0.15);
+                      color: #6aaac0;
+
+                      &:hover {
+                        border-color: #6aaac0;
+                        background: rgba(106, 170, 192, 0.25);
                       }
+                    }
 
-                      .doc-category {
-                        color: #7a6a4a;
-                        font-size: 0.8em;
+                    &.delete-btn {
+                      background: rgba(192, 106, 106, 0.15);
+                      color: #c06a6a;
+
+                      &:hover {
+                        border-color: #c06a6a;
+                        background: rgba(192, 106, 106, 0.25);
                       }
-                    }
-
-                    .doc-content {
-                      color: #d3b479;
-                      font-size: 0.9em;
-                      line-height: 1.4;
-                    }
-
-                    .doc-divider {
-                      height: 1px;
-                      background: #3a3a3f;
-                      margin: 12px 0;
-                    }
-
-                    .slide-enter-active, .slide-leave-active {
-                      transition: all 0.3s ease;
-                      max-height: 500px;
-                      overflow: hidden;
-                    }
-
-                    .slide-enter-from, .slide-leave-to {
-                      max-height: 0;
-                      opacity: 0;
-                      padding: 0 12px;
                     }
                   }
                 }
               }
             }
+
+            .empty-tip {
+              text-align: center;
+              padding: 20px;
+              color: #7a6a4a;
+              font-size: 16px;
+            }
           }
-        }
 
-        /* 用户消息居右 */
-        .user {
-          flex-direction: row-reverse;
-          margin-left: auto;
-        }
+          .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            gap: 20px;
+            border-top: 1px solid #3a3a3f;
 
-        /* 用户气泡 */
-        .user .message-bubble {
-          background: rgba(79, 79, 84, 0.9);
-          border-top-right-radius: 4px;
-        }
-        /* 系统气泡 */
-        .rag .message-bubble {
-          background: #333336;
-          border-top-left-radius: 4px;
-        }
+            .pagination-btn {
+              background: rgba(192, 170, 106, 0.1);
+              color: #d3b479;
+              border: 1px solid #c0aa6a33;
+              padding: 6px 12px;
+              border-radius: 4px;
+              cursor: pointer;
+              transition: all 0.2s;
 
-        /* 用户消息气泡箭头（居右） */
-        .user .message-bubble::after {
-          content: '';
-          position: absolute;
-          right: -8px;
-          top: 15px;
-          width: 0;
-          height: 0;
-          border: 8px solid transparent;
-          border-left-color: rgba(79, 79, 84, 0.9);
-          border-right: 0;
-        }
+              &:hover:not(:disabled) {
+                background: rgba(192, 170, 106, 0.2);
+                border-color: #c0aa6a;
+              }
 
-        /* 系统消息气泡箭头（居左） */
-        .rag .message-bubble::after {
-          content: '';
-          position: absolute;
-          left: -8px;
-          top: 15px;
-          width: 0;
-          height: 0;
-          border: 8px solid transparent;
-          border-right-color: #333336;
-          border-left: 0;
-        }
+              &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+              }
+            }
 
-        .loading-container {
-          display: flex;
-          justify-content: center;
-          gap: 8px;
-          padding: 20px;
-          .loading-dot {
-            width: 8px;
-            height: 8px;
-            background: #c0aa6a;
-            border-radius: 50%;
-            animation: pulse 1.4s infinite ease-in-out;
+            .page-info {
+              color: #a89c7c;
+              font-size: 14px;
+            }
           }
-        }
-
-        @keyframes pulse {
-          0%,
-          100% {
-            transform: scale(0.8);
-            opacity: 0.5;
-          }
-          50% {
-            transform: scale(1.2);
-            opacity: 1;
-          }
-        }
-
-        .empty-dialog {
-          text-align: center;
-          padding: 40px 20px;
-          color: #7a6a4a;
         }
       }
-      .dialog-input {
-        display: flex;
-        gap: 15px;
-        .input-text {
-          flex: 1;
-          background: rgba(28, 28, 31, 0.95);
-          border: 1px solid #3a3a3f;
-          border-radius: 25px;
-          padding: 15px 25px;
-          color: #c0aa6a;
-          font-size: 16px;
-        }
-        .btn-send {
-          width: 50px;
-          height: 50px;
-          font-family: 'Ma Shan Zheng', cursive;
-          color: #c0aa6a;
-          border-radius: 50%;
-          background: #2d2d32;
-          border: 1px solid #3a3a3f;
-          cursor: pointer;
-          transition: all 0.3s;
-          position: relative;
-          overflow: hidden;
-          &:hover {
-            background: #37373d;
-            border-color: #c0aa6a;
-          }
-          .icon-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            transition: opacity 0.3s ease;
-          }
 
-          .text-container {
-            font-size: 16px;
-            color: #d3b479;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            font-family: 'Ma Shan Zheng', cursive;
-          }
-
-          &:hover .icon-container {
-            opacity: 0;
-          }
-
-          &:hover .text-container {
-            opacity: 1;
-          }
-
-        }
-      }
       .footer {
         display: flex;
         flex-direction: row;
@@ -994,117 +715,4 @@ input, button {
     }
   }
 }
-
-/* 弹窗样式 */
-.xuan-window {
-  width: 300px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(18, 18, 20, 0.95);
-  border: 2px solid #c0aa6a;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 0 20px rgba(192, 170, 106, 0.2);
-  z-index: 999;
-  color: #c0aa6a;
-  font-family: 'Ma Shan Zheng', cursive;
-  font-size: 16px;
-
-  .xuan-title {
-    font-size: 24px;
-    color: #c0aa6a;
-    text-align: center;
-    margin-bottom: 20px;
-    letter-spacing: 2px;
-  }
-
-  .xuan-input {
-    background: rgba(28, 28, 31, 0.95);
-    border: 1px solid #3a3a3f;
-    border-radius: 4px;
-    padding: 10px;
-    color: #c0aa6a;
-    width: 90%;
-    margin: 10px 0;
-    font-family: 'Ma Shan Zheng', cursive;
-  }
-
-  .xuan-button-group {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-    .xuan-btn {
-      flex: 1;
-      padding: 8px 0;
-      border-radius: 8px;
-      background: rgba(40, 40, 45, 0.8);
-      border: 1px solid #3a3a3f;
-      color: #e7cc80;
-      cursor: pointer;
-      transition: all 0.3s;
-
-      &:hover {
-        border-color: #c0aa6a;
-        color: #c0aa6a;
-      }
-    }
-  }
-
-  .xuan-config-item {
-    margin: 15px 0;
-
-    .strategy-switch {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .xuan-switch-btn {
-      flex: 1;
-      padding: 8px;
-      border-radius: 8px;
-      background: rgba(40, 40, 45, 0.8);
-      border: 1px solid #3a3a3f;
-      color: #7a6a4a;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .xuan-switch-btn.active {
-      border-color: #c0aa6a;
-      color: #c0aa6a;
-      background: rgba(60, 60, 65, 0.9);
-    }
-
-    .xuan-number-input {
-      background: rgba(28, 28, 31, 0.95);
-      border: 1px solid #3a3a3f;
-      color: #c0aa6a;
-      padding: 8px;
-      width: 80px;
-      margin-left: 10px;
-    }
-
-    .xuan-slider {
-      width: 100%;
-      margin-top: 10px;
-      -webkit-appearance: none;
-      background: rgba(40, 40, 45, 0.8);
-      height: 4px;
-      border-radius: 2px;
-    }
-
-    .xuan-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      background: #c0aa6a;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-  }
-}
-
 </style>
