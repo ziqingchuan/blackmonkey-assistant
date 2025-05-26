@@ -556,8 +556,7 @@ button {
         z-index: 100;
         .overlay {
           background-size: cover;
-          background: url('src/assets/BlackMonkey/img_bg_introduce_4_b.png') no-repeat;
-          background-position: center;
+          background: url('src/assets/BlackMonkey/img_bg_introduce_4_b.png') no-repeat center;
           color: #d3b479;
           text-shadow: 3px 3px 2px #5d523c;
           position: relative;
@@ -583,12 +582,12 @@ button {
           }
 
           .overlay-left {
-            transform: translateX(-10%);
+            transform: translateX(0);
           }
 
           .overlay-right {
             right: 0;
-            transform: translateX(10%);
+            transform: translateX(0);
           }
         }
       }

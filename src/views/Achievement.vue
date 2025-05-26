@@ -63,10 +63,6 @@
                       :stroke-dasharray="`${achievedPercent * 3.39} 339`"
                       stroke="url(#progressGradient)"
                   />
-                  <!-- 百分比文字 -->
-                  <text x="50%" y="50%" class="progress-text" dy=".3em">
-                    {{ achievedPercent }}%
-                  </text>
                 </svg>
                 <div class="progress-stats">
                   破难 {{ achieved }}/{{ totalAchievements }}难
@@ -207,12 +203,16 @@ const visibleAchievements = computed(() =>
 );
 
 // 最近完成的成就
-const recentAchievement = computed(() => {
+const validAchievements = computed(() => {
   return achievements.value
-      .filter(a => a.achieved && a.unlock_time) // 筛选完成的成就
-      .sort((a, b) => new Date(b.unlock_time).getTime() - new Date(a.unlock_time).getTime())[0]; // 最近完成的一个
+      .filter(a => a.achieved && a.unlock_time) // 确保 unlock_time 存在
+      .map(a => ({ ...a, unlock_time: a.unlock_time! })); // 类型断言，确保 unlock_time 为 string
 });
 
+const recentAchievement = computed(() => {
+  return validAchievements.value
+      .sort((a, b) => new Date(b.unlock_time).getTime() - new Date(a.unlock_time).getTime())[0];
+});
 // 即将完成的成就
 const upcomingAchievement = computed(() => {
   return achievements.value
@@ -257,7 +257,7 @@ onMounted(async () => {
             });
       } else {
         steamUser.value.game.last_played = localStorage.getItem('last_played') || '';
-        steamUser.value.game.playtime_hours = localStorage.getItem('playtime_hours') || '';
+        steamUser.value.game.playtime_hours = Number(localStorage.getItem('playtime_hours') || '');
         steamUser.value.user.avatar = localStorage.getItem('avatar') || '';
         steamUser.value.user.name = localStorage.getItem('name') || '';
         await getUserAchievements()
@@ -273,7 +273,7 @@ onMounted(async () => {
 
     } else { // 直接获取本地存储的用户信息
       steamUser.value.game.last_played = localStorage.getItem('last_played') || '';
-      steamUser.value.game.playtime_hours = localStorage.getItem('playtime_hours') || '';
+      steamUser.value.game.playtime_hours = Number(localStorage.getItem('playtime_hours') || '');
       steamUser.value.user.avatar = localStorage.getItem('avatar') || '';
       steamUser.value.user.name = localStorage.getItem('name') || '';
       achievements.value = JSON.parse(localStorage.getItem('achievements') || '[]');
@@ -459,14 +459,6 @@ input, button {
                     stroke: url(#progressGradient);
                     transition: stroke-dasharray 0.5s ease;
                   }
-                }
-
-                text {
-                  fill: #d3b479;
-                  font-size: 20px;
-                  dominant-baseline: middle;
-                  text-anchor: middle;
-                  transform: rotate(90deg);
                 }
               }
 

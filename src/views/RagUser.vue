@@ -1,5 +1,4 @@
 <template>
-  <GlobalLoading :is-loading="isWaiting" />
   <CustomAlert ref="customAlert" />
   <div class="page-container">
     <!-- 玄铁侧栏 -->
@@ -24,7 +23,7 @@
           <span class="btn-origin-text">造化</span>
           <span class="btn-new-text">参数设置</span>
         </button>
-        <button class="btn" @click="logout(router)" title="退出">
+        <button class="btn" @click="logout" title="退出">
           <span class="btn-origin-text">归尘</span>
           <span class="btn-new-text">退出登录</span>
         </button>
@@ -71,7 +70,7 @@
 
           <!-- 成就按钮 -->
           <div class="header-right">
-            <button class="achieve-btn" @click="handleToAchievement">
+            <button class="achieve-btn" @click="toAcheivementPage">
             <span class="icon-container">
               <Achieve />
             </span>
@@ -96,7 +95,10 @@
               <!-- 消息内容 -->
               <div class="message-content-wrapper">
                 <div class="message-bubble">
-                  <div class="message-text">{{ content.text }}</div>
+                  <div class="message-text">
+                    {{ content.text }}
+                    <span v-if="index === streamingMessageIndex && content.role === 'RAG'" class="streaming-cursor">|</span>
+                  </div>
 
                   <!-- SourceDoc下拉区域 -->
                   <div v-if="content.role === 'RAG' && content.sourceDoc" class="source-doc-container">
@@ -253,11 +255,8 @@ import Jingu from "../assets/icons/Jingu.vue"; // 对话区域金箍头像
 import Achieve from "../assets/icons/Achieve.vue"; // 成就按钮图标
 import CustomAlert from "../components/CustomAlert.vue"; // 自定义弹窗组件
 import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
-import { getAnswer, type ConfigParams} from '../apis/rag.ts';
+import { type ConfigParams} from '../apis/rag.ts';
 import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../apis/dialog.ts';
-import {bindSteamAccount} from "../apis/steam.ts";
-import GlobalLoading from "../components/GlobalLoading.vue";
-import {logout, showAlert, customAlert} from "../utils/GlobalFunction.ts";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -268,15 +267,16 @@ const currentDialog = ref<Dialog>(); // 当前对话信息
 const inputValue = ref(''); // 用于绑定输入框
 const question = ref(''); // 记录用户输入的问题
 const isLoading = ref(false); // 记录加载状态
-const isWaiting = ref(false); // 记录等待状态
 const router = useRouter()
 const showCreateDialog = ref(false) // 控制新建对话弹窗的显示
 const showConfigDialog = ref(false) // 控制参数设置弹窗的显示
 const newDialogTitle = ref('') // 新建对话的标题
+const customAlert = ref(); // 获取弹窗组件的引用
 const isLogoHovered = ref(false); // 记录左上角logo是否被鼠标悬停
 const isDialogListVisible = ref(false); // 记录对话列表的显示状态
 const sourceDocVisibility = ref<Record<number, boolean>>({}); // 记录SourceDoc的显示状态（折叠与收起）
-const isBindSteam = ref(''); // Steam账号是否绑定
+const streamingMessageIndex = ref<number | null>(null); // 记录正在流式接收的消息索引
+const dialogContentRef = ref<HTMLElement>(); // 对话内容容器的引用
 const configParams = ref<ConfigParams>({ // 初始化参数配置信息
   searchStrategy: 0,
   resultCount: 5,
@@ -358,11 +358,13 @@ const formatDateTime = (isoString: string): string => {
 
 // 处理用户发送新问题
 const sendQuestion = async () => {
-  if (!inputValue.value.trim())return;
+  if (!inputValue.value.trim()) return;
+
   // 将输入框的值赋给 question
   question.value = inputValue.value;
   // 立即清空输入框
   inputValue.value = '';
+
   // 如果该用户没有任何对话记录，自动创建一个
   if (dialogList.value.length === 0) {
     try {
@@ -370,41 +372,216 @@ const sendQuestion = async () => {
     } catch (error) {
       showAlert("求问失败，请稍后再试", 0);
       console.error(error);
+      return;
     }
   }
-  if(currentDialog.value){
-    // 添加用户问题
-    displayContentList.value.push({
-      text: question.value,
-      role: 'USER'
-    });
-    try {
-      isLoading.value = true;
-      // 获取回答
-      console.log('参数信息：', configParams.value);
-      const answer = await getAnswer({
-        dialogId: currentDialog.value.id,
-        question: question.value,
-        searchStrategy: configParams.value.searchStrategy,
-        resultCount: configParams.value.resultCount,
-        similarity: configParams.value.similarity
-      });
-      // 塞到对话列表中
-      displayContentList.value.push({
-        text: answer.answer,
-        sourceDoc: answer.sourceDoc,
-        role: 'RAG'
-      });
-    } catch (error) {
-      showAlert("系统繁忙，请稍后再试", 0);
-      console.error(error);
-    } finally {
-      isLoading.value = false;
-      question.value = ''; // 清空问题内容
-    }
-  } else {
+
+  if (!currentDialog.value) {
     showAlert("请先选择或开启新的劫难", 0);
+    return;
   }
+
+  // 添加用户问题到显示列表
+  displayContentList.value.push({
+    text: question.value,
+    role: 'USER'
+  });
+
+  // 为RAG回答预留位置
+  const ragMessageIndex = displayContentList.value.length;
+  displayContentList.value.push({
+    text: '',
+    role: 'RAG',
+    sourceDoc: []
+  });
+
+  try {
+    isLoading.value = true;
+    streamingMessageIndex.value = ragMessageIndex; // 标记正在流式接收的消息
+
+    // 使用流式传输获取回答
+    await getStreamingAnswer({
+      dialogId: currentDialog.value.id,
+      question: question.value,
+      searchStrategy: configParams.value.searchStrategy,
+      resultCount: configParams.value.resultCount,
+      similarity: configParams.value.similarity
+    }, ragMessageIndex);
+
+  } catch (error) {
+    console.error('发送问题失败:', error);
+    showAlert("系统繁忙，请稍后再试", 0);
+    // 移除失败的RAG消息
+    if (displayContentList.value.length > ragMessageIndex) {
+      displayContentList.value.splice(ragMessageIndex, 1);
+    }
+  } finally {
+    isLoading.value = false;
+    streamingMessageIndex.value = null; // 清除流式接收标记
+    question.value = ''; // 清空问题内容
+  }
+};
+
+// 流式获取答案
+const getStreamingAnswer = async (params: any, messageIndex: number) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('未登录');
+  }
+
+  return new Promise<void>((resolve, reject) => {
+    // 构造URL
+    const url = `${window.location.origin}/api/rag/get`;
+
+    // 设置超时控制
+    const timeoutId = setTimeout(() => {
+      reject(new Error('请求超时，请稍后重试'));
+    }, 60000); // 60秒超时
+
+    // 使用fetch进行POST请求来建立SSE连接
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+      },
+      body: JSON.stringify(params)
+    }).then(response => {
+      if (!response.ok) {
+        return response.text().then(text => {
+          throw new Error(`HTTP ${response.status}: ${text || response.statusText}`);
+        });
+      }
+
+      if (!response.body) {
+        throw new Error('响应体为空');
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      const readStream = async () => {
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+              // 处理缓冲区中剩余的数据
+              if (buffer.trim()) {
+                processBuffer(buffer, messageIndex);
+              }
+              break;
+            }
+
+            buffer += decoder.decode(value, { stream: true });
+
+            // 处理完整的行
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || ''; // 保留不完整的行在缓冲区
+
+            for (const line of lines) {
+              if (line.trim() && line.startsWith('data: ')) {
+                try {
+                  const dataStr = line.slice(6).trim();
+                  if (dataStr) {
+                    const data = JSON.parse(dataStr);
+                    const shouldContinue = handleStreamMessage(data, messageIndex);
+                    if (!shouldContinue) {
+                      clearTimeout(timeoutId);
+                      resolve();
+                      return;
+                    }
+                  }
+                } catch (parseError) {
+                  console.warn('解析SSE数据失败:', parseError, 'Line:', line);
+                }
+              }
+            }
+          }
+          clearTimeout(timeoutId);
+          resolve();
+        } catch (streamError) {
+          console.error('读取流数据失败:', streamError);
+          clearTimeout(timeoutId);
+          reject(streamError);
+        } finally {
+          reader.releaseLock();
+        }
+      };
+
+      readStream();
+    }).catch(error => {
+      console.error('建立SSE连接失败:', error);
+      clearTimeout(timeoutId);
+      reject(error);
+    });
+  });
+};
+
+// 处理缓冲区数据
+const processBuffer = (buffer: string, messageIndex: number) => {
+  const lines = buffer.split('\n');
+  for (const line of lines) {
+    if (line.trim() && line.startsWith('data: ')) {
+      try {
+        const dataStr = line.slice(6).trim();
+        if (dataStr) {
+          const data = JSON.parse(dataStr);
+          handleStreamMessage(data, messageIndex);
+        }
+      } catch (parseError) {
+        console.warn('处理缓冲区数据失败:', parseError);
+      }
+    }
+  }
+};
+
+// 处理流式消息
+const handleStreamMessage = (data: any, messageIndex: number): boolean => {
+  const ragMessage = displayContentList.value[messageIndex];
+  if (!ragMessage) return true;
+
+  switch (data.type) {
+    case 'start':
+      console.log('开始接收流式响应');
+      break;
+
+    case 'documents':
+      // 设置参考文档
+      if (data.documents && Array.isArray(data.documents)) {
+        ragMessage.sourceDoc = data.documents;
+        console.log(`接收到 ${data.documents.length} 个参考文档`);
+      }
+      break;
+
+    case 'content':
+      // 逐步添加内容
+      if (data.content) {
+        ragMessage.text += data.content;
+        // 自动滚动到底部以显示最新内容
+        setTimeout(scrollToBottom, 10);
+      }
+      break;
+
+    case 'error':
+      console.error('流式响应错误:', data.error);
+      ragMessage.text = ragMessage.text || '抱歉，处理您的问题时出现了错误。';
+      showAlert(data.error || "系统繁忙，请稍后再试", 0);
+      streamingMessageIndex.value = null; // 清除流式状态
+      return false; // 遇到错误时停止处理
+
+    case 'done':
+      console.log('流式响应完成，最终回答长度:', ragMessage.text.length);
+      streamingMessageIndex.value = null; // 清除流式状态
+      return false; // 完成时停止处理
+
+    default:
+      console.warn('未知的消息类型:', data.type, data);
+  }
+
+  return true; // 继续处理后续消息
 };
 
 // 切换SourceDoc的显示状态
@@ -426,28 +603,33 @@ function showConfig() {
   showCreateDialog.value = false
   showConfigDialog.value = true
 }
-// 进入成就页面
-const handleToAchievement = async () => {
-  isBindSteam.value = localStorage.getItem('hasBindSteam');
-  console.log('isBindSteam:', isBindSteam.value);
-  if(isBindSteam.value === 'false') {
-    const steamId = await showAlert('请先输入您的SteamID，以便获取您的成就', 2);
-    if(steamId) {
-      try{
-        isWaiting.value = true;
-        const bindResult = await bindSteamAccount(steamId);
-          console.log('bindResult: ', bindResult);
-          localStorage.setItem('hasBindSteam', 'true');
-          await router.push('/achievement');
-      } catch(error) {
-        console.error(error);
-        showAlert('绑定Steam账号失败，请稍后再试', 0);
-      } finally {
-        isWaiting.value = false;
-      }
+
+//处理退出逻辑
+function logout() {
+  showAlert('天命人，确认要离开吗？', 1).then((res: any) => {
+    if(res) { // 点击确认
+      localStorage.removeItem('userProfile');
+      localStorage.removeItem('token');
+      router.push('/index');
     }
-  } else { // 已绑定Steam账号
-    await router.push('/achievement');
+  });
+}
+
+// 显示弹窗
+const showAlert = (message: string, type: number) => {
+  return customAlert.value.show(message, type);
+};
+
+// 进入成就页面
+const toAcheivementPage = () => {
+  router.push('/achievement');
+}
+
+// 自动滚动到底部
+const scrollToBottom = () => {
+  const dialogContent = document.querySelector('.dialog-content');
+  if (dialogContent) {
+    dialogContent.scrollTop = dialogContent.scrollHeight;
   }
 }
 
@@ -460,19 +642,19 @@ onMounted(async () => {
     if (localStorage.getItem('userProfile')) {
       currentUser.value = JSON.parse(localStorage.getItem('userProfile') || '');
       token.value = localStorage.getItem('token') || '';
-      //console.log('当前用户信息：', currentUser.value, token.value)
+      console.log('当前用户信息：', currentUser.value, token.value)
       // 获取全部的对话信息
       dialogList.value = await getAllHistory(currentUser.value);
-      //console.log('全部对话信息：', dialogList.value)
+      console.log('全部对话信息：', dialogList.value)
       if (dialogList.value.length > 0) {
         // 初始化默认的对话
         currentDialog.value = await getDialogDetail(dialogList.value[0].id);
-        //console.log('当前对话信息：', currentDialog.value)
+        console.log('当前对话信息：', currentDialog.value)
         displayContentList.value = convertToDisplayFormat(currentDialog.value.contentList); // 转换数据格式
       }
     } else {
       showAlert('天命人，请您先去登录，再来求问', 0).then(() => {
-          router.push('/account'); // 跳转到登录页面
+        router.push('/account'); // 跳转到登录页面
       });
     }
   } catch(error) {
@@ -930,6 +1112,23 @@ input, button {
           text-align: center;
           padding: 40px 20px;
           color: #7a6a4a;
+        }
+
+        // 流式输入光标样式
+        .streaming-cursor {
+          color: #c0aa6a;
+          font-weight: bold;
+          animation: blink 1s infinite;
+          margin-left: 2px;
+        }
+
+        @keyframes blink {
+          0%, 50% {
+            opacity: 1;
+          }
+          51%, 100% {
+            opacity: 0;
+          }
         }
       }
       .dialog-input {
