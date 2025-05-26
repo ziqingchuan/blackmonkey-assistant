@@ -302,7 +302,7 @@ input, button {
   background: linear-gradient(to right, #1a1a1d 0%, #0a0a0c 100%);
   font-family: 'Ma Shan Zheng', cursive;
   height: 100vh;
-  width: 100%;
+  overflow-x: auto;
   .sidebar {
     width: 80px;
     background: rgba(18, 18, 20, 0.95);
@@ -364,13 +364,10 @@ input, button {
     display: flex;
 
     .achievement-container {
-      width: 96%;
-      margin-left: 2%;
-      margin-top: 2%;
+      flex: 1;
       display: flex;
       flex-direction: column;
-      padding-bottom: 20px;
-
+      padding: 30px;
 
       .achievement-data {
         background-image: url('/wukong.png');
