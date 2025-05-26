@@ -1,4 +1,5 @@
 <template>
+  <GlobalLoading :is-loading="isWaiting" />
   <CustomAlert ref="customAlert" />
   <div class="page-container">
     <!-- 玄铁侧栏 -->
@@ -258,6 +259,7 @@ import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
 import { type ConfigParams} from '../apis/rag.ts';
 import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../apis/dialog.ts';
 import {bindSteamAccount} from "../apis/steam.ts";
+import GlobalLoading from "../components/GlobalLoading.vue";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -268,6 +270,7 @@ const currentDialog = ref<Dialog>(); // 当前对话信息
 const inputValue = ref(''); // 用于绑定输入框
 const question = ref(''); // 记录用户输入的问题
 const isLoading = ref(false); // 记录加载状态
+const isWaiting = ref(false); // 全局等待状态
 const router = useRouter()
 const showCreateDialog = ref(false) // 控制新建对话弹窗的显示
 const showConfigDialog = ref(false) // 控制参数设置弹窗的显示
@@ -626,9 +629,11 @@ const toAchievementPage = async () => {
   if(localStorage.getItem('hasBindSteam') === 'false') {
     const steamId = await showAlert('天命人，请输入SteamID,绑定您的Steam账号后再查看成就', 2);
     if(steamId) {
+      isWaiting.value = true;
       await bindSteamAccount(steamId)
           .then(response => {
             if(response) {
+              isWaiting.value = false;
               localStorage.setItem('hasBindSteam', 'true');
               router.push('/achievement');
             }
