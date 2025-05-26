@@ -244,16 +244,16 @@ onMounted(async () => {
         achievements.value = JSON.parse(localStorage.getItem('achievements') || '[]');
         await getSteamUserInfo()
             .then(userInfo => {
-              console.log('获取用户信息成功:', userInfo);
+              //console.log('获取用户信息成功:', userInfo);
               localStorage.setItem('last_played', userInfo.game.last_played);
               localStorage.setItem('playtime_hours', userInfo.game.playtime_hours);
               localStorage.setItem('avatar', userInfo.user.avatar);
               localStorage.setItem('name', userInfo.user.name);
               steamUser.value = userInfo;
-              console.log('本地存储用户信息:', steamUser.value);
+              //console.log('本地存储用户信息:', steamUser.value);
             })
             .catch(error => {
-              console.error('获取用户信息失败:', error.response?.data || error.message);
+              //console.error('获取用户信息失败:', error.response?.data || error.message);
             });
       } else {
         steamUser.value.game.last_played = localStorage.getItem('last_played') || '';
@@ -263,7 +263,7 @@ onMounted(async () => {
         await getUserAchievements()
             .then(response => {
               localStorage.setItem('achievements', JSON.stringify(response.achievements));
-              console.log('本地存储用户成就信息:', JSON.parse(localStorage.getItem('achievements') || '[]'));
+              //console.log('本地存储用户成就信息:', JSON.parse(localStorage.getItem('achievements') || '[]'));
               achievements.value = response.achievements;
             })
             .catch(error => {
@@ -277,8 +277,8 @@ onMounted(async () => {
       steamUser.value.user.avatar = localStorage.getItem('avatar') || '';
       steamUser.value.user.name = localStorage.getItem('name') || '';
       achievements.value = JSON.parse(localStorage.getItem('achievements') || '[]');
-      console.log('用户信息:', steamUser.value);
-      console.log('用户成就信息:', achievements.value);
+      //console.log('用户信息:', steamUser.value);
+      //console.log('用户成就信息:', achievements.value);
     }
 
   } catch(error) {

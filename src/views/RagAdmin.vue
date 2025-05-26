@@ -268,7 +268,6 @@ const deleteItem = async (item: WukongDBInfo) => {
     showAlert('删除失败，请稍后再试', 0);
   } finally {
     isWaiting.value = false;
-    console.log('结束删除，加载状态:', isWaiting.value);
   }
 };
 
@@ -290,10 +289,10 @@ const loadDataBase = (id: number) => {
 const fetchAllWukongData = async () => {
   try {
     const res = await getAllWukongData();
-    console.log('获取数据结果:', res);
+    //console.log('获取数据结果:', res);
     DBlist.value[0].database = res;
     currentDB.value = DBlist.value[0];
-    console.log('当前显示的数据库:', currentDB.value)
+    //console.log('当前显示的数据库:', currentDB.value)
   } catch (error) {
     console.error('数据获取失败:', error);
     showAlert('获取数据失败，请稍后再试', 0);
@@ -310,7 +309,7 @@ onMounted(async () => {
     if (localStorage.getItem('userProfile')) {
       currentUser.value = JSON.parse(localStorage.getItem('userProfile') || '');
       token.value = localStorage.getItem('token') || '';
-      console.log('当前用户信息：', currentUser.value, token.value)
+      //console.log('当前用户信息：', currentUser.value, token.value)
       // 默认加载wukong数据库
       await fetchAllWukongData();
     } else {

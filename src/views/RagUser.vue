@@ -70,7 +70,7 @@
 
           <!-- 成就按钮 -->
           <div class="header-right">
-            <button class="achieve-btn" @click="toAcheivementPage">
+            <button class="achieve-btn" @click="toAchievementPage">
             <span class="icon-container">
               <Achieve />
             </span>
@@ -101,7 +101,7 @@
                   </div>
 
                   <!-- SourceDoc下拉区域 -->
-                  <div v-if="content.role === 'RAG' && content.sourceDoc" class="source-doc-container">
+                  <div v-if="!streamingMessageIndex && content.role === 'RAG' && content.sourceDoc" class="source-doc-container">
                     <button
                         class="source-toggle"
                         @click="toggleSourceDoc(index)"
@@ -276,7 +276,6 @@ const isLogoHovered = ref(false); // 记录左上角logo是否被鼠标悬停
 const isDialogListVisible = ref(false); // 记录对话列表的显示状态
 const sourceDocVisibility = ref<Record<number, boolean>>({}); // 记录SourceDoc的显示状态（折叠与收起）
 const streamingMessageIndex = ref<number | null>(null); // 记录正在流式接收的消息索引
-const dialogContentRef = ref<HTMLElement>(); // 对话内容容器的引用
 const configParams = ref<ConfigParams>({ // 初始化参数配置信息
   searchStrategy: 0,
   resultCount: 5,
@@ -545,14 +544,14 @@ const handleStreamMessage = (data: any, messageIndex: number): boolean => {
 
   switch (data.type) {
     case 'start':
-      console.log('开始接收流式响应');
+      // console.log('开始接收流式响应');
       break;
 
     case 'documents':
       // 设置参考文档
       if (data.documents && Array.isArray(data.documents)) {
         ragMessage.sourceDoc = data.documents;
-        console.log(`接收到 ${data.documents.length} 个参考文档`);
+        //console.log(`接收到 ${data.documents.length} 个参考文档`);
       }
       break;
 
@@ -573,7 +572,7 @@ const handleStreamMessage = (data: any, messageIndex: number): boolean => {
       return false; // 遇到错误时停止处理
 
     case 'done':
-      console.log('流式响应完成，最终回答长度:', ragMessage.text.length);
+      // console.log('流式响应完成，最终回答长度:', ragMessage.text.length);
       streamingMessageIndex.value = null; // 清除流式状态
       return false; // 完成时停止处理
 
@@ -621,7 +620,7 @@ const showAlert = (message: string, type: number) => {
 };
 
 // 进入成就页面
-const toAcheivementPage = () => {
+const toAchievementPage = () => {
   router.push('/achievement');
 }
 
@@ -642,14 +641,14 @@ onMounted(async () => {
     if (localStorage.getItem('userProfile')) {
       currentUser.value = JSON.parse(localStorage.getItem('userProfile') || '');
       token.value = localStorage.getItem('token') || '';
-      console.log('当前用户信息：', currentUser.value, token.value)
+      // console.log('当前用户信息：', currentUser.value, token.value)
       // 获取全部的对话信息
       dialogList.value = await getAllHistory(currentUser.value);
-      console.log('全部对话信息：', dialogList.value)
+      // console.log('全部对话信息：', dialogList.value)
       if (dialogList.value.length > 0) {
         // 初始化默认的对话
         currentDialog.value = await getDialogDetail(dialogList.value[0].id);
-        console.log('当前对话信息：', currentDialog.value)
+        // console.log('当前对话信息：', currentDialog.value)
         displayContentList.value = convertToDisplayFormat(currentDialog.value.contentList); // 转换数据格式
       }
     } else {

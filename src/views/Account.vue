@@ -224,9 +224,9 @@ const handleLogin = async () => {
   try {
     const saltResponse = await getSalt(formData.value.email);
     const salt = saltResponse.data.salt;
-    console.log("获取到的salt:", salt);
+    //console.log("获取到的salt:", salt);
     const hashedPassword = CryptoJS.SHA256(`${formData.value.password}${salt}`).toString();
-    console.log("登录加密后的密码:", hashedPassword);
+    //console.log("登录加密后的密码:", hashedPassword);
 
     loginInfo.value = {
       email: formData.value.email,
@@ -234,7 +234,7 @@ const handleLogin = async () => {
     }
 
     await login(loginInfo.value).then((res) => {
-      console.log("登录返回信息:", res.data);
+      //console.log("登录返回信息:", res.data);
       const token = res.data.token.access_token;
       localStorage.setItem('token', token);
       localStorage.setItem('userProfile', JSON.stringify(res.data));
@@ -253,14 +253,14 @@ const handleLogin = async () => {
 const handleRegister = async () => {
   try {
     formData.value.salt = genSaltSync(10);
-    console.log("生成的salt:", formData.value.salt);
+    //console.log("生成的salt:", formData.value.salt);
     await register({
       email: formData.value.email,
       salt: formData.value.salt,
       password: CryptoJS.SHA256(`${formData.value.password}${formData.value.salt}`).toString(),
       validCode: formData.value.validCode
     }).then((res) => {
-      console.log("注册返回信息:", res.data);
+      //console.log("注册返回信息:", res.data);
     });
     showAlert('注册成功！请登录', 0);
     signIn();
