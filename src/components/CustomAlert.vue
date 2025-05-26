@@ -3,20 +3,28 @@
     <div class="custom-alert">
       <!-- 头部提示 -->
       <div class="custom-alert-header">
-        <RedCloudLeft/>
+        <RedCloudLeft />
         <div class="header-title">提示</div>
-        <RedCloudRight/>
+        <RedCloudRight />
       </div>
 
       <!-- 主内容 -->
       <div class="custom-alert-content">
-        {{ message }}
+        <div>{{ message }}</div>
+        <div v-if="type === 2" class="input-container">
+          <input
+              v-model="inputValue"
+              type="text"
+              class="custom-input"
+              placeholder="请输入内容"
+          />
+        </div>
       </div>
 
       <!-- 底部按钮 -->
       <div class="custom-alert-footer">
         <button
-            v-if="type === 1"
+            v-if="type === 1 || type === 2"
             class="custom-alert-button cancel-button"
             @click="handleCancel"
         >
@@ -41,14 +49,23 @@ import { ref } from 'vue';
 import RedCloudLeft from "../assets/icons/Clouds/RedCloud-Left.vue";
 import RedCloudRight from "../assets/icons/Clouds/RedCloud-Right.vue";
 
+// 弹窗相关状态
 const isVisible = ref(false);
 const message = ref('');
-const type = ref(0); // 0：普通弹窗，1：带取消按钮弹窗
-const resolvePromise = ref<((value: boolean) => void) | null>(null);
+const type = ref(0); // 0: 普通弹窗, 1: 带取消按钮弹窗, 2: 带输入框弹窗
+const inputValue = ref(''); // 用户输入框内容
+const resolvePromise = ref<((value: string | boolean) => void) | null>(null);
 
-const show = (msg: string, alertType: number = 0): Promise<boolean> => {
+/**
+ * 显示弹窗
+ * @param msg - 提示信息
+ * @param alertType - 弹窗类型 (0: 普通, 1: 带取消按钮, 2: 带输入框)
+ * @returns Promise<boolean | string> - 确认返回 true (type 0/1) 或输入框内容 (type 2)，取消返回 false
+ */
+const show = (msg: string, alertType: number = 0): Promise<boolean | string> => {
   message.value = msg;
   type.value = alertType;
+  inputValue.value = ''; // 清空输入框内容
   isVisible.value = true;
 
   return new Promise((resolve) => {
@@ -56,20 +73,24 @@ const show = (msg: string, alertType: number = 0): Promise<boolean> => {
   });
 };
 
+// 确认按钮回调
 const handleConfirm = () => {
   isVisible.value = false;
   if (resolvePromise.value) {
-    resolvePromise.value(true);
+    const result = type.value === 2 ? inputValue.value : true;
+    resolvePromise.value(result); // 返回输入框内容或 true
   }
 };
 
+// 取消按钮回调
 const handleCancel = () => {
   isVisible.value = false;
   if (resolvePromise.value) {
-    resolvePromise.value(false);
+    resolvePromise.value(false); // 返回 false
   }
 };
 
+// 暴露方法供外部调用
 defineExpose({ show });
 </script>
 
@@ -125,12 +146,34 @@ defineExpose({ show });
     .custom-alert-content {
       flex: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
       font-size: 18px;
       padding: 30px 30px 0;
       line-height: 1.6;
+
+      .input-container {
+        margin-top: 20px;
+
+        .custom-input {
+          width: 96%;
+          padding: 8px;
+          font-size: 16px;
+          border: 1px solid #e7cc80;
+          border-radius: 6px;
+          background: rgba(40, 40, 45, 0.8);
+          color: #e7cc80;
+          font-family: 'Ma Shan Zheng', cursive;
+          outline: none;
+          transition: border-color 0.3s;
+
+          &:focus {
+            border-color: #c0aa6a;
+          }
+        }
+      }
     }
 
     .custom-alert-footer {

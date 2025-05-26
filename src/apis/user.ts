@@ -1,5 +1,5 @@
 // ===== 用户认证模块 =====
-import {axios} from '../utils/request'
+import {axios} from '../utils/request.ts'
 import { API_MODULE } from './index.ts'
 export interface RegisterInfo {
     email: string;

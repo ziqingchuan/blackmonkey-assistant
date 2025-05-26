@@ -1,5 +1,5 @@
 // ===== RAG问答模块 =====
-import {axios} from '../utils/request'
+import {axios} from '../utils/request.ts'
 import {RAG_MODULE} from "./index.ts";
 
 export interface QueryInfo {

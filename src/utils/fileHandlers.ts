@@ -70,10 +70,15 @@ export const FileHandler = {
             }
 
             // 返回提取的文本内容，按行拼接并去除空行
-            return textContent
+            const res = textContent
                 .map(line => line.trim()) // 去除每行的首尾空格
                 .filter(line => line.length > 0) // 过滤掉空行
             ;
+            let resStr = '';
+            for (let i = 0; i < res.length; i++) {
+                resStr += res[i];
+            }
+            return resStr;
         } catch (error) {
             console.error('PDF 解析失败:', error);
             return '无法解析 PDF 文件，请检查文件内容！';

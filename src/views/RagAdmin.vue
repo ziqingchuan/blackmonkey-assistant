@@ -29,7 +29,7 @@
           <span class="btn-origin-text">纂天</span>
           <span class="btn-new-text">上传数据</span>
         </button>
-        <button class="btn" @click="logout" title="退出">
+        <button class="btn" @click="logout(router)" title="退出">
           <span class="btn-origin-text">归尘</span>
           <span class="btn-new-text">退出登录</span>
         </button>
@@ -172,7 +172,7 @@ import EditWukongDataForm from "../components/EditWukongDataForm.vue";
 import AddWukongDataForm from "../components/AddWukongDataForm.vue";
 import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
 import type { WukongDBInfo, DataBase, insertWukongDBInfo } from "../apis/database.ts";
-
+import {logout, showAlert, customAlert} from "../utils/GlobalFunction.ts";
 // ==================== 模拟数据相关功能导入 ==========
 import { getAllWukongData, insertWukongData, deleteWukongData, updateWukongData } from '../mocks/ragAdmin.ts';
 
@@ -182,7 +182,6 @@ const token = ref(''); // 用户登录token
 const currentDB = ref<DataBase>(); // 当前操纵的数据库
 const isWaiting = ref(false); // 记录加载状态
 const router = useRouter()
-const customAlert = ref(); // 获取弹窗组件的引用
 const isLogoHovered = ref(false); // 记录展开目录图标是否被鼠标悬停
 const isDBListVisible = ref(false); // 记录数据库列表的显示状态
 const wukongDB = ref<WukongDBInfo[]>([]); // 用于存储wukong数据库信息，后续会添加其他xxxDB
@@ -288,22 +287,6 @@ const loadDataBase = (id: number) => {
   }
 };
 
-//处理退出逻辑
-function logout() {
-  showAlert('天命人，确认要离开吗？', 1).then((res: any) => {
-    if(res) { // 点击确认
-      localStorage.removeItem('userProfile');
-      localStorage.removeItem('token');
-      router.push('/index');
-    }
-  });
-}
-
-// 显示弹窗
-const showAlert = (message: string, type: number) => {
-  return customAlert.value.show(message, type);
-};
-
 const fetchAllWukongData = async () => {
   try {
     const res = await getAllWukongData();
@@ -335,6 +318,7 @@ onMounted(async () => {
         router.push('/account'); // 跳转到登录页面
       });
     }
+
   } catch(error) {
     console.error(error);
   } finally {

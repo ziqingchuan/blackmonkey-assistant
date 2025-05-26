@@ -130,6 +130,7 @@
 import {ref, onBeforeUnmount, onMounted} from 'vue';
 import { useRouter } from 'vue-router';
 import { login, register, getSalt, getValidCode, type RegisterInfo, type LoginInfo } from '../apis/user';
+import {showAlert, customAlert} from "../utils/GlobalFunction.ts";
 import CryptoJS from 'crypto-js'; // 用来加密的库
 import { genSaltSync } from 'bcryptjs';// 用来生成盐值的库
 import CustomAlert from "../components/CustomAlert.vue";
@@ -147,7 +148,6 @@ const isEmailValid = ref(false);
 const isCountingDown = ref(false);
 const countdown = ref(0);
 let countdownTimer: number | null = null;
-const customAlert = ref(); // 获取弹窗组件的引用
 const formData = ref<RegisterInfo>({
   email: '',
   validCode: '',
@@ -189,10 +189,6 @@ const getHeaderText = () => {
   return currentHeaderText.value;
 };
 
-// 显示弹窗
-const showAlert = (message: string, type: number) => {
-  customAlert.value.show(message, type);
-};
 
 const sendValidCode = async () => {
   if (!isEmailValid.value) return;
@@ -224,6 +220,7 @@ const startCountdown = () => {
 };
 
 const handleLogin = async () => {
+  localStorage.setItem("hasBindSteam", 'false');
   try {
     const saltResponse = await getSalt(formData.value.email);
     const salt = saltResponse.data.salt;
@@ -283,6 +280,7 @@ const signIn = () => {
 
 onMounted(() => {
   // 获取随机文案
+  localStorage.setItem("hasBindSteam", 'false');
   getHeaderText();
 })
 
@@ -559,6 +557,7 @@ button {
         .overlay {
           background-size: cover;
           background: url('src/assets/BlackMonkey/img_bg_introduce_4_b.png') no-repeat;
+          background-position: center;
           color: #d3b479;
           text-shadow: 3px 3px 2px #5d523c;
           position: relative;

@@ -146,6 +146,7 @@ function setupFloatAnimation() {
 }
 // 组件挂载时获取一次随机文案
 onMounted(() => {
+  localStorage.setItem("hasBindSteam", 'false');
   getHeaderText();
   setupFloatAnimation()
 });

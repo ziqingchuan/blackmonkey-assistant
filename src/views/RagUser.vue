@@ -1,4 +1,5 @@
 <template>
+  <GlobalLoading :is-loading="isWaiting" />
   <CustomAlert ref="customAlert" />
   <div class="page-container">
     <!-- 玄铁侧栏 -->
@@ -23,7 +24,7 @@
           <span class="btn-origin-text">造化</span>
           <span class="btn-new-text">参数设置</span>
         </button>
-        <button class="btn" @click="logout" title="退出">
+        <button class="btn" @click="logout(router)" title="退出">
           <span class="btn-origin-text">归尘</span>
           <span class="btn-new-text">退出登录</span>
         </button>
@@ -70,7 +71,7 @@
 
           <!-- 成就按钮 -->
           <div class="header-right">
-            <button class="achieve-btn" @click="toAcheivementPage">
+            <button class="achieve-btn" @click="handleToAchievement">
             <span class="icon-container">
               <Achieve />
             </span>
@@ -254,6 +255,9 @@ import CustomAlert from "../components/CustomAlert.vue"; // 自定义弹窗组�
 import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
 import { getAnswer, type ConfigParams} from '../apis/rag.ts';
 import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../apis/dialog.ts';
+import {bindSteamAccount} from "../apis/steam.ts";
+import GlobalLoading from "../components/GlobalLoading.vue";
+import {logout, showAlert, customAlert} from "../utils/GlobalFunction.ts";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -264,14 +268,15 @@ const currentDialog = ref<Dialog>(); // 当前对话信息
 const inputValue = ref(''); // 用于绑定输入框
 const question = ref(''); // 记录用户输入的问题
 const isLoading = ref(false); // 记录加载状态
+const isWaiting = ref(false); // 记录等待状态
 const router = useRouter()
 const showCreateDialog = ref(false) // 控制新建对话弹窗的显示
 const showConfigDialog = ref(false) // 控制参数设置弹窗的显示
 const newDialogTitle = ref('') // 新建对话的标题
-const customAlert = ref(); // 获取弹窗组件的引用
 const isLogoHovered = ref(false); // 记录左上角logo是否被鼠标悬停
 const isDialogListVisible = ref(false); // 记录对话列表的显示状态
 const sourceDocVisibility = ref<Record<number, boolean>>({}); // 记录SourceDoc的显示状态（折叠与收起）
+const isBindSteam = ref(''); // Steam账号是否绑定
 const configParams = ref<ConfigParams>({ // 初始化参数配置信息
   searchStrategy: 0,
   resultCount: 5,
@@ -421,26 +426,29 @@ function showConfig() {
   showCreateDialog.value = false
   showConfigDialog.value = true
 }
-
-//处理退出逻辑
-function logout() {
-  showAlert('天命人，确认要离开吗？', 1).then((res: any) => {
-    if(res) { // 点击确认
-      localStorage.removeItem('userProfile');
-      localStorage.removeItem('token');
-      router.push('/index');
-    }
-  });
-}
-
-// 显示弹窗
-const showAlert = (message: string, type: number) => {
-  return customAlert.value.show(message, type);
-};
-
 // 进入成就页面
-const toAcheivementPage = () => {
-  router.push('/achievement');
+const handleToAchievement = async () => {
+  isBindSteam.value = localStorage.getItem('hasBindSteam');
+  console.log('isBindSteam:', isBindSteam.value);
+  if(isBindSteam.value === 'false') {
+    const steamId = await showAlert('请先输入您的SteamID，以便获取您的成就', 2);
+    if(steamId) {
+      try{
+        isWaiting.value = true;
+        const bindResult = await bindSteamAccount(steamId);
+          console.log('bindResult: ', bindResult);
+          localStorage.setItem('hasBindSteam', 'true');
+          await router.push('/achievement');
+      } catch(error) {
+        console.error(error);
+        showAlert('绑定Steam账号失败，请稍后再试', 0);
+      } finally {
+        isWaiting.value = false;
+      }
+    }
+  } else { // 已绑定Steam账号
+    await router.push('/achievement');
+  }
 }
 
 // 界面初始化加载
@@ -452,14 +460,14 @@ onMounted(async () => {
     if (localStorage.getItem('userProfile')) {
       currentUser.value = JSON.parse(localStorage.getItem('userProfile') || '');
       token.value = localStorage.getItem('token') || '';
-      console.log('当前用户信息：', currentUser.value, token.value)
+      //console.log('当前用户信息：', currentUser.value, token.value)
       // 获取全部的对话信息
       dialogList.value = await getAllHistory(currentUser.value);
-      console.log('全部对话信息：', dialogList.value)
+      //console.log('全部对话信息：', dialogList.value)
       if (dialogList.value.length > 0) {
         // 初始化默认的对话
         currentDialog.value = await getDialogDetail(dialogList.value[0].id);
-        console.log('当前对话信息：', currentDialog.value)
+        //console.log('当前对话信息：', currentDialog.value)
         displayContentList.value = convertToDisplayFormat(currentDialog.value.contentList); // 转换数据格式
       }
     } else {

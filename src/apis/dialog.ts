@@ -1,5 +1,5 @@
 // ===== 对话管理模块 =====
-import {axios} from '../utils/request'
+import {axios} from '../utils/request.ts'
 import { DIALOG_MODULE } from './index.ts'
 import type { LoginInfo } from './user.ts'
 import type { SourceDoc } from './rag.ts'
