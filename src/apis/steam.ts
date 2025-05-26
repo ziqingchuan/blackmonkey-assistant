@@ -9,7 +9,7 @@ export interface Achievement {
     description: string; // 描述
     icon: string; // 已达成的成就图标
     icon_gray: string; // 未达成的成就图标
-    completion_percentage: number; // 成就完成百分比
+    completion_percentage: number; // 全体用户达成的百分比
     achieved: boolean; // 是否达成（控制显示icon还是iconGray的）
     unlock_time?: string; // 成就解锁时间（可选）
 }

@@ -69,41 +69,6 @@
                 </div>
               </div>
             </div>
-            <div class="user-achievement-summary">
-              <!-- 最近完成的一个成就 -->
-              <div v-if="recentAchievement" class="recent-achievement">
-                <h3>最近完成</h3>
-                <img
-                    :src="recentAchievement.icon"
-                    alt="最近完成的成就图标"
-                    class="achievement-icon"
-                />
-                <div class="achievement-details">
-                  <h4 class="achievement-title">{{ recentAchievement.name }}</h4>
-                  <p class="achievement-desc">{{ recentAchievement.description }}</p>
-                  <p class="unlock-time">
-                    完成时间：{{ recentAchievement.unlock_time }}
-                  </p>
-                </div>
-              </div>
-
-              <!-- 即将完成的一个成就 -->
-              <div v-if="upcomingAchievement" class="upcoming-achievement">
-                <h3>即将完成</h3>
-                <img
-                    :src="upcomingAchievement.icon"
-                    alt="即将完成的成就图标"
-                    class="achievement-icon"
-                />
-                <div class="achievement-details">
-                  <h4 class="achievement-title">{{ upcomingAchievement.name }}</h4>
-                  <p class="achievement-desc">{{ upcomingAchievement.description }}</p>
-                  <p class="completion-percentage">
-                    当前进度：{{ upcomingAchievement.completion_percentage }}%
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
           <div class="achievement-title">
             <h1> 《 八十一难 》</h1>
@@ -135,7 +100,7 @@
                     class="bar-progress"
                     :style="{ width: achievement.completion_percentage + '%' }"
                 ></div>
-                <span class="percentage">{{ achievement.completion_percentage }}%</span>
+                <span class="percentage">{{ achievement.completion_percentage }}%的玩家获得了该成就</span>
               </div>
             </div>
           </div>
@@ -202,23 +167,6 @@ const visibleAchievements = computed(() =>
         : achievements.value.slice(0, 9)
 );
 
-// 最近完成的成就
-const validAchievements = computed(() => {
-  return achievements.value
-      .filter(a => a.achieved && a.unlock_time) // 确保 unlock_time 存在
-      .map(a => ({ ...a, unlock_time: a.unlock_time! })); // 类型断言，确保 unlock_time 为 string
-});
-
-const recentAchievement = computed(() => {
-  return validAchievements.value
-      .sort((a, b) => new Date(b.unlock_time).getTime() - new Date(a.unlock_time).getTime())[0];
-});
-// 即将完成的成就
-const upcomingAchievement = computed(() => {
-  return achievements.value
-      .sort((a, b) => b.completion_percentage - a.completion_percentage)[0]; // 进度最大的一个
-});
-
 // 切换视图
 const toggleAchievementsView = () => {
   showAllAchievements.value = !showAllAchievements.value;
@@ -253,7 +201,7 @@ onMounted(async () => {
               //console.log('本地存储用户信息:', steamUser.value);
             })
             .catch(error => {
-              //console.error('获取用户信息失败:', error.response?.data || error.message);
+              console.error('获取用户信息失败:', error.response?.data || error.message);
             });
       } else {
         steamUser.value.game.last_played = localStorage.getItem('last_played') || '';
@@ -384,132 +332,78 @@ input, button {
         border: 1px solid #3a3a3f;
         border-radius: 8px;
         padding: 20px;
-        .user-container {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 20px;
-          .user-info {
-            flex: 1;
-            height: 180px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 30px;
-            background: rgba(40, 40, 45, 0.8);
-            border-radius: 20px;
+        .user-info {
+          flex: 1;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 30px;
+          padding: 30px;
+          background: rgba(40, 40, 45, 0.8);
+          border-radius: 20px;
 
-            .avatar-section {
-              display: flex;
-              align-items: center;
-              gap: 20px;
-
-              .user-avatar {
-                width: 120px;
-                height: 120px;
-                border-radius: 30%;
-                border: 2px solid #d3b479;
-              }
-
-              .user-meta {
-                .user-name {
-                  color: #d3b479;
-                  font-size: 32px;
-                  margin: 0;
-                }
-
-                .play-time, .last-played {
-                  color: #a89c7c;
-                  margin-bottom: 5px;
-                  margin-top: 5px;
-                  font-size: 18px;
-
-                  .label {
-                    color: #c0aa6a;
-                  }
-                }
-              }
-            }
-
-            .progress-ring {
-              position: relative;
-              display: flex;
-              flex-direction: row;
-              justify-content: end;
-              align-items: center;
-
-              svg {
-                position: absolute;
-                transform: rotate(-90deg);
-
-                circle {
-                  fill: none;
-                  stroke-width: 10;
-                  stroke-linecap: round;
-
-                  &.ring-bg {
-                    stroke: #3a3a3f;
-                  }
-
-                  &.ring-progress {
-                    stroke: url(#progressGradient);
-                    transition: stroke-dasharray 0.5s ease;
-                  }
-                }
-              }
-
-              .progress-stats {
-                margin-right: 150px;
-                color: #c0aa6a;
-                font-size: 24px;
-              }
-            }
-          }
-          .user-achievement-summary {
+          .avatar-section {
             display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 20px;
-            background: rgba(50, 50, 55, 0.6);
-            border-radius: 20px;
-            padding: 20px;
-            .recent-achievement,.upcoming-achievement {
-              display: flex;
-              flex-direction: row;
-              justify-content: start;
-              align-items: center;
-              gap: 15px;
-              h3 {
-                font-size: 20px;
-                color: #e7cc80;
-                margin-bottom: 10px;
+
+            .user-avatar {
+              width: 120px;
+              height: 120px;
+              border-radius: 30%;
+              border: 2px solid #d3b479;
+            }
+
+            .user-meta {
+              .user-name {
+                color: #d3b479;
+                font-size: 32px;
+                margin: 0;
               }
 
-              .achievement-icon {
-                width: 64px;
-                height: 64px;
-                border-radius: 8px;
-                margin-bottom: 10px;
-              }
+              .play-time, .last-played {
+                color: #a89c7c;
+                margin-bottom: 5px;
+                margin-top: 5px;
+                font-size: 18px;
 
-              .achievement-details {
-                .achievement-title {
-                  font-size: 18px;
-                  color: #d3b479;
-                  margin: 0 0 5px;
-                }
-
-                .achievement-desc {
-                  font-size: 16px;
-                  color: #a89c7c;
-                  margin: 0 0 5px;
-                }
-
-                .unlock-time, .completion-percentage {
-                  font-size: 14px;
+                .label {
                   color: #c0aa6a;
                 }
               }
+            }
+          }
+
+          .progress-ring {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: end;
+            align-items: center;
+
+            svg {
+              position: absolute;
+              transform: rotate(-90deg);
+
+              circle {
+                fill: none;
+                stroke-width: 10;
+                stroke-linecap: round;
+
+                &.ring-bg {
+                  stroke: #3a3a3f;
+                }
+
+                &.ring-progress {
+                  stroke: url(#progressGradient);
+                  transition: stroke-dasharray 0.5s ease;
+                }
+              }
+            }
+
+            .progress-stats {
+              margin-right: 150px;
+              color: #c0aa6a;
+              font-size: 24px;
             }
           }
         }
@@ -600,7 +494,7 @@ input, button {
 
               .percentage {
                 color: #c0aa6a;
-                font-size: 16px;
+                font-size: 12px;
               }
             }
           }
