@@ -158,8 +158,8 @@
 
 </template>
 <script setup lang="ts">
-import {ref, onMounted, computed} from 'vue';
-import { useRouter } from 'vue-router';
+import {computed, onMounted, ref} from 'vue';
+import {useRouter} from 'vue-router';
 import Logo from '../assets/icons/Logo.vue'; // 左上角悟空logo
 import CloudUnderLogo from "../assets/icons/Clouds/Cloud-under-logo.vue"; // 左上角logo下方祥云
 import RedCloudLeft from "../assets/icons/Clouds/RedCloud-Left.vue";
@@ -171,10 +171,10 @@ import GlobalLoading from '../components/GlobalLoading.vue'; // 全局加载组�
 import EditWukongDataForm from "../components/EditWukongDataForm.vue";
 import AddWukongDataForm from "../components/AddWukongDataForm.vue";
 import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
-import type { WukongDBInfo, DataBase, insertWukongDBInfo } from "../apis/database.ts";
-import {logout, showAlert, customAlert} from "../utils/GlobalFunction.ts";
+import type {DataBase, InsertWukongDBInfo, WukongDBInfo} from "../apis/database.ts";
+import {customAlert, logout, showAlert} from "../utils/GlobalFunction.ts";
 // ==================== 模拟数据相关功能导入 ==========
-import { getAllWukongData, insertWukongData, deleteWukongData, updateWukongData } from '../mocks/ragAdmin.ts';
+import {deleteWukongData, getAllWukongData, insertWukongData, updateWukongData} from '../mocks/ragAdmin.ts';
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -192,7 +192,7 @@ const DBlist = ref<DataBase[]>([
   {
     id: 0,
     name: 'wukong',
-    database: wukongDB
+    database: wukongDB.value
   },
   {
     id: 1,
@@ -238,7 +238,7 @@ const handleUpdate = async (data: WukongDBInfo) => {
 };
 
 // 新增wukong数据库内容
-const handleInsert = async (data: insertWukongDBInfo) => {
+const handleInsert = async (data: InsertWukongDBInfo) => {
   try {
     isWaiting.value = true;
     await insertWukongData(data);
@@ -288,9 +288,8 @@ const loadDataBase = (id: number) => {
 
 const fetchAllWukongData = async () => {
   try {
-    const res = await getAllWukongData();
     //console.log('获取数据结果:', res);
-    DBlist.value[0].database = res;
+    DBlist.value[0].database = await getAllWukongData();
     currentDB.value = DBlist.value[0];
     //console.log('当前显示的数据库:', currentDB.value)
   } catch (error) {

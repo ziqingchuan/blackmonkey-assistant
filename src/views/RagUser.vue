@@ -257,6 +257,7 @@ import CustomAlert from "../components/CustomAlert.vue"; // 自定义弹窗组�
 import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
 import { type ConfigParams} from '../apis/rag.ts';
 import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../apis/dialog.ts';
+import {bindSteamAccount} from "../apis/steam.ts";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -620,8 +621,26 @@ const showAlert = (message: string, type: number) => {
 };
 
 // 进入成就页面
-const toAchievementPage = () => {
-  router.push('/achievement');
+const toAchievementPage = async () => {
+  console.log(localStorage.getItem('hasBindSteam'));
+  if(localStorage.getItem('hasBindSteam') === 'false') {
+    const steamId = await showAlert('天命人，请输入SteamID,绑定您的Steam账号后再查看成就', 2);
+    if(steamId) {
+      await bindSteamAccount(steamId)
+          .then(response => {
+            if(response) {
+              localStorage.setItem('hasBindSteam', 'true');
+              router.push('/achievement');
+            }
+          })
+          .catch(error => {
+            showAlert('绑定Steam账号失败，请稍后再试', 0);
+            console.error('获取成就信息失败:', error.response?.data || error.message);
+          });
+    }
+  } else { // 已经绑定了steam
+    await router.push('/achievement');
+  }
 }
 
 // 自动滚动到底部

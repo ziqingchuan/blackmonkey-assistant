@@ -1,4 +1,4 @@
-import  type { WukongDBInfo } from '../apis/database.ts'
+import  type { WukongDBInfo, InsertWukongDBInfo } from '../apis/database.ts'
 
 export const mockWukongDB = [
     {
@@ -164,7 +164,7 @@ export const getAllWukongData = (): Promise<WukongDBInfo[]> => {
 };
 
 // 插入数据
-export const insertWukongData = async (data: WukongDBInfo): Promise<number> => {
+export const insertWukongData = async (data: InsertWukongDBInfo): Promise<number> => {
     return new Promise((resolve) => {
         setTimeout(() => {
             const newPk = Math.max(...mockDB.map(item => item.pk)) + 1; // 生成新 pk

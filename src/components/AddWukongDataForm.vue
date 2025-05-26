@@ -43,6 +43,7 @@
               v-model="formData.source"
               class="ancient-input"
               placeholder="请填写例如：百度百科、知乎、游民星空等"
+              @keyup.enter="handleConfirm"
           >
         </div>
       </div>

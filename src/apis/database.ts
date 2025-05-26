@@ -11,7 +11,7 @@ export interface DataBase {
     database: WukongDBInfo[]; // 数据库信息, 后续会扩展其他类型的info
 }
 
-export interface insertWukongDBInfo {
+export interface InsertWukongDBInfo {
     text: string;
     source: string;
 }
