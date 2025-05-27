@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { FileHandler } from '../utils/fileHandlers.ts';
-import type { insertWukongDBInfo } from '../apis/database';
+import type { InsertWukongDBInfo } from '../apis/database';
 import CustomAlert from "./CustomAlert.vue";
 const customAlert = ref(); // 获取弹窗组件的引用
 const props = defineProps({
@@ -74,7 +74,7 @@ const showAlert = (message: string, type: number) => {
 
 const emit = defineEmits(['update:visible', 'confirm']);
 
-const formData = ref<insertWukongDBInfo>({
+const formData = ref<InsertWukongDBInfo>({
   text: '',
   source: ''
 });
