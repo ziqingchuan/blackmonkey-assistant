@@ -12,6 +12,7 @@ export function logout(router: any) {
             localStorage.removeItem('playtime_hours');
             localStorage.removeItem('avatar');
             localStorage.removeItem('name');
+            localStorage.removeItem('achievements');
             router.push('/index');
         }
     });

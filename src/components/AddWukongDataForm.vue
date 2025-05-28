@@ -34,7 +34,17 @@
               placeholder="上传的文件内容会自动解析并显示在此处..."
           ></textarea>
         </div>
-
+        <!-- 数据类别 -->
+        <div class="form-item">
+          <label>数据类别</label>
+          <input
+              type="text"
+              v-model="formData.category"
+              class="ancient-input"
+              placeholder="请填写例如：游戏背景、游戏奖项、游戏玩法等"
+              @keyup.enter="handleConfirm"
+          >
+        </div>
         <!-- 数据来源 -->
         <div class="form-item">
           <label>数据来源</label>
@@ -76,7 +86,8 @@ const emit = defineEmits(['update:visible', 'confirm']);
 
 const formData = ref<InsertWukongDBInfo>({
   text: '',
-  source: ''
+  source: '',
+  category: ''
 });
 
 const fileInput = ref<HTMLInputElement>();
@@ -109,7 +120,7 @@ const handleConfirm = () => {
 };
 
 const validateForm = () => {
-  if (!formData.value.text || !formData.value.source) {
+  if (!formData.value.text || !formData.value.source || !formData.value.category) {
     showAlert('请填写完整的内容!', 0);
     return false;
   }
@@ -117,7 +128,7 @@ const validateForm = () => {
 };
 
 const resetForm = () => {
-  formData.value = { text: '', source: '' };
+  formData.value = { text: '', source: '', category: '' };
   fileName.value = '';
   if (fileInput.value) fileInput.value.value = '';
 };

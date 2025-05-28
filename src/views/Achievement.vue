@@ -138,7 +138,7 @@
 
               <div v-if="achievementsAnalysis.lastAchievement" class="last-achievement">
                 <p>最近证道于 <span class="highlight">{{ achievementsAnalysis.lastAchievementTime }}</span>，</p>
-                <p>还记得那天，您挥动如意金箍棒，扫尽八荒妖氛，证得「<span class="achievement-name">{{ achievementsAnalysis.lastAchievement.name }}</span>」：</p>
+                <p>还记得那天，您挥动如意金箍棒，扫尽八荒妖氛，证得「<span class="achievement-name">{{ achievementsAnalysis.lastAchievement.name }}</span>」,</p>
                 <p class="achievement-desc">{{ achievementsAnalysis.lastAchievement.description }}</p>
               </div>
               <div v-else>
@@ -467,7 +467,7 @@ function initPieChart() {
       }
     ],
     color: [
-      '#e6b980', '#d3a063', '#c09056', '#a97e45',
+      '#e7cc80', '#d3a663', '#c09056', '#a97e45',
       '#946c38', '#7f5a2c', '#6a4820', '#553615'
     ]
   };
@@ -584,45 +584,37 @@ onMounted(async () => {
       });
     }
 
-    if(!localStorage.getItem('name') || !localStorage.getItem('achievements')) {
-      if(localStorage.getItem('achievements')) {
-        achievements.value = JSON.parse(localStorage.getItem('achievements') || '[]');
-        await getSteamUserInfo()
-            .then(userInfo => {
-              localStorage.setItem('last_played', userInfo.game.last_played);
-              localStorage.setItem('playtime_hours', userInfo.game.playtime_hours);
-              localStorage.setItem('avatar', userInfo.user.avatar);
-              localStorage.setItem('name', userInfo.user.name);
-              steamUser.value = userInfo;
-            })
-            .catch(error => {
-              console.error('获取用户信息失败:', error.response?.data || error.message);
-            });
-      } else {
-        steamUser.value.game.last_played = localStorage.getItem('last_played') || '';
-        steamUser.value.game.playtime_hours = Number(localStorage.getItem('playtime_hours') || '');
-        steamUser.value.user.avatar = localStorage.getItem('avatar') || '';
-        steamUser.value.user.name = localStorage.getItem('name') || '';
-        await getUserAchievements()
-            .then(response => {
-              localStorage.setItem('achievements', JSON.stringify(response.achievements));
-              achievements.value = response.achievements;
-            })
-            .catch(error => {
-              console.error('获取成就信息失败:', error.response?.data || error.message);
-            });
-      }
-
-    } else { // 直接获取本地存储的用户信息
+    if (localStorage.getItem('name') && localStorage.getItem('achievements')) { // 直接获取本地存储的用户信息
       steamUser.value.game.last_played = localStorage.getItem('last_played') || '';
       steamUser.value.game.playtime_hours = Number(localStorage.getItem('playtime_hours') || '');
       steamUser.value.user.avatar = localStorage.getItem('avatar') || '';
       steamUser.value.user.name = localStorage.getItem('name') || '';
       achievements.value = JSON.parse(localStorage.getItem('achievements') || '[]');
-      //console.log('用户信息:', steamUser.value);
-      //console.log('用户成就信息:', achievements.value);
+      console.log('用户信息:', steamUser.value);
+      console.log('用户成就信息:', achievements.value);
+    } else {
+      await getSteamUserInfo()
+          .then(userInfo => {
+            console.log('获取用户信息成功:', userInfo);
+            localStorage.setItem('last_played', userInfo.game.last_played);
+            localStorage.setItem('playtime_hours', userInfo.game.playtime_hours);
+            localStorage.setItem('avatar', userInfo.user.avatar);
+            localStorage.setItem('name', userInfo.user.name);
+            steamUser.value = userInfo;
+          })
+          .catch(error => {
+            console.error('获取用户信息失败:', error.response?.data || error.message);
+          });
+      await getUserAchievements()
+          .then(response => {
+            console.log('获取成就信息成功:', response.achievements);
+            localStorage.setItem('achievements', JSON.stringify(response.achievements));
+            achievements.value = response.achievements;
+          })
+          .catch(error => {
+            console.error('获取成就信息失败:', error.response?.data || error.message);
+          });
     }
-
     AnalyzeUserInfo();
     AnalyzeAchievementInfo();
     CalculateAchievementsTimeMap();
@@ -1008,9 +1000,7 @@ input, button {
             flex: 1;
             padding: 15px;
             text-align: center;
-            background: rgba(50, 50, 55, 0.6);
             border-radius: 10px;
-            border: 1px solid #3a3a3f;
             font-size: 20px;
 
             h3 {
@@ -1042,7 +1032,6 @@ input, button {
               color: #a89c7c;
               font-style: italic;
               padding-left: 20px;
-              border-left: 2px solid #d3b479;
               margin: 8px 0;
             }
 

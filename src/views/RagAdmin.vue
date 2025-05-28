@@ -173,8 +173,9 @@ import AddWukongDataForm from "../components/AddWukongDataForm.vue";
 import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
 import type {DataBase, InsertWukongDBInfo, WukongDBInfo} from "../apis/database.ts";
 import {customAlert, logout, showAlert} from "../utils/GlobalFunction.ts";
+import {deleteWukongData, getAllWukongData, insertWukongData, updateWukongData} from '../apis/database.ts';
 // ==================== 模拟数据相关功能导入 ==========
-import {deleteWukongData, getAllWukongData, insertWukongData, updateWukongData} from '../mocks/ragAdmin.ts';
+// import {deleteWukongData, getAllWukongData, insertWukongData, updateWukongData} from '../mocks/ragAdmin.ts';
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -194,11 +195,11 @@ const DBlist = ref<DataBase[]>([
     name: 'wukong',
     database: wukongDB.value
   },
-  {
-    id: 1,
-    name: 'wukong2',
-    database: []
-  },
+  // {
+  //   id: 1,
+  //   name: 'wukong2',
+  //   database: []
+  // },
 ])
 // 分页相关逻辑
 const currentPage = ref(1);

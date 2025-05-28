@@ -169,8 +169,8 @@ const sendQuestion = () => {
       justify-content: flex-end;
 
       .text {
-        background: rgba(40, 40, 45, 0.6);
-        border: 1px solid #3a3a3f;
+        background: rgba(84, 84, 91, 0.6);
+        border: 1px solid #909094;
         color: #a89c7c;
         margin-right: 15px;
         border-top-right-radius: 0;
