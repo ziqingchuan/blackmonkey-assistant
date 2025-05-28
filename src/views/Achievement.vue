@@ -607,9 +607,9 @@ onMounted(async () => {
           });
       await getUserAchievements()
           .then(response => {
-            console.log('获取成就信息成功:', response.achievements);
-            localStorage.setItem('achievements', JSON.stringify(response.achievements));
-            achievements.value = response.achievements;
+            console.log('获取成就信息成功:', response);
+            localStorage.setItem('achievements', JSON.stringify(response));
+            achievements.value = response;
           })
           .catch(error => {
             console.error('获取成就信息失败:', error.response?.data || error.message);

@@ -83,5 +83,5 @@ export const getUserAchievements = async (): Promise<any> => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
-    }).then(response => response.data);
+    }).then(response => response.data.achievements);
 };

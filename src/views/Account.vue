@@ -233,7 +233,7 @@ const handleLogin = async () => {
       password: hashedPassword
     }
 
-    await login(loginInfo.value).then((res) => {
+    await login(loginInfo.value).then((res: any) => {
       //console.log("登录返回信息:", res.data);
       const token = res.data.token.access_token;
       localStorage.setItem('token', token);
@@ -259,7 +259,7 @@ const handleRegister = async () => {
       salt: formData.value.salt,
       password: CryptoJS.SHA256(`${formData.value.password}${formData.value.salt}`).toString(),
       validCode: formData.value.validCode
-    }).then((res) => {
+    }).then(() => {
       //console.log("注册返回信息:", res.data);
     });
     showAlert('注册成功！请登录', 0);

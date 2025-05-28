@@ -627,7 +627,7 @@ const showAlert = (message: string, type: number) => {
 const toAchievementPage = async () => {
   console.log(localStorage.getItem('hasBindSteam'));
   if(localStorage.getItem('hasBindSteam') === 'false') {
-    const steamId = await showAlert('天命人，请输入SteamID,绑定您的Steam账号后再查看成就', 2);
+    const steamId = await showAlert('天命人，请输入SteamID后再查看成就', 2);
     if(steamId) {
       isWaiting.value = true;
       await bindSteamAccount(steamId)

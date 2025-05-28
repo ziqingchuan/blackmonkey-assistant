@@ -1,5 +1,4 @@
 import {ref} from "vue";
-import {useRouter} from "vue-router";
 
 export const customAlert = ref(); // 获取弹窗组件的引用
 export function logout(router: any) {
