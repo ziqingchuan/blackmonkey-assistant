@@ -29,6 +29,31 @@ export interface SteamUser {
     user: user;
 }
 
+export interface UserInfoAnalysis {
+    playerType: string; // 游戏玩家类型
+    lastTime: string; // 最后登录的时间
+    dayDiff: number; // 距离上次登录天数
+}
+
+export interface  AchievementsMonthMap {
+    month: string; // 时间（YYYY-MM）月份
+    dayAndCount: AchievementsDayMap[]; // 这一月每天达成的成就数量
+}
+
+export interface AchievementsDayMap {
+    day: string; // 时间（YYYY-MM-DD）
+    count: number; // 这一天达成的成就数量
+}
+
+export interface AchievementInfoAnalysis {
+    achievementCount: number; // 已达成的成就数量
+    firstAchievementTime: string; // 第一次达成成就的时间
+    firstAchievement: Achievement; // 第一次达成的成就
+    lastAchievementTime: string; // 最近一次达成成就的时间
+    lastAchievement: Achievement; // 最近一次达成的成就
+    achievingSpeed: number; // 平均每天达成成就的数量：achievementCount / (lastAchievementTime-firstAchievementTime), 单位：个/天
+}
+
 // ===== API 接口 =====
 
 // 绑定 Steam 账号 - 返回绑定结果
