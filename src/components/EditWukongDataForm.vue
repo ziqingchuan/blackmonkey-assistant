@@ -142,6 +142,12 @@ const handleConfirm = () => {
         height: 100px;
         resize: vertical;
         width: 96%;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+
+        &::-webkit-scrollbar {
+          display: none; /* Chrome/Safari/Opera */
+        }
       }
     }
   }

@@ -980,10 +980,11 @@ input, button {
         }
 
         .achievement-list {
-          width: 100%;
-          border-radius: 10px;
-          padding-top: 20px;
+          background: rgba(40, 40, 45, 0.8);
+          padding: 20px 50px;
+          border-radius: 20px;
           display: grid;
+          justify-self: center;
           grid-template-columns: repeat(3, 1fr); /* 三列布局 */
           gap: 30px; /* 列间距 */
 
