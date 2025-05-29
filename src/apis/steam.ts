@@ -7,6 +7,7 @@ export interface Achievement {
     api_name: string;
     name: string; // 成就名称
     description: string; // 描述
+    hidden: boolean; // 是否是隐藏成就
     icon: string; // 已达成的成就图标
     icon_gray: string; // 未达成的成就图标
     completion_percentage: number; // 全体用户达成的百分比
@@ -29,6 +30,13 @@ export interface SteamUser {
     user: user;
 }
 
+export interface CalendarDay {
+    date: number;
+    inMonth: boolean,
+    achievementCount: number,
+    fullDate: string;
+}
+
 export interface UserInfoAnalysis {
     playerType: string; // 游戏玩家类型
     lastTime: string; // 最后登录的时间
@@ -47,6 +55,12 @@ export interface AchievementsDayMap {
 
 export interface AchievementInfoAnalysis {
     achievementCount: number; // 已达成的成就数量
+    rareAchievementTotal: number; // 稀有成就数量（completion_percentage >= 20% && <= 50%）
+    superRareAchievementTotal: number; // 超稀有成就数量（completion_percentage < 20%）
+    achievedRareAchievementCount: number; // 已实现的稀有成就数量（completion_percentage >= 20% && <= 50%）
+    achievedSuperRareAchievementCount: number; // 已实现的超稀有成就数量（completion_percentage < 20%）
+    hiddenAchievementCount: number; // 隐藏成就数量
+    achievedHiddenAchievementCount: number; // 已实现的隐藏成就数量
     firstAchievementTime: string; // 第一次达成成就的时间
     firstAchievement: Achievement; // 第一次达成的成就
     lastAchievementTime: string; // 最近一次达成成就的时间

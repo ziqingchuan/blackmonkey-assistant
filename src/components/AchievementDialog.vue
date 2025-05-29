@@ -228,6 +228,11 @@ watch(messages, scrollToBottom, { deep: true });
     height: 350px;
     padding: 20px;
     overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    &::-webkit-scrollbar {
+      display: none; /* Chrome/Safari/Opera */
+    }
     background: #202021FF;
 
     .message {
@@ -330,8 +335,8 @@ watch(messages, scrollToBottom, { deep: true });
 
   .dot {
     display: inline-block;
-    width: 8px;
-    height: 8px;
+    width: 4px;
+    height: 4px;
     border-radius: 50%;
     background-color: #e7cc80;
     margin: 0 4px;

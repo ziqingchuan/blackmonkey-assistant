@@ -158,7 +158,7 @@ defineExpose({ show });
         margin-top: 20px;
 
         .custom-input {
-          width: 96%;
+          width: 300px;
           padding: 8px;
           font-size: 16px;
           border: 1px solid #e7cc80;

@@ -550,6 +550,11 @@ input, button {
           .table-body {
             max-height: calc(100% - 100px);
             overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+            &::-webkit-scrollbar {
+              display: none; /* Chrome/Safari/Opera */
+            }
 
             .data-row {
               display: flex;
