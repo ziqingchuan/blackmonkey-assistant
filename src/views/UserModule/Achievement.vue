@@ -320,12 +320,12 @@
 <script setup lang="ts">
 import {ref, onMounted, computed} from 'vue';
 import { useRouter } from 'vue-router';
-import Logo from '../assets/icons/Logo.vue';
-import CloudUnderLogo from "../assets/icons/Clouds/Cloud-under-logo.vue";
-import RedCloudLeft from "../assets/icons/Clouds/RedCloud-Left.vue";
-import RedCloudRight from "../assets/icons/Clouds/RedCloud-Right.vue";
-import CustomAlert from "../components/CustomAlert.vue";
-import GlobalLoading from "../components/GlobalLoading.vue";
+import Logo from '../../assets/icons/Logo.vue';
+import CloudUnderLogo from "../../assets/icons/Clouds/Cloud-under-logo.vue";
+import RedCloudLeft from "../../assets/icons/Clouds/RedCloud-Left.vue";
+import RedCloudRight from "../../assets/icons/Clouds/RedCloud-Right.vue";
+import CustomAlert from "../../components/Dialog/CustomAlert.vue";
+import GlobalLoading from "../../components/Dialog/GlobalLoading.vue";
 import {
   type SteamUser,
   type Achievement,
@@ -336,16 +336,16 @@ import {
   type AchievementInfoAnalysis,
   type AchievementsMonthMap,
   type AchievementsDayMap
-} from "../apis/steam.ts";
-import {logout, showAlert, customAlert} from "../utils/GlobalFunction.ts";
+} from "../../apis/steam.ts";
+import {logout, showAlert, customAlert} from "../../utils/GlobalFunction.ts";
 import { onBeforeUnmount, nextTick } from 'vue';
-import AchievementDialog from "../components/AchievementDialog.vue";
-import ScrollToTopIcon from "../assets/icons/ScrollToTop.vue";
-import ChatBot from "../assets/icons/ChatBot.vue";
+import AchievementDialog from "../../components/Dialog/AchievementDialog.vue";
+import ScrollToTopIcon from "../../assets/icons/ScrollToTop.vue";
+import ChatBot from "../../assets/icons/ChatBot.vue";
 import { setupFloatAnimation, formatDate, initLineChart, initPieChart, destroyLineChart, destroyPieChart,
-  lineChartData, pieChartData } from "../utils/GlobalFunction.ts";
-import ArrowLeftIcon from "../assets/icons/ArrowLeftIcon.vue";
-import ArrowRightIcon from "../assets/icons/ArrowRightIcon.vue";
+  lineChartData, pieChartData } from "../../utils/GlobalFunction.ts";
+import ArrowLeftIcon from "../../assets/icons/ArrowLeftIcon.vue";
+import ArrowRightIcon from "../../assets/icons/ArrowRightIcon.vue";
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
 const token = ref(''); // 用户登录token
@@ -858,7 +858,7 @@ input, button {
             display: grid;
             grid-template-columns: 1fr 1fr;
             padding: 50px;
-            background: rgba(40, 40, 45, 0.8) url("src/assets/BlackMonkey/img_bg_introduce_2_a.png") no-repeat center;
+            background: rgba(40, 40, 45, 0.8) url("../../assets/BlackMonkey/img_bg_introduce_2_a.png") no-repeat center;
             background-size: cover;
             border-radius: 20px;
 
@@ -947,7 +947,7 @@ input, button {
             }
           }
           .user-info-analysis {
-            background: rgba(40, 40, 45, 0.8) url("src/assets/BlackMonkey/img_bg_introduce_1_a.png") no-repeat right;
+            background: rgba(40, 40, 45, 0.8) url("../../assets/BlackMonkey/img_bg_introduce_1_a.png") no-repeat right;
             background-size: contain;
             width: 40%;
             gap: 30px;

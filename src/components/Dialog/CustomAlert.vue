@@ -46,8 +46,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import RedCloudLeft from "../assets/icons/Clouds/RedCloud-Left.vue";
-import RedCloudRight from "../assets/icons/Clouds/RedCloud-Right.vue";
+import RedCloudLeft from "../../assets/icons/Clouds/RedCloud-Left.vue";
+import RedCloudRight from "../../assets/icons/Clouds/RedCloud-Right.vue";
 
 // 弹窗相关状态
 const isVisible = ref(false);

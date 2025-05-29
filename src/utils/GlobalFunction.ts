@@ -1,6 +1,12 @@
+/**
+ * @Description: 全局函数
+ * @Author: Qingchuan Zi
+ */
 import {ref} from "vue";
 import * as echarts from 'echarts';
 export const customAlert = ref(); // 获取弹窗组件的引用
+
+// 退出登录
 export function logout(router: any) {
     showAlert('天命人，确认要离开吗？', 1).then((res: any) => {
         if(res) { // 点击确认

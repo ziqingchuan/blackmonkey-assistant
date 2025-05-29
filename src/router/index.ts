@@ -20,20 +20,32 @@ const routes = [
     {
         path: '/rag-user',
         name: 'rag-user',
-        component: () => import('../views/RagUser.vue'),
+        component: () => import('../views/UserModule/RagUser.vue'),
         meta: { title: '用户端' }
     },
     {
         path: '/rag-admin',
         name: 'rag-admin',
-        component: () => import('../views/RagAdmin.vue'),
+        component: () => import('../views/AdminModule/RagAdmin.vue'),
         meta: { title: '管理员端' }
     },
     {
         path: '/achievement',
         name: 'achievement',
-        component: () => import('../views/Achievement.vue'),
+        component: () => import('../views/UserModule/Achievement.vue'),
         meta: { title: '成就页面' }
+    },
+    {
+        path: '/play-methods',
+        name: 'play-methods',
+        component: () => import('../views/UserModule/PlayMethods.vue'),
+        meta: { title: '打法推荐' }
+    },
+    {
+        path: '/boss-tips',
+        name: 'boss-tips',
+        component: () => import('../views/UserModule/BossTips.vue'),
+        meta: { title: 'Boss攻略' }
     },
 ];
 

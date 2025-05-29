@@ -68,9 +68,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { FileHandler } from '../utils/fileHandlers.ts';
-import type { InsertWukongDBInfo } from '../apis/database';
-import CustomAlert from "./CustomAlert.vue";
+import { FileHandler } from '../../utils/fileHandlers.ts';
+import type { InsertWukongDBInfo } from '../../apis/database.ts';
+import CustomAlert from "../Dialog/CustomAlert.vue";
 const customAlert = ref(); // 获取弹窗组件的引用
 const props = defineProps({
   visible: Boolean,

@@ -69,13 +69,26 @@
             <span class="dialog-title">{{ currentDialog?.title || "一段新的劫难" }}</span>
           </div>
 
-          <!-- 成就按钮 -->
+          <!-- 右侧按钮 -->
           <div class="header-right">
+            <!-- 成就页面按钮 -->
             <button class="achieve-btn" @click="toAchievementPage">
             <span class="icon-container">
-              <Achieve />
+              <Medal />
             </span>
               <span class="text-container">功德成就</span>
+            </button>
+            <button class="achieve-btn" @click="toPlayMethodsPage">
+            <span class="icon-container">
+              <Strategy />
+            </span>
+              <span class="text-container">打法推荐</span>
+            </button>
+            <button class="achieve-btn" @click="toBossTipsPage">
+            <span class="icon-container">
+              <Tips />
+            </span>
+              <span class="text-container">BOSS攻略</span>
             </button>
           </div>
         </div>
@@ -244,22 +257,24 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import Logo from '../assets/icons/Logo.vue'; // 左上角悟空logo
-import Send from "../assets/icons/Send.vue"; // 发送按钮祥云
-import CloudUnderLogo from "../assets/icons/Clouds/Cloud-under-logo.vue"; // 左上角logo下方祥云
-import RedCloudLeft from "../assets/icons/Clouds/RedCloud-Left.vue";
-import RedCloudRight from "../assets/icons/Clouds/RedCloud-Right.vue"; // 输入框下方祥云
-import CloudBeforeTitle from "../assets/icons/Clouds/Cloud-before-title.vue"; // 对话标题前的祥云
-import CloudBeforeList from "../assets/icons/Clouds/Cloud-before-list.vue"; // 对话列表前的祥云
-import Taiji from "../assets/icons/Taiji.vue"; // 对话区域太极头像
-import Jingu from "../assets/icons/Jingu.vue"; // 对话区域金箍头像
-import Achieve from "../assets/icons/Achieve.vue"; // 成就按钮图标
-import CustomAlert from "../components/CustomAlert.vue"; // 自定义弹窗组件
-import MenuBtn from "../assets/icons/MenuBtn.vue"; // 目录按钮
-import { type ConfigParams} from '../apis/rag.ts';
-import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../apis/dialog.ts';
-import {bindSteamAccount} from "../apis/steam.ts";
-import GlobalLoading from "../components/GlobalLoading.vue";
+import Logo from '../../assets/icons/Logo.vue'; // 左上角悟空logo
+import Send from "../../assets/icons/Send.vue"; // 发送按钮祥云
+import CloudUnderLogo from "../../assets/icons/Clouds/Cloud-under-logo.vue"; // 左上角logo下方祥云
+import RedCloudLeft from "../../assets/icons/Clouds/RedCloud-Left.vue";
+import RedCloudRight from "../../assets/icons/Clouds/RedCloud-Right.vue"; // 输入框下方祥云
+import CloudBeforeTitle from "../../assets/icons/Clouds/Cloud-before-title.vue"; // 对话标题前的祥云
+import CloudBeforeList from "../../assets/icons/Clouds/Cloud-before-list.vue"; // 对话列表前的祥云
+import Taiji from "../../assets/icons/Taiji.vue"; // 对话区域太极头像
+import Jingu from "../../assets/icons/Jingu.vue"; // 对话区域金箍头像
+import Strategy from "../../assets/icons/Strategy.vue"; // 攻略按钮图标
+import Medal from "../../assets/icons/Medal.vue" // 成就按钮图标
+import Tips from "../../assets/icons/Tips.vue"
+import CustomAlert from "../../components/Dialog/CustomAlert.vue"; // 自定义弹窗组件
+import MenuBtn from "../../assets/icons/MenuBtn.vue"; // 目录按钮
+import { type ConfigParams} from '../../apis/rag.ts';
+import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../../apis/dialog.ts';
+import {bindSteamAccount} from "../../apis/steam.ts";
+import GlobalLoading from "../../components/Dialog/GlobalLoading.vue";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -640,12 +655,21 @@ const toAchievementPage = async () => {
           })
           .catch(error => {
             showAlert('绑定Steam账号失败，请稍后再试', 0);
+            isWaiting.value = false;
             console.error('获取成就信息失败:', error.response?.data || error.message);
           });
     }
   } else { // 已经绑定了steam
     await router.push('/achievement');
   }
+}
+
+const toPlayMethodsPage = async () => {
+  await router.push('/play-methods');
+}
+
+const toBossTipsPage = async () => {
+  await router.push('/boss-tips');
 }
 
 // 自动滚动到底部
@@ -879,7 +903,6 @@ input, button {
           font-size: 18px;
           letter-spacing: 2px;
           color: #d3b479;
-          border-bottom: 2px solid #c0aa6a;
           margin-bottom: 10px;
           .achieve-btn {
             width: 50px;

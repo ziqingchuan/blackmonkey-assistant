@@ -134,7 +134,7 @@ import {showAlert, customAlert} from "../utils/GlobalFunction.ts";
 import { setupFloatAnimation } from "../utils/GlobalFunction.ts";
 import CryptoJS from 'crypto-js'; // 用来加密的库
 import { genSaltSync } from 'bcryptjs';// 用来生成盐值的库
-import CustomAlert from "../components/CustomAlert.vue";
+import CustomAlert from "../components/Dialog/CustomAlert.vue";
 import CloudOfIndexHeader from "../assets/icons/Clouds/CloudOfIndexHeader.vue";
 import RedCloudLeft from "../assets/icons/Clouds/RedCloud-Left.vue";
 import FooterCloudRight from "../assets/icons/Clouds/FooterCloudRight.vue";
