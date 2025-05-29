@@ -95,6 +95,7 @@ import RedCloudRight from "../assets/icons/Clouds/RedCloud-Right.vue";
 import CloudOfIndexHeader from "../assets/icons/Clouds/CloudOfIndexHeader.vue";
 import FooterCloudLeft from "../assets/icons/Clouds/FooterCloudLeft.vue";
 import FooterCloudRight from "../assets/icons/Clouds/FooterCloudRight.vue";
+import { setupFloatAnimation } from "../utils/GlobalFunction.ts";
 const isLogoHovered = ref(false);
 const router = useRouter();
 // 页面跳转
@@ -124,26 +125,6 @@ const getHeaderText = () => {
   currentHeaderText.value = headerTexts[randomIndex];
   return currentHeaderText.value;
 };
-
-function setupFloatAnimation() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        // 可选：动画完成后取消观察
-        // observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.1, // 当元素10%进入视口时触发
-    rootMargin: '0px 0px -50px 0px' // 底部margin，可以提前触发
-  });
-
-  // 观察所有带有.float-up类的元素
-  document.querySelectorAll('.float-up').forEach(el => {
-    observer.observe(el);
-  });
-}
 // 组件挂载时获取一次随机文案
 onMounted(() => {
   localStorage.setItem("hasBindSteam", 'false');
@@ -165,7 +146,6 @@ onMounted(() => {
     transform: translateY(0);
   }
 }
-
 /* 为不同元素设置不同的延迟 */
 .float-delay-1 { transition-delay: 0.2s; }
 .float-delay-2 { transition-delay: 0.4s; }

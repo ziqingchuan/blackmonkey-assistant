@@ -24,9 +24,12 @@
     <div class="main-container">
       <div class="achievement-container">
         <div class="achievement-data" ref="achievementDataRef">
+          <div class="title">
+            <h1 class="float-up"> 用户数据</h1>
+          </div>
           <!-- 用户信息区块 -->
           <div class="user-container">
-            <div class="user-info">
+            <div class="user-info float-up float-delay-2">
               <div class="avatar-section">
                 <img :src="steamUser.user.avatar" alt="用户头像" class="user-avatar" />
                 <div class="user-meta">
@@ -69,7 +72,7 @@
                 </div>
               </div>
             </div>
-            <div class="user-info-analysis">
+            <div class="user-info-analysis float-up float-delay-2">
               <div>
                 您总共游玩了
                 <span class="highlight-text">{{ steamUser.game.playtime_hours }}</span> 小时，
@@ -83,11 +86,11 @@
             </div>
           </div>
           </div>
-          <div class="title">
+          <div class="title float-up float-delay-3">
             <h1> 《 八十一难 》</h1>
           </div>
           <!-- 成就列表 -->
-          <div class="achievement-list">
+          <div class="achievement-list float-up float-delay-4">
             <div
                 v-for="(achievement, index) in visibleAchievements"
                 :key="index"
@@ -117,57 +120,59 @@
             </div>
           </div>
           <!-- 切换按钮 -->
-          <button class="toggle-btn" @click="toggleAchievementsView">
-            {{ showAllAchievements ? '收归本源' : '观尽八十一难' }}
-          </button>
-          <div class="title">
+          <div class="float-up float-delay-5">
+            <button class="toggle-btn" @click="toggleAchievementsView">
+              {{ showAllAchievements ? '收归本源' : '观尽八十一难' }}
+            </button>
+          </div>
+          <div class="title float-up float-delay-5">
             <h1> 成就数据分析</h1>
           </div>
           <!-- 数据分析 -->
-          <div class="analysis-section">
-            <div class="whole-analysis">
-              <h3>证道历程</h3>
+          <div class="analysis-section float-up">
+            <div class="whole-analysis float-up float-delay-1">
+              <h3 class="float-up float-delay-2">证道历程</h3>
               <div v-if="achievementsAnalysis.firstAchievement">
-                <p>您首次证道于 <span class="highlight">{{ achievementsAnalysis.firstAchievementTime }}</span>，</p>
-                <p>还记得那天，您初踏西行路，于混沌中开天辟地，证得「<span class="achievement-name">{{ achievementsAnalysis.firstAchievement.name }}</span>」,</p>
-                <p class="achievement-desc">{{ achievementsAnalysis.firstAchievement.description }}</p>
+                <p class="float-up float-delay-3">您首次证道于 <span class="highlight">{{ achievementsAnalysis.firstAchievementTime }}</span>，</p>
+                <p class="float-up float-delay-3">还记得那天，您初踏西行路，于混沌中开天辟地，证得「<span class="achievement-name">{{ achievementsAnalysis.firstAchievement.name }}</span>」,</p>
+                <p class="achievement-desc float-up float-delay-3">{{ achievementsAnalysis.firstAchievement.description }}</p>
               </div>
               <div v-else>
                 <p>您尚未证得任何成就</p>
               </div>
 
               <div v-if="achievementsAnalysis.lastAchievement" class="last-achievement">
-                <p>最近证道于 <span class="highlight">{{ achievementsAnalysis.lastAchievementTime }}</span>，</p>
-                <p>还记得那天，您挥动如意金箍棒，扫尽八荒妖氛，证得「<span class="achievement-name">{{ achievementsAnalysis.lastAchievement.name }}</span>」,</p>
-                <p class="achievement-desc">{{ achievementsAnalysis.lastAchievement.description }}</p>
+                <p class="float-up float-delay-3">最近证道于 <span class="highlight">{{ achievementsAnalysis.lastAchievementTime }}</span>，</p>
+                <p class="float-up float-delay-3">还记得那天，您挥动如意金箍棒，扫尽八荒妖氛，证得「<span class="achievement-name">{{ achievementsAnalysis.lastAchievement.name }}</span>」,</p>
+                <p class="achievement-desc float-up float-delay-3">{{ achievementsAnalysis.lastAchievement.description }}</p>
               </div>
               <div v-else>
                 <p>您尚未证得任何成就</p>
               </div>
 
-              <p>您的证道速度平均为 <span class="highlight">{{ achievementsAnalysis.achievingSpeed.toFixed(2) }}</span> 难/日。</p>
+              <p class="achievement-desc float-up float-delay-4">您的证道速度平均为 <span class="highlight">{{ achievementsAnalysis.achievingSpeed.toFixed(2) }}</span> 难/日。</p>
             </div>
-            <div class="analysis-description">
-              <div class="analysis-item">
-                <h3>月度证道分布</h3>
-                <p>左侧图表展示您各月证道数量分布。</p>
-                <p>证道数量最多的月份是 <span class="highlight">{{
+            <div class="analysis-description float-up">
+              <div class="analysis-item float-up float-delay-1">
+                <h3 class="float-up float-delay-2">月度证道分布</h3>
+                <p class="float-up float-delay-3">左侧图表展示您各月证道数量分布。</p>
+                <p class="float-up float-delay-3">证道数量最多的月份是 <span class="highlight">{{
                     pieChartData.reduce((max, curr) => curr.value > max.value ? curr : max, {name: '', value: 0}).name
                   }}</span>。</p>
               </div>
 
               <div class="analysis-item">
-                <h3>证道趋势</h3>
-                <p>右侧图表展示您每日证道数量变化趋势。</p>
-                <p>证道最多的日子是 <span class="highlight">{{
+                <h3 class="float-up float-delay-2">证道趋势</h3>
+                <p class="float-up float-delay-3">右侧图表展示您每日证道数量变化趋势。</p>
+                <p class="float-up float-delay-3">证道最多的日子是 <span class="highlight">{{
                     lineChartData.reduce((max, curr) => curr.count > max.count ? curr : max, {date: '', count: 0}).date
                   }}</span>。</p>
               </div>
             </div>
 
             <div class="charts-container">
-              <div id="pieChart" class="chart"></div>
-              <div id="lineChart" class="chart"></div>
+              <div id="pieChart" class="chart float-up float-delay-3"></div>
+              <div id="lineChart" class="chart float-up float-delay-3"></div>
             </div>
           </div>
         </div>
@@ -218,6 +223,7 @@ import { onBeforeUnmount, nextTick } from 'vue';
 import AchievementDialog from "../components/AchievementDialog.vue";
 import ScrollToTopIcon from "../assets/icons/ScrollToTop.vue";
 import ChatBot from "../assets/icons/ChatBot.vue";
+import { setupFloatAnimation, formatDate } from "../utils/GlobalFunction.ts";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -261,14 +267,6 @@ const visibleAchievements = computed(() =>
         ? achievements.value
         : achievements.value.slice(0, 6)
 );
-
-// 辅助函数：格式化日期为 YYYY-MM-DD
-function formatDate(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
 
 function AnalyzeAchievementInfo() {
   // 获取所有已解锁的成就
@@ -378,11 +376,12 @@ function CalculateAchievementsTimeMap() {
 const toggleAchievementsView = () => {
   showAllAchievements.value = !showAllAchievements.value;
 };
-// 新增图表数据变量
+
+// 图表数据变量
 const pieChartData = ref<{name: string, value: number}[]>([]);
 const lineChartData = ref<{date: string, count: number}[]>([]);
 
-// 新增图表实例引用
+// 图表实例引用
 let pieChart: echarts.ECharts | null = null;
 let lineChart: echarts.ECharts | null = null;
 
@@ -615,9 +614,10 @@ onMounted(async () => {
             console.error('获取成就信息失败:', error.response?.data || error.message);
           });
     }
-    AnalyzeUserInfo();
-    AnalyzeAchievementInfo();
-    CalculateAchievementsTimeMap();
+    setupFloatAnimation(); // 设置浮动动画
+    AnalyzeUserInfo(); // 分析用户信息
+    AnalyzeAchievementInfo(); // 分析成就信息
+    CalculateAchievementsTimeMap(); // 计算成就时间分布
     // 计算图表数据
     calculatePieChartData();
     calculateLineChartData();
@@ -625,9 +625,8 @@ onMounted(async () => {
     achievementDataRef.value = document.querySelector('.achievement-data');
     // 等待DOM更新后初始化图表
     await nextTick();
-    initPieChart();
-    initLineChart();
-
+    initPieChart(); // 初始化饼图
+    initLineChart(); // 初始化折线图
 
   } catch(error) {
     console.error(error);
@@ -672,6 +671,22 @@ const toggleDialog = () => {
 input, button {
   font-family: 'Ma Shan Zheng', cursive;
 }
+.float-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* 为不同元素设置不同的延迟 */
+.float-delay-1 { transition-delay: 0.2s; }
+.float-delay-2 { transition-delay: 0.4s; }
+.float-delay-3 { transition-delay: 0.6s; }
+.float-delay-4 { transition-delay: 0.8s; }
+.float-delay-5 { transition-delay: 1s; }
 /* 页面整体样式 */
 .page-container {
   display: flex;
@@ -768,7 +783,7 @@ input, button {
             width: 60%;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            padding: 30px;
+            padding: 50px;
             background: rgba(40, 40, 45, 0.8) url("src/assets/BlackMonkey/img_bg_introduce_2_a.png") no-repeat center;
             background-size: cover;
             border-radius: 20px;
@@ -862,7 +877,7 @@ input, button {
             background-size: contain;
             width: 40%;
             gap: 30px;
-            padding: 30px;
+            padding: 50px;
             border-radius: 20px;
             color: #d3b479;
             font-size: 18px;
