@@ -68,8 +68,8 @@
         </div>
         <div class="form-container sign-in-container">
           <div class="form" style="background-image: url('/sing-in-bkg.jpg')">
-            <h1>大圣归来，再战苍穹</h1>
-            <div class="input-container">
+            <h1 class="float-up float-delay-1">大圣归来，再战苍穹</h1>
+            <div class="input-container float-up float-delay-2">
               <div class="input-tips">邮&nbsp;箱：</div>
               <input
                   v-model="formData.email"
@@ -78,7 +78,7 @@
                   placeholder="元神印记，显化真形"
               />
             </div>
-            <div class="input-container">
+            <div class="input-container float-up float-delay-3">
               <div class="input-tips">密&nbsp;码：</div>
               <input
                   v-model="formData.password"
@@ -87,7 +87,7 @@
                   placeholder="法宝秘钥，谨记于心"
               />
             </div>
-            <button @click="handleLogin">登录</button>
+            <div class="float-up float-delay-4"><button @click="handleLogin">登录</button></div>
           </div>
         </div>
         <div class="overlay-container">
@@ -97,10 +97,10 @@
               <p>已有元神印记？此去灵山十万路，且凭金身踏祥云</p>
               <button @click="signIn">去登录</button>
             </div>
-            <div class="overlay-panel overlay-right">
-              <h1>初入三界，造化新生</h1>
-              <p>尚无功德文牒？此间因果待书写，且结善缘证菩提</p>
-              <button @click="signUp">去注册</button>
+            <div class="overlay-panel overlay-right float-up float-delay-1">
+              <h1 class="float-up float-delay-2">初入三界，造化新生</h1>
+              <p class="float-up float-delay-3">尚无功德文牒？此间因果待书写，且结善缘证菩提</p>
+              <div class="float-up float-delay-4"><button @click="signUp">去注册</button></div>
             </div>
           </div>
         </div>
@@ -131,6 +131,7 @@ import {ref, onBeforeUnmount, onMounted} from 'vue';
 import { useRouter } from 'vue-router';
 import { login, register, getSalt, getValidCode, type RegisterInfo, type LoginInfo } from '../apis/user';
 import {showAlert, customAlert} from "../utils/GlobalFunction.ts";
+import { setupFloatAnimation } from "../utils/GlobalFunction.ts";
 import CryptoJS from 'crypto-js'; // 用来加密的库
 import { genSaltSync } from 'bcryptjs';// 用来生成盐值的库
 import CustomAlert from "../components/CustomAlert.vue";
@@ -282,6 +283,7 @@ onMounted(() => {
   // 获取随机文案
   localStorage.setItem("hasBindSteam", 'false');
   getHeaderText();
+  setupFloatAnimation();
 })
 
 onBeforeUnmount(() => {
@@ -295,6 +297,23 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap');
 /* 全局样式 */
+.float-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* 为不同元素设置不同的延迟 */
+.float-delay-1 { transition-delay: 0.2s; }
+.float-delay-2 { transition-delay: 0.4s; }
+.float-delay-3 { transition-delay: 0.6s; }
+.float-delay-4 { transition-delay: 0.8s; }
+.float-delay-5 { transition-delay: 1s; }
+
 input {
   background-color: white;
   border: none;
