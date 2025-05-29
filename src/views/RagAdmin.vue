@@ -292,7 +292,7 @@ const fetchAllWukongData = async () => {
     //console.log('获取数据结果:', res);
     DBlist.value[0].database = await getAllWukongData();
     currentDB.value = DBlist.value[0];
-    //console.log('当前显示的数据库:', currentDB.value)
+    // console.log('当前显示的数据库:', DBlist.value[0].database)
   } catch (error) {
     console.error('数据获取失败:', error);
     showAlert('获取数据失败，请稍后再试', 0);

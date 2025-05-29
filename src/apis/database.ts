@@ -1,7 +1,7 @@
 import {axios} from '../utils/request.ts'
 import { DB_MODULE } from './index.ts'
 export interface WukongDBInfo {
-    pk: number; // 内容的id
+    pk: string; // 内容的id
     text: string; // 知识库中一条数据的主内容 eg: 《黑神话：悟空》是由杭州游科互动科技有限公司开发，浙江出版集团数字传媒有限公司出版的西游题材单机动作角色扮演游戏。
     category: string; // 内容的分类 eg: 开发背景 | 游戏攻略 | 关卡信息
     source: string; // 内容的来源 eg: 百度百科 | 游民星空 | 知乎 | 百度贴吧
@@ -38,7 +38,7 @@ export const insertWukongData = async (data: InsertWukongDBInfo): Promise<number
  * @param pk 要删除数据的主键
  * @returns 是否删除成功
  */
-export const deleteWukongData = async (pk: number): Promise<boolean> => {
+export const deleteWukongData = async (pk: string): Promise<boolean> => {
     return axios.delete<boolean>(`${DB_MODULE}/${pk}`, {
         headers: {
             'Content-Type': 'application/json',
