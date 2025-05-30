@@ -1,3 +1,7 @@
+/**
+ * @Description 文件处理器，用于解析不同格式的文件的文本内容
+ * @Author: Qingchuan Zi
+ */
 import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/node_modules/pdfjs-dist/build/pdf.worker.min.mjs';

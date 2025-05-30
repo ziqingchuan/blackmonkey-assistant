@@ -3,6 +3,9 @@ import { axios } from '../utils/request.ts';
 import { STEAM_MODULE } from './index.ts'
 
 // Steam 成就模型
+/**
+ * @Description: Steam 成就信息结构体
+ */
 export interface Achievement {
     api_name: string;
     name: string; // 成就名称
@@ -15,44 +18,68 @@ export interface Achievement {
     unlock_time?: string; // 成就解锁时间（可选）
 }
 
+/**
+ * @Description: SteamUser的子结构体
+ */
 interface game {
     last_played: string; // 上次玩游戏时间
     playtime_hours: number; // 游戏时长（小时）
 }
 
+/**
+ * @Description: SteamUser的子结构体
+ */
 interface user {
     avatar: string; // Steam 用户头像url
     name: string; // Steam 用户名
 }
 
+/**
+ * @Description: Steam用户基本信息结构
+ */
 export interface SteamUser {
     game: game;
     user: user;
 }
 
+/**
+ * @Description: 前端构造的日历结构体
+ */
 export interface CalendarDay {
     date: number;
     inMonth: boolean,
-    achievementCount: number,
+    achievementCount: number, // 这一天达成的成就数量
     fullDate: string;
 }
 
+/**
+ * @Description: 前端构造的储存用户信息分析结果的结构体
+ */
 export interface UserInfoAnalysis {
     playerType: string; // 游戏玩家类型
     lastTime: string; // 最后登录的时间
     dayDiff: number; // 距离上次登录天数
 }
 
+/**
+ * @Description: 前端构造的用于储存月度成就映射结构体
+ */
 export interface  AchievementsMonthMap {
     month: string; // 时间（YYYY-MM）月份
     dayAndCount: AchievementsDayMap[]; // 这一月每天达成的成就数量
 }
 
+/**
+ * @Description: 前端构造的用于储存日期与实现成就数量映射结构体
+ */
 export interface AchievementsDayMap {
     day: string; // 时间（YYYY-MM-DD）
     count: number; // 这一天达成的成就数量
 }
 
+/**
+ * @Description: 前端构造的储存成就信息分析结果的结构体
+ */
 export interface AchievementInfoAnalysis {
     achievementCount: number; // 已达成的成就数量
     rareAchievementTotal: number; // 稀有成就数量（completion_percentage >= 20% && <= 50%）

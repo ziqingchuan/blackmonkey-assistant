@@ -1,6 +1,10 @@
 // ===== 用户认证模块 =====
 import {axios} from '../utils/request.ts'
 import { API_MODULE } from './index.ts'
+
+/**
+ * @Description: 用户注册信息结构体，可用作formData
+ */
 export interface RegisterInfo {
     email: string;
     validCode: string;
@@ -8,6 +12,9 @@ export interface RegisterInfo {
     salt: string;
 }
 
+/**
+ * @Description: 用户登录传参结构体
+ */
 export interface LoginInfo {
     email: string;
     password: string;

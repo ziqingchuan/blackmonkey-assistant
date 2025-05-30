@@ -62,9 +62,10 @@
             type="text"
             placeholder="输入你的问题..."
             v-model="question"
+            :disabled="isLoading"
             @keyup.enter="sendQuestion"
         />
-        <button class="send-button" @click="sendQuestion">
+        <button class="send-button" :disabled="isLoading || !question" @click="sendQuestion">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9L22 2Z" stroke="#e7cc80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -75,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, nextTick, watch } from 'vue';
+import { ref, nextTick, watch } from 'vue';
 
 defineProps({
   show: Boolean,

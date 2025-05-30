@@ -4,6 +4,9 @@ import { DIALOG_MODULE } from './index.ts'
 import type { LoginInfo } from './user.ts'
 import type { SourceDoc } from './rag.ts'
 
+/**
+ * @Description: 一次对话的数据结构
+ */
 export interface Dialog {
     id: number;
     userId: number;
@@ -12,13 +15,18 @@ export interface Dialog {
     contentList: Content[];
 }
 
-// 用于前端显示对话的数据结构
+/**
+ * @Description: 前端用于显示对话的独有数据结构
+ */
 export interface DisplayContent {
     text: string;
     role: 'USER' | 'RAG';
     sourceDoc?: SourceDoc[];
 }
 
+/**
+ * @Description: 对话内容的数据结构
+ */
 export interface Content {
     question: string;
     answer: string;

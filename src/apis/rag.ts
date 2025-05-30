@@ -15,12 +15,18 @@ import {RAG_MODULE} from "./index.ts";
 //     sourceDoc: SourceDoc[];
 // }
 
+/**
+ * @Description: RAG回答的参考信息的数据结构
+ */
 export interface SourceDoc {
     source: string;
     category: string;
     content: string;
 }
 
+/**
+ * @Description: RAG检索的配置参数信息
+ */
 export interface ConfigParams {
     searchStrategy: number;
     resultCount: number;

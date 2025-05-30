@@ -1,3 +1,7 @@
+/**
+ * @Description: 请求模块
+ * @Author: Qingchuan Zi
+ */
 import axios from 'axios'
 
 //创建一个axios的实例service

@@ -1,5 +1,5 @@
 /**
- * @Description: 全局函数
+ * @Description: 全局函数，防止出现重复性代码冗余而封装的各种功能
  * @Author: Qingchuan Zi
  */
 import {ref} from "vue";
