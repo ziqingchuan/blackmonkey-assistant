@@ -73,21 +73,12 @@
           <div class="header-right">
             <!-- 成就页面按钮 -->
             <button class="achieve-btn" @click="toAchievementPage">
-            <span class="icon-container">
-              <Medal />
-            </span>
               <span class="text-container">功德成就</span>
             </button>
             <button class="achieve-btn" @click="toPlayMethodsPage">
-            <span class="icon-container">
-              <Strategy />
-            </span>
               <span class="text-container">打法推荐</span>
             </button>
             <button class="achieve-btn" @click="toBossTipsPage">
-            <span class="icon-container">
-              <Tips />
-            </span>
               <span class="text-container">BOSS攻略</span>
             </button>
           </div>
@@ -266,9 +257,6 @@ import CloudBeforeTitle from "../../assets/icons/Clouds/Cloud-before-title.vue";
 import CloudBeforeList from "../../assets/icons/Clouds/Cloud-before-list.vue";
 import Taiji from "../../assets/icons/Taiji.vue";
 import Jingu from "../../assets/icons/Jingu.vue";
-import Strategy from "../../assets/icons/Strategy.vue";
-import Medal from "../../assets/icons/Medal.vue"
-import Tips from "../../assets/icons/Tips.vue"
 import CustomAlert from "../../components/Dialog/CustomAlert.vue";
 import MenuBtn from "../../assets/icons/MenuBtn.vue";
 import { type ConfigParams} from '../../apis/rag.ts';
@@ -911,31 +899,15 @@ input, button {
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
-            .icon-container {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              transition: opacity 0.3s ease;
-            }
-
             .text-container {
               font-size: 16px;
               font-weight: bold;
               color: #d3b479;
-              opacity: 0;
-              transition: opacity 0.3s ease;
               font-family: 'Ma Shan Zheng', cursive;
             }
-
-            &:hover .icon-container {
-              opacity: 0;
+            &:hover {
+              transform: scale(1.2);
             }
-
-            &:hover .text-container {
-              opacity: 1;
-            }
-
           }
         }
       }
