@@ -163,6 +163,7 @@ input, button {
   background: linear-gradient(to right, #1a1a1d 0%, #0a0a0c 100%);
   font-family: 'Ma Shan Zheng', cursive;
   height: 100vh;
+  overflow-x: auto;
   .sidebar {
     width: 80px;
     background: rgba(18, 18, 20, 0.95);
