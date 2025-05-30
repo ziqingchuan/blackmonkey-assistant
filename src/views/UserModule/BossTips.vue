@@ -33,21 +33,21 @@
       <div class="bossTips-list" v-if="isBossTipsListVisible">
         <div class="list-title">
           <CloudBeforeList class="cloud-decoration" />
-          <span class="title-text">Boss攻略</span>
+          <span class="title-text">章节</span>
         </div>
         <div class="bossTips-list-wrapper">
           <div
               v-if=" BossTipsList.length > 0"
-              v-for="MethodItem in BossTipsList"
-              :key="MethodItem.id"
+              v-for="TipItem in BossTipsList"
+              :key="TipItem.id"
               class="bossTip-item"
-              :class="{ active: currentMethod?.id === MethodItem.id }"
-              @click="loadTip(MethodItem.id)"
+              :class="{ active: currentChapter?.id === TipItem.id }"
+              @click="loadTip(TipItem.id)"
           >
-            <div class="bossTip-name">xxxx</div>
+            <div class="bossTip-name">{{TipItem.chapterName}}</div>
           </div>
           <div v-if="BossTipsList.length === 0" class="empty-tip">
-            暂无攻略数据
+            暂无数据
           </div>
         </div>
       </div>
@@ -58,13 +58,71 @@
         <div class="bossTip-header">
           <div class="header-container">
             <CloudBeforeTitle />
-            <span class="bossTip-title">xxxxxxxx</span>
+            <span class="bossTip-title" @click="backToChapter">{{currentChapter?.chapterName}}</span>
           </div>
         </div>
 
         <!-- 主内容 -->
         <div class="bossTip-information">
+          <!-- 章节内的Boss卡片网格 -->
+          <div v-if="!showBossDetail" class="boss-grid">
+            <div
+                v-for="boss in currentChapter?.bossTips"
+                :key="boss.bossId"
+                class="boss-card"
+                @click="showBossDetailHandler(boss)"
+            >
+              <div class="boss-image-container">
+                <img :src="boss.imgUrl" :alt="boss.name" class="boss-image" />
+              </div>
+              <div class="boss-name">{{ boss.name }}</div>
+            </div>
+          </div>
 
+          <!-- Boss详细信息 -->
+          <div v-else class="boss-detail">
+            <div class="detail-header">
+              <div class="boss-name">{{ currentBoss?.name }}</div>
+              <div class="boss-position">位置: {{ currentBoss?.position }}</div>
+            </div>
+
+            <div class="detail-content">
+              <div class="image-container">
+                <img :src="currentBoss?.imgUrl" :alt="currentBoss?.name" class="detail-image" />
+              </div>
+
+              <div class="info-section">
+                <div class="difficulty">
+                  <span>难度:</span>
+                  <div class="stars">
+                    <span v-for="i in 5" :key="i" class="star" :class="{ 'active': i <= Math.ceil((currentBoss?.difficulty || 0)/2) }">★</span>
+                  </div>
+                </div>
+
+                <div class="description">
+                  <h3>描述</h3>
+                  <p>{{ currentBoss?.description }}</p>
+                </div>
+
+                <div class="tricks">
+                  <h3>招式</h3>
+                  <ul>
+                    <li v-for="(trick, index) in currentBoss?.bossTrick" :key="index">{{ trick }}</li>
+                  </ul>
+                </div>
+
+                <div class="experience">
+                  <h3>打法经验</h3>
+                  <p>{{ currentBoss?.experience }}</p>
+                </div>
+
+                <div class="rewards">
+                  <h3>掉落奖励</h3>
+                  <p>{{ currentBoss?.reward }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- 底部 -->
@@ -92,36 +150,76 @@ import CustomAlert from "../../components/Dialog/CustomAlert.vue";
 import GlobalLoading from '../../components/Dialog/GlobalLoading.vue';
 import MenuBtn from "../../assets/icons/MenuBtn.vue";
 import {customAlert, logout, showAlert} from "../../utils/GlobalFunction.ts";
+import {bossInfo, chapterName, type TipInfo, type BossInfo} from "../../consts/bossData";
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
 const token = ref(''); // 用户登录token
-const currentMethod = ref<any>();
+const currentChapter = ref<TipInfo>();
 const isWaiting = ref(false); // 记录加载状态
 const router = useRouter()
 const isLogoHovered = ref(false); // 记录展开目录图标是否被鼠标悬停
-const isBossTipsListVisible = ref(false); // 记录列表的显示状态
-const BossTipsList = ref<any[]>([]);
+const isBossTipsListVisible = ref(true); // 记录列表的显示状态
+const showBossDetail = ref(false); // 是否显示boss详情
+const currentBoss = ref<BossInfo>(); // 当前选中的boss
+const BossTipsList = ref<TipInfo[]>([
+    {
+        id: 0,
+        chapterName: chapterName[0],
+        bossTips: bossInfo.slice(0, 8)
+    },
+    {
+        id: 1,
+        chapterName: chapterName[1],
+        bossTips: bossInfo.slice(8, 20)
+    },
+    {
+        id: 2,
+        chapterName: chapterName[2],
+        bossTips: bossInfo.slice(20, 31)
+    },
+    {
+        id: 3,
+        chapterName: chapterName[3],
+        bossTips: bossInfo.slice(31, 42)
+    },
+    {
+        id: 4,
+        chapterName: chapterName[4],
+        bossTips: bossInfo.slice(42, 51)
+    },
+    {
+        id: 5,
+        chapterName: chapterName[5],
+        bossTips: bossInfo.slice(51, 63)
+    },
+  ]);
 
 // ==================== 函数声明 ====================
+
+// 显示boss详细信息
+const showBossDetailHandler = (boss: BossInfo) => {
+  currentBoss.value = boss;
+  showBossDetail.value = true;
+};
+
+// 返回章节列表（点击标题时调用）
+const backToChapter = () => {
+  if (showBossDetail.value) {
+    showBossDetail.value = false;
+  }
+};
 
 const loadTip = (id: number) => {
   try {
     isWaiting.value = true;
-    currentMethod.value = BossTipsList.value[id];
+    currentChapter.value = BossTipsList.value[id];
+    // 重置详情状态
+    showBossDetail.value = false;
   } catch (error) {
     showAlert("加载失败，请稍后再试", 0);
     console.log(error);
   } finally {
     isWaiting.value = false;
-  }
-};
-
-const fetchAllBossTips = async () => {
-  try {
-  } catch (error) {
-    console.error('数据获取失败:', error);
-    showAlert('获取数据失败，请稍后再试', 0);
-    throw error;
   }
 };
 
@@ -134,13 +232,12 @@ onMounted(async () => {
     if (localStorage.getItem('userProfile')) {
       currentUser.value = JSON.parse(localStorage.getItem('userProfile') || '');
       token.value = localStorage.getItem('token') || '';
-      await fetchAllBossTips();
     } else {
       showAlert('天命人，请您先去登录，再来查看Boss攻略吧', 0).then(() => {
         router.push('/account'); // 跳转到登录页面
       });
     }
-
+    currentChapter.value = BossTipsList.value[0];
   } catch(error) {
     console.error(error);
   } finally {
@@ -281,15 +378,16 @@ input, button {
           cursor: pointer;
           transition: all 0.3s;
           border: 1px solid transparent;
+          text-align: center;
           &:hover {
             background: rgba(50, 50, 55, 0.9);
             border-color: #c0aa6a33;
           }
           .bossTip-name {
-            font-size: 18px;
+            font-size: 22px;
             letter-spacing: 2px;
             color: #d3b479;
-            padding-bottom: 10px;
+            padding: 20px;
           }
         }
         .bossTip-item.active {
@@ -326,6 +424,13 @@ input, button {
             color: #d3b479;
             border-bottom: 2px solid #c0aa6a;
             padding-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+              color: #f0d9a0;
+              text-shadow: 0 0 10px rgba(192, 170, 106, 0.5);
+            }
           }
         }
       }
@@ -337,14 +442,182 @@ input, button {
         overflow-y: auto;
         scrollbar-width: none; /* Firefox */
         -ms-overflow-style: none; /* IE/Edge */
+
         &::-webkit-scrollbar {
           display: none; /* Chrome/Safari/Opera */
         }
+
         flex: 1;
         border: 1px solid #3a3a3f;
         border-radius: 8px;
         padding: 20px;
         margin-bottom: 20px;
+
+        /* Boss网格布局 */
+        .boss-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          gap: 25px;
+          padding: 15px;
+
+          .boss-card {
+            background: rgba(30, 30, 35, 0.8);
+            border: 1px solid #4a4a4f;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+            &:hover {
+              transform: translateY(-5px);
+              border-color: #c0aa6a;
+              box-shadow: 0 8px 20px rgba(192, 170, 106, 0.2);
+
+              .boss-name {
+                background: rgba(192, 170, 106, 0.2);
+                color: #f0d9a0;
+              }
+            }
+
+            .boss-image-container {
+              height: 160px;
+              overflow: hidden;
+
+              .boss-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s ease;
+              }
+            }
+
+            .boss-name {
+              padding: 12px;
+              text-align: center;
+              font-size: 18px;
+              color: #d3b479;
+              background: rgba(40, 40, 45, 0.9);
+              transition: all 0.3s ease;
+            }
+          }
+        }
+
+        /* Boss详情样式 */
+        .boss-detail {
+          background: rgba(25, 25, 30, 0.85);
+          border: 1px solid #4a4a4f;
+          border-radius: 10px;
+          padding: 25px;
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+
+          .detail-header {
+            border-bottom: 2px solid #c0aa6a;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+
+            .boss-name {
+              font-size: 32px;
+              color: #e7cc80;
+              letter-spacing: 2px;
+              text-shadow: 0 0 10px rgba(192, 170, 106, 0.4);
+            }
+
+            .boss-position {
+              font-size: 18px;
+              color: #b0a070;
+              margin-top: 8px;
+            }
+          }
+
+          .detail-content {
+            display: flex;
+            gap: 30px;
+
+            .image-container {
+              flex: 1;
+              max-width: 350px;
+
+              .detail-image {
+                width: 100%;
+                border-radius: 8px;
+                border: 2px solid #5a5a5f;
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+              }
+            }
+
+            .info-section {
+              flex: 2;
+
+              > div {
+                margin-bottom: 25px;
+              }
+
+              h3 {
+                color: #e7cc80;
+                border-left: 3px solid #c0aa6a;
+                padding-left: 12px;
+                margin-bottom: 12px;
+                font-size: 22px;
+              }
+
+              p, li {
+                color: #d0d0d0;
+                line-height: 1.7;
+                font-size: 18px;
+              }
+
+              .difficulty {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+
+                span {
+                  color: #d3b479;
+                  font-size: 20px;
+                }
+
+                .stars {
+                  display: flex;
+
+                  .star {
+                    color: #5a5a5f;
+                    font-size: 24px;
+                    margin-right: 5px;
+
+                    &.active {
+                      color: #ffd700;
+                      text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+                    }
+                  }
+                }
+              }
+
+              .tricks {
+                ul {
+                  list-style-type: none;
+                  padding-left: 0;
+
+                  li {
+                    position: relative;
+                    padding-left: 25px;
+                    margin-bottom: 10px;
+
+                    &::before {
+                      content: "•";
+                      color: #c0aa6a;
+                      font-size: 24px;
+                      position: absolute;
+                      left: 0;
+                      top: -3px;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
 
       .footer {
