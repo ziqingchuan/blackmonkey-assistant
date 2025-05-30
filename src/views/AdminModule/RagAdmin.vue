@@ -176,17 +176,17 @@
 <script setup lang="ts">
 import {computed, onMounted, ref, watch} from 'vue';
 import {useRouter} from 'vue-router';
-import Logo from '../../assets/icons/Logo.vue'; // 左上角悟空logo
-import CloudUnderLogo from "../../assets/icons/Clouds/Cloud-under-logo.vue"; // 左上角logo下方祥云
+import Logo from '../../assets/icons/Logo.vue';
+import CloudUnderLogo from "../../assets/icons/Clouds/Cloud-under-logo.vue";
 import RedCloudLeft from "../../assets/icons/Clouds/RedCloud-Left.vue";
 import RedCloudRight from "../../assets/icons/Clouds/RedCloud-Right.vue";
-import CloudBeforeTitle from "../../assets/icons/Clouds/Cloud-before-title.vue"; // 对话标题前的祥云
-import CloudBeforeList from "../../assets/icons/Clouds/Cloud-before-list.vue"; // 对话列表前的祥云
-import CustomAlert from "../../components/Dialog/CustomAlert.vue"; // 自定义弹窗组件
-import GlobalLoading from '../../components/Dialog/GlobalLoading.vue'; // 全局加载组件
+import CloudBeforeTitle from "../../assets/icons/Clouds/Cloud-before-title.vue";
+import CloudBeforeList from "../../assets/icons/Clouds/Cloud-before-list.vue";
+import CustomAlert from "../../components/Dialog/CustomAlert.vue";
+import GlobalLoading from '../../components/Dialog/GlobalLoading.vue';
 import EditWukongDataForm from "../../components/Form/EditWukongDataForm.vue";
 import AddWukongDataForm from "../../components/Form/AddWukongDataForm.vue";
-import MenuBtn from "../../assets/icons/MenuBtn.vue"; // 目录按钮
+import MenuBtn from "../../assets/icons/MenuBtn.vue";
 import type {DataBase, InsertWukongDBInfo, WukongDBInfo} from "../../apis/database.ts";
 import {customAlert, logout, showAlert} from "../../utils/GlobalFunction.ts";
 import {deleteWukongData, getAllWukongData, insertWukongData, updateWukongData} from '../../apis/database.ts';
@@ -319,10 +319,8 @@ watch(currentPage, (newVal) => {
 
 const fetchAllWukongData = async () => {
   try {
-    //console.log('获取数据结果:', res);
     DBlist.value[0].database = await getAllWukongData();
     currentDB.value = DBlist.value[0];
-    // console.log('当前显示的数据库:', DBlist.value[0].database)
   } catch (error) {
     console.error('数据获取失败:', error);
     showAlert('获取数据失败，请稍后再试', 0);
@@ -379,7 +377,6 @@ const applySort = () => {
     }
     return 0;
   });
-
   // 重置当前页
   currentPage.value = 1;
 };
@@ -406,7 +403,6 @@ onMounted(async () => {
     if (localStorage.getItem('userProfile')) {
       currentUser.value = JSON.parse(localStorage.getItem('userProfile') || '');
       token.value = localStorage.getItem('token') || '';
-      //console.log('当前用户信息：', currentUser.value, token.value)
       // 默认加载wukong数据库
       await fetchAllWukongData();
     } else {

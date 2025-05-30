@@ -70,7 +70,10 @@ export interface AchievementInfoAnalysis {
 
 // ===== API 接口 =====
 
-// 绑定 Steam 账号 - 返回绑定结果
+/**
+ * 绑定 Steam 账号
+ * @param steamId
+ */
 export const bindSteamAccount = async (steamId: string): Promise<any> => {
     return axios.post<any>(`${STEAM_MODULE}/bind`,{steam_id: steamId}, {
         headers: {
@@ -80,7 +83,10 @@ export const bindSteamAccount = async (steamId: string): Promise<any> => {
     }).then(response => response.data);
 };
 
-// 获取绑定的 Steam 用户信息 - 返回用户信息
+/**
+ * 获取绑定的 Steam 用户信息
+ * @returns SteamUser
+ */
 export const getSteamUserInfo = async (): Promise<any> => {
     return axios.get<any>(`${STEAM_MODULE}/user/info`, {
         headers: {
@@ -90,7 +96,10 @@ export const getSteamUserInfo = async (): Promise<any> => {
     }).then(response => response.data);
 };
 
-// 获取用户的 Steam 游戏成就信息 - 返回成就列表
+/**
+ * 获取用户的 Steam 游戏成就信息
+ * @returns Achievement[]
+ */
 export const getUserAchievements = async (): Promise<any> => {
     return axios.get<any>(`${STEAM_MODULE}/user/achievements`, {
         headers: {

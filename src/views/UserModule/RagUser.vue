@@ -257,20 +257,20 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import Logo from '../../assets/icons/Logo.vue'; // 左上角悟空logo
-import Send from "../../assets/icons/Send.vue"; // 发送按钮祥云
-import CloudUnderLogo from "../../assets/icons/Clouds/Cloud-under-logo.vue"; // 左上角logo下方祥云
+import Logo from '../../assets/icons/Logo.vue';
+import Send from "../../assets/icons/Send.vue";
+import CloudUnderLogo from "../../assets/icons/Clouds/Cloud-under-logo.vue";
 import RedCloudLeft from "../../assets/icons/Clouds/RedCloud-Left.vue";
-import RedCloudRight from "../../assets/icons/Clouds/RedCloud-Right.vue"; // 输入框下方祥云
-import CloudBeforeTitle from "../../assets/icons/Clouds/Cloud-before-title.vue"; // 对话标题前的祥云
-import CloudBeforeList from "../../assets/icons/Clouds/Cloud-before-list.vue"; // 对话列表前的祥云
-import Taiji from "../../assets/icons/Taiji.vue"; // 对话区域太极头像
-import Jingu from "../../assets/icons/Jingu.vue"; // 对话区域金箍头像
-import Strategy from "../../assets/icons/Strategy.vue"; // 攻略按钮图标
-import Medal from "../../assets/icons/Medal.vue" // 成就按钮图标
+import RedCloudRight from "../../assets/icons/Clouds/RedCloud-Right.vue";
+import CloudBeforeTitle from "../../assets/icons/Clouds/Cloud-before-title.vue";
+import CloudBeforeList from "../../assets/icons/Clouds/Cloud-before-list.vue";
+import Taiji from "../../assets/icons/Taiji.vue";
+import Jingu from "../../assets/icons/Jingu.vue";
+import Strategy from "../../assets/icons/Strategy.vue";
+import Medal from "../../assets/icons/Medal.vue"
 import Tips from "../../assets/icons/Tips.vue"
-import CustomAlert from "../../components/Dialog/CustomAlert.vue"; // 自定义弹窗组件
-import MenuBtn from "../../assets/icons/MenuBtn.vue"; // 目录按钮
+import CustomAlert from "../../components/Dialog/CustomAlert.vue";
+import MenuBtn from "../../assets/icons/MenuBtn.vue";
 import { type ConfigParams} from '../../apis/rag.ts';
 import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../../apis/dialog.ts';
 import {bindSteamAccount} from "../../apis/steam.ts";
@@ -563,14 +563,12 @@ const handleStreamMessage = (data: any, messageIndex: number): boolean => {
 
   switch (data.type) {
     case 'start':
-      // console.log('开始接收流式响应');
       break;
 
     case 'documents':
       // 设置参考文档
       if (data.documents && Array.isArray(data.documents)) {
         ragMessage.sourceDoc = data.documents;
-        //console.log(`接收到 ${data.documents.length} 个参考文档`);
       }
       break;
 
@@ -591,7 +589,6 @@ const handleStreamMessage = (data: any, messageIndex: number): boolean => {
       return false; // 遇到错误时停止处理
 
     case 'done':
-      // console.log('流式响应完成，最终回答长度:', ragMessage.text.length);
       streamingMessageIndex.value = null; // 清除流式状态
       return false; // 完成时停止处理
 
@@ -689,14 +686,11 @@ onMounted(async () => {
     if (localStorage.getItem('userProfile')) {
       currentUser.value = JSON.parse(localStorage.getItem('userProfile') || '');
       token.value = localStorage.getItem('token') || '';
-      // console.log('当前用户信息：', currentUser.value, token.value)
       // 获取全部的对话信息
       dialogList.value = await getAllHistory(currentUser.value);
-      // console.log('全部对话信息：', dialogList.value)
       if (dialogList.value.length > 0) {
         // 初始化默认的对话
         currentDialog.value = await getDialogDetail(dialogList.value[0].id);
-        // console.log('当前对话信息：', currentDialog.value)
         displayContentList.value = convertToDisplayFormat(currentDialog.value.contentList); // 转换数据格式
       }
     } else {

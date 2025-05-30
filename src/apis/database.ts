@@ -1,3 +1,4 @@
+// ===== 数据库操作模块 =====
 import {axios} from '../utils/request.ts'
 import { DB_MODULE } from './index.ts'
 export interface WukongDBInfo {

@@ -138,12 +138,12 @@ const sendQuestion = async () => {
   }
 };
 
-// 模拟API获取答案（实际项目中替换为真实API调用）
+// 模拟API获取答案
 const getAnswer = (question: string): Promise<string> => {
   return new Promise((resolve) => {
     // 模拟网络延迟
     setTimeout(() => {
-      // 这里根据问题生成不同的答案（实际应调用RAG接口）
+      // mock
       const answers = [
         `欲得"${question}"成就，需历经三劫九难：\n一劫：勇闯南天门\n二劫：力战十万天兵\n三劫：踏碎凌霄殿`,
         `"${question}"乃大造化，需集齐三样法宝：\n• 金箍棒\n• 筋斗云\n• 火眼金睛\n方可证得此道`,
@@ -152,7 +152,7 @@ const getAnswer = (question: string): Promise<string> => {
       ];
 
       resolve(answers[Math.floor(Math.random() * answers.length)]);
-    }, 1500); // 模拟1.5秒延迟
+    }, 1500);
   });
 };
 

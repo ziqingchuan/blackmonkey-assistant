@@ -132,17 +132,17 @@ import { useRouter } from 'vue-router';
 import { login, register, getSalt, getValidCode, type RegisterInfo, type LoginInfo } from '../apis/user';
 import {showAlert, customAlert} from "../utils/GlobalFunction.ts";
 import { setupFloatAnimation } from "../utils/GlobalFunction.ts";
-import CryptoJS from 'crypto-js'; // 用来加密的库
-import { genSaltSync } from 'bcryptjs';// 用来生成盐值的库
+import CryptoJS from 'crypto-js';
+import { genSaltSync } from 'bcryptjs';
 import CustomAlert from "../components/Dialog/CustomAlert.vue";
 import CloudOfIndexHeader from "../assets/icons/Clouds/CloudOfIndexHeader.vue";
 import RedCloudLeft from "../assets/icons/Clouds/RedCloud-Left.vue";
 import FooterCloudRight from "../assets/icons/Clouds/FooterCloudRight.vue";
 import FooterCloudLeft from "../assets/icons/Clouds/FooterCloudLeft.vue";
 import RedCloudRight from "../assets/icons/Clouds/RedCloud-Right.vue";
-const isLogoHovered = ref(false);
 
 // ==================== 变量声明 ====================
+const isLogoHovered = ref(false);
 const rightPanelActive = ref(false);
 const router = useRouter();
 const isEmailValid = ref(false);

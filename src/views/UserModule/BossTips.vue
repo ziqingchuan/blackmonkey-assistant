@@ -82,15 +82,15 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
 import {useRouter} from 'vue-router';
-import Logo from '../../assets/icons/Logo.vue'; // 左上角悟空logo
-import CloudUnderLogo from "../../assets/icons/Clouds/Cloud-under-logo.vue"; // 左上角logo下方祥云
+import Logo from '../../assets/icons/Logo.vue';
+import CloudUnderLogo from "../../assets/icons/Clouds/Cloud-under-logo.vue";
 import RedCloudLeft from "../../assets/icons/Clouds/RedCloud-Left.vue";
 import RedCloudRight from "../../assets/icons/Clouds/RedCloud-Right.vue";
-import CloudBeforeTitle from "../../assets/icons/Clouds/Cloud-before-title.vue"; // 对话标题前的祥云
-import CloudBeforeList from "../../assets/icons/Clouds/Cloud-before-list.vue"; // 对话列表前的祥云
-import CustomAlert from "../../components/Dialog/CustomAlert.vue"; // 自定义弹窗组件
-import GlobalLoading from '../../components/Dialog/GlobalLoading.vue'; // 全局加载组件
-import MenuBtn from "../../assets/icons/MenuBtn.vue"; // 目录按钮
+import CloudBeforeTitle from "../../assets/icons/Clouds/Cloud-before-title.vue";
+import CloudBeforeList from "../../assets/icons/Clouds/Cloud-before-list.vue";
+import CustomAlert from "../../components/Dialog/CustomAlert.vue";
+import GlobalLoading from '../../components/Dialog/GlobalLoading.vue';
+import MenuBtn from "../../assets/icons/MenuBtn.vue";
 import {customAlert, logout, showAlert} from "../../utils/GlobalFunction.ts";
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息

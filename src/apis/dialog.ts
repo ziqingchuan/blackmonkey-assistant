@@ -26,7 +26,11 @@ export interface Content {
     createTime: Date;
 }
 
-// 对话详情 - 返回单个 Dialog
+/**
+ * 获取对话详情
+ * @param id
+ * @returns Dialog
+ */
 export const getDialogDetail = async (id: number): Promise<Dialog> => {
     return axios.get<any>(`${DIALOG_MODULE}/detail/${id}`,{
         headers: {
@@ -36,7 +40,11 @@ export const getDialogDetail = async (id: number): Promise<Dialog> => {
     }).then(response => response.data.data);
 };
 
-// 获取所有历史对话 - 返回 Dialog 数组
+/**
+ * 获取所有历史对话
+ * @param userInfo
+ * @returns Dialog[]
+ */
 export const getAllHistory = async (userInfo: LoginInfo): Promise<Dialog[]> => {
     return axios.get<any>(`${DIALOG_MODULE}/getAll`, {
         headers: {
@@ -50,7 +58,11 @@ export const getAllHistory = async (userInfo: LoginInfo): Promise<Dialog[]> => {
     }).then(response => response.data.data);
 };
 
-// 创建对话 - 返回 boolean 表示是否成功
+/**
+ * 创建对话
+ * @param title
+ * @returns boolean
+ */
 export const createDialog = async (title: string): Promise<boolean> => {
     return axios.post<boolean>(`${DIALOG_MODULE}/create`, {title: title}, {
         headers: {

@@ -138,13 +138,13 @@
                           :key="index"
                           class="calendar-day"
                           :class="{
-            'has-achievements': day.achievementCount > 0,
-            'current-month': day.inMonth
-          }"
+                            'has-achievements': day.achievementCount > 0,
+                            'current-month': day.inMonth
+                          }"
                           :style="{
-            '--achievement-count': day.achievementCount,
-            'background-color': day.achievementCount > 0 ? `rgba(218, 185, 123, ${day.achievementCount / 20})` : 'transparent'
-          }"
+                            '--achievement-count': day.achievementCount,
+                            'background-color': day.achievementCount > 0 ? `rgba(218, 185, 123, ${day.achievementCount / 20})` : 'transparent'
+                          }"
                           @mouseover="hoveredDay = day"
                           @mouseleave="hoveredDay = undefined"
                       >
@@ -183,8 +183,8 @@
                     <div class="rare-stats">
                       {{ achievementsAnalysis.achievedRareAchievementCount }}/{{ achievementsAnalysis.rareAchievementTotal }}
                       <span class="rare-percent">
-            {{ Math.round(achievementsAnalysis.achievedRareAchievementCount / achievementsAnalysis.rareAchievementTotal * 100) || 0 }}%
-          </span>
+                        {{ Math.round(achievementsAnalysis.achievedRareAchievementCount / achievementsAnalysis.rareAchievementTotal * 100) || 0 }}%
+                      </span>
                     </div>
                   </div>
                   <p class="float-up float-delay-3">20%~50%玩家达成</p>
@@ -202,8 +202,8 @@
                     <div class="rare-stats">
                       {{ achievementsAnalysis.achievedSuperRareAchievementCount }}/{{ achievementsAnalysis.superRareAchievementTotal }}
                       <span class="rare-percent">
-            {{ Math.round(achievementsAnalysis.achievedSuperRareAchievementCount / achievementsAnalysis.superRareAchievementTotal * 100) || 0 }}%
-          </span>
+                        {{ Math.round(achievementsAnalysis.achievedSuperRareAchievementCount / achievementsAnalysis.superRareAchievementTotal * 100) || 0 }}%
+                      </span>
                     </div>
                   </div>
                   <p class="float-up float-delay-3">少于20%玩家达成</p>
@@ -221,8 +221,8 @@
                     <div class="rare-stats">
                       {{ achievementsAnalysis.achievedHiddenAchievementCount }}/{{ achievementsAnalysis.hiddenAchievementCount }}
                       <span class="rare-percent">
-            {{ Math.round(achievementsAnalysis.achievedHiddenAchievementCount / achievementsAnalysis.hiddenAchievementCount * 100) || 0 }}%
-          </span>
+                        {{ Math.round(achievementsAnalysis.achievedHiddenAchievementCount / achievementsAnalysis.hiddenAchievementCount * 100) || 0 }}%
+                      </span>
                     </div>
                   </div>
                   <p class="float-up float-delay-3">需要特殊条件解锁</p>
