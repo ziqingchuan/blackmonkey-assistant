@@ -778,6 +778,7 @@ input, button {
                 line-height: 1.7;
                 font-size: 18px;
                 white-space: pre-line;
+                text-align: center;
               }
             }
 
