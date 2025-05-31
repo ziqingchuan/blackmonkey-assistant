@@ -56,11 +56,25 @@
       <div class="bossTip-container">
         <!-- 头部 -->
         <div class="bossTip-header">
-          <div class="header-container">
-            <CloudBeforeTitle />
-            <span class="bossTip-title" @click="backToChapter">{{currentChapter?.chapterName}}</span>
+            <!-- 头部左侧 -->
+            <div class="header-left">
+              <CloudBeforeTitle />
+              <span class="bossTip-title" @click="backToChapter">{{currentChapter?.chapterName}}</span>
+            </div>
+            <!-- 右侧按钮 -->
+            <div class="header-right">
+              <!-- 成就页面按钮 -->
+              <button class="achieve-btn" @click="toAchievementPage">
+                <span class="text-container">功德成就</span>
+              </button>
+              <button class="achieve-btn" @click="toPlayMethodsPage">
+                <span class="text-container">打法推荐</span>
+              </button>
+              <button class="achieve-btn" @click="toRAGPage">
+                <span class="text-container">三界问答</span>
+              </button>
+            </div>
           </div>
-        </div>
 
         <!-- 主内容 -->
         <div class="bossTip-information">
@@ -75,7 +89,6 @@
               <div class="boss-image-container">
                 <img :src="boss.imgUrl" :alt="boss.name" class="boss-image" />
               </div>
-              <div class="boss-name">{{ boss.name }}</div>
             </div>
           </div>
 
@@ -83,43 +96,67 @@
           <div v-else class="boss-detail">
             <div class="detail-header">
               <div class="boss-name">{{ currentBoss?.name }}</div>
-              <div class="boss-position">位置: {{ currentBoss?.position }}</div>
             </div>
 
             <div class="detail-content">
-              <div class="image-container">
-                <img :src="currentBoss?.imgUrl" :alt="currentBoss?.name" class="detail-image" />
-              </div>
+              <div class="image-info-container">
+                <div class="image-container">
+                  <img :src="currentBoss?.imgUrl" :alt="currentBoss?.name" class="detail-image" />
+                </div>
 
-              <div class="info-section">
-                <div class="difficulty">
-                  <span>难度:</span>
-                  <div class="stars">
-                    <span v-for="i in 5" :key="i" class="star" :class="{ 'active': i <= Math.ceil((currentBoss?.difficulty || 0)/2) }">★</span>
+                <div class="info-panel">
+                  <div class="difficulty">
+                    <span>难度:</span>
+                    <div class="stars">
+                      <span v-for="i in 10" :key="i" class="star" :class="{ 'active': i <= (currentBoss?.difficulty || 0) }">★</span>
+                    </div>
+                  </div>
+
+                  <div class="rewards">
+                    <h3>掉落奖励</h3>
+                    <p>{{ currentBoss?.reward }}</p>
+                  </div>
+
+                  <div class="position-info">
+                    <h3>位置</h3>
+                    <p>{{ currentBoss?.position }}</p>
+                    <a href="#" class="map-link" @click.prevent="showPositionMap">
+                      <i class="map-icon"></i> 点击查看地图信息
+                    </a>
                   </div>
                 </div>
+              </div>
 
-                <div class="description">
-                  <h3>描述</h3>
-                  <p>{{ currentBoss?.description }}</p>
-                </div>
+              <div class="description-container">
+                <h3>背景故事介绍</h3>
+                <p>{{ currentBoss?.description }}</p>
+              </div>
 
-                <div class="tricks">
-                  <h3>招式</h3>
-                  <ul>
-                    <li v-for="(trick, index) in currentBoss?.bossTrick" :key="index">{{ trick }}</li>
-                  </ul>
-                </div>
+              <div class="experience">
+                <h3>打法经验</h3>
+                <p>{{ currentBoss?.experience }}</p>
+              </div>
 
-                <div class="experience">
-                  <h3>打法经验</h3>
-                  <p>{{ currentBoss?.experience }}</p>
+              <div class="tricks">
+                <h3>招式</h3>
+                <div class="tricks-container">
+                  <div v-for="(trick, index) in currentBoss?.bossTrick" :key="index" class="trick-card">
+                    <div class="trick-name">{{ trick.name }}</div>
+                    <img :src="trick.gifUrl" :alt="trick.name" class="trick-gif" />
+                  </div>
                 </div>
+              </div>
 
-                <div class="rewards">
-                  <h3>掉落奖励</h3>
-                  <p>{{ currentBoss?.reward }}</p>
-                </div>
+              <div class="encouragement" v-if="currentBoss?.encouragement">
+                <p>{{ currentBoss?.encouragement }}</p>
+              </div>
+            </div>
+
+            <!-- 位置地图弹窗 -->
+            <div v-if="showMapModal" class="map-modal" @click.self="closeMapModal">
+              <div class="modal-content">
+                <button class="close-btn" @click="closeMapModal">×</button>
+                <img :src="currentBoss?.positionImgUrl" alt="位置地图" class="map-image" />
               </div>
             </div>
           </div>
@@ -151,6 +188,7 @@ import GlobalLoading from '../../components/Dialog/GlobalLoading.vue';
 import MenuBtn from "../../assets/icons/MenuBtn.vue";
 import {customAlert, logout, showAlert} from "../../utils/GlobalFunction.ts";
 import {bossInfo, chapterName, type TipInfo, type BossInfo} from "../../consts/bossData";
+import {bindSteamAccount} from "../../apis/steam.ts";
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
 const token = ref(''); // 用户登录token
@@ -193,6 +231,7 @@ const BossTipsList = ref<TipInfo[]>([
         bossTips: bossInfo.slice(51, 63)
     },
   ]);
+const showMapModal = ref(false);// 地图弹窗相关状态
 
 // ==================== 函数声明 ====================
 
@@ -209,6 +248,16 @@ const backToChapter = () => {
   }
 };
 
+// 显示位置地图
+const showPositionMap = () => {
+  showMapModal.value = true;
+};
+
+// 关闭地图弹窗
+const closeMapModal = () => {
+  showMapModal.value = false;
+};
+
 const loadTip = (id: number) => {
   try {
     isWaiting.value = true;
@@ -222,6 +271,41 @@ const loadTip = (id: number) => {
     isWaiting.value = false;
   }
 };
+
+// 进入成就页面
+const toAchievementPage = async () => {
+  console.log(localStorage.getItem('hasBindSteam'));
+  if(localStorage.getItem('hasBindSteam') === 'false') {
+    const steamId = await showAlert('天命人，请输入SteamID后再查看成就', 2);
+    if(steamId) {
+      isWaiting.value = true;
+      await bindSteamAccount(steamId)
+          .then(response => {
+            if(response) {
+              isWaiting.value = false;
+              localStorage.setItem('hasBindSteam', 'true');
+              router.push('/achievement');
+            }
+          })
+          .catch(error => {
+            showAlert('绑定Steam账号失败，请稍后再试', 0);
+            isWaiting.value = false;
+            console.error('获取成就信息失败:', error.response?.data || error.message);
+          });
+    }
+  } else { // 已经绑定了steam
+    await router.push('/achievement');
+  }
+}
+
+const toPlayMethodsPage = async () => {
+  await router.push('/play-methods');
+}
+
+const toRAGPage = async () => {
+  await router.push('/rag-user');
+}
+
 
 // 界面初始化加载
 onMounted(async () => {
@@ -371,7 +455,7 @@ input, button {
           display: none; /* Chrome/Safari/Opera */
         }
         .bossTip-item {
-          padding: 12px;
+          padding: 24px;
           margin: 8px 0;
           background: rgba(40, 40, 45, 0.8);
           border-radius: 6px;
@@ -406,33 +490,56 @@ input, button {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 30px;
+      padding: 20px 30px 30px;
 
       .bossTip-header {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        .header-container {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          margin-bottom: 10px;
-          .bossTip-title {
+        .header-left {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            .bossTip-title {
+              font-size: 18px;
+              letter-spacing: 2px;
+              color: #d3b479;
+              border-bottom: 2px solid #c0aa6a;
+              padding-bottom: 10px;
+            }
+          }
+        .header-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 18px;
             letter-spacing: 2px;
             color: #d3b479;
-            border-bottom: 2px solid #c0aa6a;
-            padding-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-
-            &:hover {
-              color: #f0d9a0;
-              text-shadow: 0 0 10px rgba(192, 170, 106, 0.5);
+            margin-bottom: 10px;
+            .achieve-btn {
+              width: 50px;
+              height: 50px;
+              font-family: 'Ma Shan Zheng', cursive;
+              color: #c0aa6a;
+              border-radius: 10%;
+              background: #0e0e11;
+              border: none;
+              cursor: pointer;
+              transition: all 0.3s;
+              position: relative;
+              overflow: hidden;
+              .text-container {
+                font-size: 16px;
+                font-weight: bold;
+                color: #d3b479;
+                font-family: 'Ma Shan Zheng', cursive;
+              }
+              &:hover {
+                transform: scale(1.2);
+              }
             }
           }
-        }
       }
       .bossTip-information {
         background-image: url('/wukong.png');
@@ -455,9 +562,11 @@ input, button {
 
         /* Boss网格布局 */
         .boss-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-          gap: 25px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 80px;
           padding: 15px;
 
           .boss-card {
@@ -470,40 +579,24 @@ input, button {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 
             &:hover {
-              transform: translateY(-5px);
+              transform: translateY(-10px);
               border-color: #c0aa6a;
               box-shadow: 0 8px 20px rgba(192, 170, 106, 0.2);
-
-              .boss-name {
-                background: rgba(192, 170, 106, 0.2);
-                color: #f0d9a0;
-              }
             }
 
             .boss-image-container {
-              height: 160px;
+              width: 300px;
+              height: 420px;
               overflow: hidden;
 
               .boss-image {
-                width: 100%;
-                height: 100%;
                 object-fit: cover;
                 transition: transform 0.5s ease;
               }
             }
-
-            .boss-name {
-              padding: 12px;
-              text-align: center;
-              font-size: 18px;
-              color: #d3b479;
-              background: rgba(40, 40, 45, 0.9);
-              transition: all 0.3s ease;
-            }
           }
         }
 
-        /* Boss详情样式 */
         .boss-detail {
           background: rgba(25, 25, 30, 0.85);
           border: 1px solid #4a4a4f;
@@ -523,99 +616,303 @@ input, button {
               letter-spacing: 2px;
               text-shadow: 0 0 10px rgba(192, 170, 106, 0.4);
             }
-
-            .boss-position {
-              font-size: 18px;
-              color: #b0a070;
-              margin-top: 8px;
-            }
           }
 
           .detail-content {
             display: flex;
+            flex-direction: column;
             gap: 30px;
 
-            .image-container {
-              flex: 1;
-              max-width: 350px;
+            .image-info-container {
+              display: flex;
+              gap: 30px;
+              margin-bottom: 20px;
 
-              .detail-image {
-                width: 100%;
+              .image-container {
+                flex: 1;
+                max-width: 350px;
+                height: 465px;
+
+                .detail-image {
+                  width: 100%;
+                  height: 465px;
+                  border-radius: 8px;
+                  border: 2px solid #5a5a5f;
+                  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+                }
+              }
+
+              .info-panel {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-self: center;
+                gap: 20px;
+                background: rgba(40, 40, 45, 0.6);
                 border-radius: 8px;
-                border: 2px solid #5a5a5f;
-                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+                border: 1px solid #5a5a5f;
+                padding: 20px;
+
+                .difficulty {
+                  display: flex;
+                  align-items: center;
+                  gap: 15px;
+
+                  span {
+                    color: #e7cc80;
+                    font-size: 24px;
+                    font-weight: bold;
+                  }
+
+                  .stars {
+                    display: flex;
+
+                    .star {
+                      color: #5a5a5f;
+                      font-size: 24px;
+                      margin-right: 5px;
+
+                      &.active {
+                        color: #ffd700;
+                        text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+                      }
+                    }
+                  }
+                }
+
+                .rewards {
+                  h3 {
+                    color: #e7cc80;
+                    margin-bottom: 10px;
+                    font-size: 22px;
+                  }
+
+                  p {
+                    color: #d0d0d0;
+                    line-height: 1.7;
+                    font-size: 18px;
+                  }
+                }
+
+                .position-info {
+                  h3 {
+                    color: #e7cc80;
+                    margin-bottom: 10px;
+                    font-size: 22px;
+                  }
+
+                  p {
+                    color: #d0d0d0;
+                    line-height: 1.7;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    white-space: pre-line;
+                  }
+
+                  .map-link {
+                    display: inline-flex;
+                    align-items: center;
+                    color: #c0aa6a;
+                    font-size: 16px;
+                    text-decoration: none;
+                    transition: color 0.3s;
+
+                    &:hover {
+                      color: #e7cc80;
+                      text-decoration: underline;
+                    }
+
+                    .map-icon {
+                      display: inline-block;
+                      width: 20px;
+                      height: 20px;
+                      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23c0aa6a"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>');
+                      background-repeat: no-repeat;
+                      background-size: contain;
+                      margin-right: 8px;
+                    }
+                  }
+                }
               }
             }
 
-            .info-section {
-              flex: 2;
-
-              > div {
-                margin-bottom: 25px;
-              }
+            .description-container {
+              padding: 15px;
+              background: rgba(40, 40, 45, 0.6);
+              border-radius: 8px;
+              border: 1px solid #5a5a5f;
 
               h3 {
                 color: #e7cc80;
                 border-left: 3px solid #c0aa6a;
                 padding-left: 12px;
-                margin-bottom: 12px;
+                margin-bottom: 15px;
                 font-size: 22px;
               }
 
-              p, li {
+              p {
+                text-align: center;
                 color: #d0d0d0;
                 line-height: 1.7;
                 font-size: 18px;
+                white-space: pre-line;
+              }
+            }
+
+            .experience {
+              padding: 15px;
+              background: rgba(40, 40, 45, 0.6);
+              border-radius: 8px;
+              border: 1px solid #5a5a5f;
+
+              h3 {
+                color: #e7cc80;
+                border-left: 3px solid #c0aa6a;
+                padding-left: 12px;
+                margin-bottom: 15px;
+                font-size: 22px;
               }
 
-              .difficulty {
+              p {
+                color: #d0d0d0;
+                line-height: 1.7;
+                font-size: 18px;
+                white-space: pre-line;
+              }
+            }
+
+            .tricks {
+              padding: 15px;
+              background: rgba(40, 40, 45, 0.6);
+              border-radius: 8px;
+              border: 1px solid #5a5a5f;
+              h3 {
+                color: #e7cc80;
+                border-left: 3px solid #c0aa6a;
+                padding-left: 12px;
+                margin-bottom: 15px;
+                font-size: 22px;
+              }
+
+              .tricks-container {
                 display: flex;
-                align-items: center;
-                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 50px;
+                margin-top: 15px;
 
-                span {
-                  color: #d3b479;
-                  font-size: 20px;
-                }
+                .trick-card {
+                  background: rgba(50, 50, 55, 0.8);
+                  border: 1px solid #5a5a5f;
+                  border-radius: 8px;
+                  padding: 15px;
+                  text-align: center;
+                  cursor: pointer;
+                  width: 300px;
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+                  transition: transform 0.3s ease;
 
-                .stars {
-                  display: flex;
-
-                  .star {
-                    color: #5a5a5f;
-                    font-size: 24px;
-                    margin-right: 5px;
-
-                    &.active {
-                      color: #ffd700;
-                      text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
-                    }
+                  &:hover {
+                    transform: translateY(-5px);
+                    border-color: #c0aa6a;
                   }
-                }
-              }
 
-              .tricks {
-                ul {
-                  list-style-type: none;
-                  padding-left: 0;
-
-                  li {
-                    position: relative;
-                    padding-left: 25px;
+                  .trick-name {
+                    color: #e7cc80;
                     margin-bottom: 10px;
+                    font-size: 18px;
+                  }
 
-                    &::before {
-                      content: "•";
-                      color: #c0aa6a;
-                      font-size: 24px;
-                      position: absolute;
-                      left: 0;
-                      top: -3px;
-                    }
+                  .trick-gif {
+                    width: 100%;
+                    border-radius: 4px;
                   }
                 }
               }
             }
+          }
+
+          .encouragement {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            p {
+              text-align: center;
+              color: #f6dc94;
+              line-height: 1.2;
+              font-size: 20px;
+              white-space: pre-line;
+            }
+          }
+
+          /* 地图弹窗样式 */
+          .map-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+
+            .modal-content {
+              position: relative;
+              background: rgba(30, 30, 35, 0.95);
+              border: 2px solid #c0aa6a;
+              border-radius: 10px;
+              padding: 40px;
+              max-width:90%;
+              max-height: 90%;
+              overflow: auto;
+
+              .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                background: transparent;
+                border: none;
+                color: #c0aa6a;
+                font-size: 28px;
+                cursor: pointer;
+                transition: color 0.3s;
+
+                &:hover {
+                  color: #e7cc80;
+                }
+              }
+
+              .map-image {
+                max-width: 100%;
+                max-height: 80vh;
+                border-radius: 8px;
+              }
+            }
+          }
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 1024px) {
+          .image-info-container {
+            flex-direction: column !important;
+
+            .image-container, .info-panel {
+              max-width: 100% !important;
+            }
+          }
+
+          .trick-card {
+            width: 250px !important;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .trick-card {
+            width: 200px !important;
+            padding: 10px !important;
           }
         }
       }
