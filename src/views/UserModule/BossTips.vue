@@ -610,7 +610,7 @@ input, button {
                 width: 100%;
                 height: 100%;
                 &:hover {
-                  background-color: rgba(192, 170, 106, 0.35);git
+                  background-color: rgba(192, 170, 106, 0.35);
                 }
               }
             }
