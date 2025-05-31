@@ -304,9 +304,13 @@ import {
   getSchoolRecommendation,
   isValidStickType,
   getScriptureContent,
+  getAdvancedSchoolsContent,
+  getAdvancedSchoolDetails,
+  getDynamicTitle,
   type StickType,
   type ScriptureResponse,
-  type MessageType // 新增导入
+  type MessageType,
+  type ConversationMessage // 新增导入
 } from "../../apis/playMethods.ts";
 
 // ==================== 接口定义 ====================
@@ -350,19 +354,16 @@ const scriptureContent = ref<ScriptureResponse['data'] | null>(null);
  * 动态标题
  */
 const dynamicTitle = computed(() => {
-  if (!hasChosenStick.value) {
-    return '武学传承 · 棍法入门';
-  } else if (hasChosenStick.value && !hasChosenSchool.value) {
-    return `武学传承 · ${chosenStickType.value}修炼`;
-  } else if (hasChosenSchool.value && !hasStartedCombat.value) {
-    return `武学传承 · ${chosenSchoolName.value}`;
-  } else if (hasStartedCombat.value && !hasReachedAdvanced.value) {
-    return `武学传承 · 实战传授`;
-  } else if (hasReachedAdvanced.value && !hasSelectedAdvancedSchool.value) {
-    return `武学传承 · 上层流派`;
-  } else {
-    return `武学传承 · ${selectedAdvancedSchool.value}`;
-  }
+  return getDynamicTitle(
+    hasChosenStick.value,
+    chosenStickType.value,
+    hasChosenSchool.value,
+    chosenSchoolName.value,
+    hasStartedCombat.value,
+    hasReachedAdvanced.value,
+    hasSelectedAdvancedSchool.value,
+    selectedAdvancedSchool.value
+  );
 });
 
 // ==================== 函数声明 ====================
