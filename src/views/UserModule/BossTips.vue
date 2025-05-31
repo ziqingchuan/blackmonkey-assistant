@@ -86,8 +86,8 @@
                 class="boss-card"
                 @click="showBossDetailHandler(boss)"
             >
-              <div class="boss-image-container">
-                <img :src="boss.imgUrl" :alt="boss.name" class="boss-image" />
+              <div class="boss-image-container" :style="{ backgroundImage: `url(${boss.imgUrl})` }">
+<!--                <img :src="boss.imgUrl" :alt="boss.name" class="boss-image" />-->
               </div>
             </div>
           </div>
@@ -112,7 +112,7 @@
                     </div>
                   </div>
 
-                  <div class="rewards">
+                  <div class="rewards" v-if="currentBoss?.reward">
                     <h3>掉落奖励</h3>
                     <p>{{ currentBoss?.reward }}</p>
                   </div>
@@ -127,7 +127,7 @@
                 </div>
               </div>
 
-              <div class="description-container">
+              <div class="description-container" v-if="currentBoss?.description">
                 <h3>背景故事介绍</h3>
                 <p>{{ currentBoss?.description }}</p>
               </div>
@@ -137,7 +137,7 @@
                 <p>{{ currentBoss?.experience }}</p>
               </div>
 
-              <div class="tricks">
+              <div class="tricks" v-if="currentBoss?.bossTrick">
                 <h3>招式</h3>
                 <div class="tricks-container">
                   <div v-for="(trick, index) in currentBoss?.bossTrick" :key="index" class="trick-card">
@@ -338,6 +338,22 @@ onMounted(async () => {
 input, button {
   font-family: 'Ma Shan Zheng', cursive;
 }
+.float-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* 为不同元素设置不同的延迟 */
+.float-delay-1 { transition-delay: 0.2s; }
+.float-delay-2 { transition-delay: 0.4s; }
+.float-delay-3 { transition-delay: 0.6s; }
+.float-delay-4 { transition-delay: 0.8s; }
+.float-delay-5 { transition-delay: 1s; }
 /* 页面整体样式 */
 .page-container {
   display: flex;
@@ -455,7 +471,7 @@ input, button {
           display: none; /* Chrome/Safari/Opera */
         }
         .bossTip-item {
-          padding: 24px;
+          padding: 20px;
           margin: 8px 0;
           background: rgba(40, 40, 45, 0.8);
           border-radius: 6px;
@@ -566,7 +582,7 @@ input, button {
           justify-content: center;
           align-items: center;
           flex-wrap: wrap;
-          gap: 80px;
+          gap: 50px;
           padding: 15px;
 
           .boss-card {
@@ -585,14 +601,10 @@ input, button {
             }
 
             .boss-image-container {
-              width: 300px;
-              height: 420px;
+              width: 240px;
+              height: 336px;
               overflow: hidden;
-
-              .boss-image {
-                object-fit: cover;
-                transition: transform 0.5s ease;
-              }
+              background-size: contain;
             }
           }
         }
@@ -697,7 +709,7 @@ input, button {
                 .position-info {
                   h3 {
                     color: #e7cc80;
-                    margin-bottom: 10px;
+                    margin: 0;
                     font-size: 22px;
                   }
 
