@@ -2,5 +2,6 @@ export const API_MODULE = '/api'
 
 export const RAG_MODULE = `${API_MODULE}/rag`
 export const DIALOG_MODULE = `${API_MODULE}/dialog`
-export const DB_MODULE = `${API_MODULE}/vector`
+export const WUKONG_DB_MODULE = `${API_MODULE}/wukong`
+export const ACHIEVEMENTS_DB_MODULE = `${API_MODULE}/achievements`
 export const STEAM_MODULE = `${API_MODULE}/steam`
