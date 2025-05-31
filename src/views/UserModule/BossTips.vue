@@ -87,7 +87,7 @@
                 @click="showBossDetailHandler(boss)"
             >
               <div class="boss-image-container" :style="{ backgroundImage: `url(${boss.imgUrl})` }">
-<!--                <img :src="boss.imgUrl" :alt="boss.name" class="boss-image" />-->
+                <div class="shadow"></div>
               </div>
             </div>
           </div>
@@ -605,6 +605,14 @@ input, button {
               height: 336px;
               overflow: hidden;
               background-size: contain;
+              .shadow {
+                background-color: rgba(80, 62, 23, 0.24);
+                width: 100%;
+                height: 100%;
+                &:hover {
+                  background-color: rgba(192, 170, 106, 0.35);git
+                }
+              }
             }
           }
         }
