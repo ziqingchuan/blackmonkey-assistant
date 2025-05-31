@@ -1,6 +1,6 @@
 // ===== 数据库操作模块 =====
 import {axios} from '../utils/request.ts'
-import { DB_MODULE } from './index.ts'
+import { WUKONG_DB_MODULE, ACHIEVEMENTS_DB_MODULE } from './index.ts'
 
 /**
  * @Description: wukong数据库字段结构，后续会扩展其他数据库
@@ -13,12 +13,28 @@ export interface WukongDBInfo {
 }
 
 /**
+ * @Description: achievements数据库字段结构，后续会扩展其他数据库
+ */
+export interface AchievementsDBInfo {
+    primary_key: string; // (string类型防止数据溢出)
+    ID: string;
+    name: string;
+    description: string;
+    icon: string;
+    icon_gray: string;
+    hidden: boolean;
+    complete_percentage: number;
+    access: string;
+    keywords: string[]
+}
+
+/**
  * @Description: 抽象类，可以表示各类数据库，只需扩展database字段的类型即可
  */
 export interface DataBase {
     id: number; // 数据库的类别区分
     name: string;
-    database: WukongDBInfo[]; // 数据库信息, 后续会扩展其他类型的info
+    database: WukongDBInfo[] | AchievementsDBInfo[]; // 数据库信息, 后续会扩展其他类型的info
 }
 
 /**
@@ -30,13 +46,25 @@ export interface InsertWukongDBInfo {
     category: string;
 }
 
+export interface InsertAchievementsDBInfo {
+    ID: string;
+    name: string;
+    description: string;
+    icon: string;
+    icon_gray: string;
+    hidden: boolean;
+    complete_percentage: number;
+    access: string;
+    keywords: string[]
+}
+
 /**
  * 插入数据
  * @param data WukongDBInfo 对象
  * @returns 新创建数据的主键
  */
 export const insertWukongData = async (data: InsertWukongDBInfo): Promise<number> => {
-    return axios.post<{ pk: number }>(DB_MODULE, data, {
+    return axios.post<{ pk: number }>(WUKONG_DB_MODULE, data, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -45,12 +73,40 @@ export const insertWukongData = async (data: InsertWukongDBInfo): Promise<number
 };
 
 /**
+ * 插入数据
+ * @param data WukongDBInfo 对象
+ * @returns 新创建数据的主键
+ */
+export const insertAchievementsData = async (data: InsertAchievementsDBInfo): Promise<number> => {
+    return axios.post<{ primary_key: number }>(ACHIEVEMENTS_DB_MODULE, data, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    }).then(response => response.data.primary_key);
+};
+
+/**
  * 删除数据
  * @param pk 要删除数据的主键
  * @returns 是否删除成功
  */
 export const deleteWukongData = async (pk: string): Promise<boolean> => {
-    return axios.delete<boolean>(`${DB_MODULE}/${pk}`, {
+    return axios.delete<boolean>(`${WUKONG_DB_MODULE}/${pk}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    }).then(response => response.data);
+};
+
+/**
+ * 删除数据
+ * @param primary_key 要删除数据的主键
+ * @returns 是否删除成功
+ */
+export const deleteAchievementsData = async (primary_key: string): Promise<boolean> => {
+    return axios.delete<boolean>(`${ACHIEVEMENTS_DB_MODULE}/${primary_key}`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -64,7 +120,20 @@ export const deleteWukongData = async (pk: string): Promise<boolean> => {
  * @returns 是否更新成功
  */
 export const updateWukongData = async (data: WukongDBInfo): Promise<boolean> => {
-    return axios.put<boolean>(`${DB_MODULE}/${data.pk}`, data, {
+    return axios.put<boolean>(`${WUKONG_DB_MODULE}/${data.pk}`, data, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    }).then(response => response.data);
+};
+/**
+ * 更新数据
+ * @param data AchievementsDBInfo
+ * @returns 是否更新成功
+ */
+export const updateAchievementsData = async (data: AchievementsDBInfo): Promise<boolean> => {
+    return axios.put<boolean>(`${ACHIEVEMENTS_DB_MODULE}/${data.primary_key}`, data, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -72,26 +141,25 @@ export const updateWukongData = async (data: WukongDBInfo): Promise<boolean> => 
     }).then(response => response.data);
 };
 
-// /**
-//  * 获取单条数据详情
-//  * @param pk 要获取数据的主键
-//  * @returns WukongDBInfo 对象
-//  */
-// export const getWukongDataDetail = async (pk: number): Promise<WukongDBInfo> => {
-//     return axios.get<WukongDBInfo>(`${DB_MODULE}/${pk}`, {
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': `Bearer ${localStorage.getItem('token')}`
-//         }
-//     }).then(response => response.data);
-// };
-
 /**
  * 获取所有数据列表
  * @returns WukongDBInfo 数组
  */
 export const getAllWukongData = async (): Promise<WukongDBInfo[]> => {
-    return axios.get<WukongDBInfo[]>(DB_MODULE, {
+    return axios.get<WukongDBInfo[]>(WUKONG_DB_MODULE, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    }).then(response => response.data);
+};
+
+/**
+ * 获取所有数据列表
+ * @returns AchievementsDBInfo 数组
+ */
+export const getAllAchievementsData = async (): Promise<AchievementsDBInfo[]> => {
+    return axios.get<AchievementsDBInfo[]>(ACHIEVEMENTS_DB_MODULE, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
