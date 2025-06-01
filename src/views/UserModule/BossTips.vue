@@ -175,7 +175,6 @@ import GlobalLoading from '../../components/Dialog/GlobalLoading.vue';
 import MenuBtn from "../../assets/icons/MenuBtn.vue";
 import {customAlert, logout, showAlert} from "../../utils/GlobalFunction.ts";
 import {bossInfo, chapterName, type TipInfo, type BossInfo} from "../../consts/bossData";
-import {bindSteamAccount} from "../../apis/steam.ts";
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
 const token = ref(''); // 用户登录token

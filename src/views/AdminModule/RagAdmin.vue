@@ -24,7 +24,7 @@
         />
       </div>
       <div class="btn-group">
-        <button class="btn" @click="openFormDiaglog" title="添加数据">
+        <button class="btn" @click="openFormDialog" title="添加数据">
           <span class="btn-origin-text">纂天</span>
           <span class="btn-new-text">添加数据</span>
         </button>
@@ -202,7 +202,7 @@ const handleAchievementsInsert = async (data: InsertAchievementsDBInfo) => {
   }
 };
 
-const openFormDiaglog = () => {
+const openFormDialog = () => {
   if (currentDB.value?.name === 'wukong') {
     isWukongUploading.value = true;
     isAchievementsUploading.value = false;

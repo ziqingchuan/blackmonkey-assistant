@@ -10,7 +10,7 @@
         </button>
       </div>
 
-      <div class="dialog-content" ref="chatContainer">
+      <div class="dialog-content">
         <!-- 初始机器人欢迎消息 -->
         <div class="message bot-message">
           <div class="avatar">
@@ -22,7 +22,7 @@
         </div>
 
         <!-- 动态消息列表 -->
-        <template v-for="item in messages" :key="index">
+        <template v-for="item in messages">
           <!-- 用户消息 -->
           <div v-if="item.sender === 'user'" class="message user-message">
             <div class="text">
@@ -76,13 +76,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, watch, computed } from 'vue';
+import {ref, computed, nextTick} from 'vue';
 import {
   getCombatMethodsAnswer,
   getAchievementAnswer,
   type ConfigParams,
   type CombatMethodsQuestion, type AchievementQuestion
 } from '../../apis/rag.ts';
+import {scrollToBottom} from "../../utils/GlobalFunction.ts";
 
 const chatBotAvatar = "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/chatBot.png"
 
@@ -114,8 +115,6 @@ const question = ref('');
 const messages = ref<Array<{sender: 'user' | 'bot', content: string}>>([]);
 // 加载状态
 const isLoading = ref(false);
-// 聊天容器引用
-const chatContainer = ref<HTMLElement | null>(null);
 
 // 根据模式计算标题
 const dialogTitle = computed(() => {
@@ -165,7 +164,7 @@ const sendQuestion = async () => {
 
   question.value = '';  // 清空输入框
   isLoading.value = true;  // 显示加载状态
-  scrollToBottom(); // 滚动到底部
+  await nextTick(() => scrollToBottom('.dialog-content'));
 
   try {
 
@@ -220,21 +219,10 @@ const sendQuestion = async () => {
 
   } finally {
     isLoading.value = false;
-    scrollToBottom();
+    await nextTick(() => scrollToBottom('.dialog-content'));
   }
 };
 
-// 滚动到聊天底部
-const scrollToBottom = () => {
-  nextTick(() => {
-    if (chatContainer.value) {
-      chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
-    }
-  });
-};
-
-// 当消息变化时自动滚动
-watch(messages, scrollToBottom, { deep: true });
 </script>
 
 <style lang="scss" scoped>

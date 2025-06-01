@@ -306,7 +306,7 @@
   </div>
   <!-- 右下角固定按钮 -->
   <div class="floating-buttons">
-    <button class="floating-button" title="返回顶部" @click="scrollToTop">
+    <button class="floating-button" title="返回顶部" @click="scrollToTop('.achievement-data')">
       <ScrollToTopIcon />
     </button>
     <button class="floating-button" title="问答助手" @click="toggleDialog">
@@ -347,7 +347,7 @@ import AchievementDialog from "../../components/Dialog/AchievementDialog.vue";
 import ScrollToTopIcon from "../../assets/icons/ScrollToTop.vue";
 import ChatBot from "../../assets/icons/ChatBot.vue";
 import { setupFloatAnimation, formatDate, initLineChart, initPieChart, destroyLineChart, destroyPieChart,
-  lineChartData, pieChartData } from "../../utils/GlobalFunction.ts";
+  lineChartData, pieChartData, scrollToTop } from "../../utils/GlobalFunction.ts";
 import ArrowLeftIcon from "../../assets/icons/ArrowLeftIcon.vue";
 import ArrowRightIcon from "../../assets/icons/ArrowRightIcon.vue";
 // ==================== 变量声明 ====================
@@ -724,17 +724,6 @@ onBeforeUnmount(() => {
   destroyLineChart();
   destroyPieChart();
 });
-
-
-// 滚动到顶部
-const scrollToTop = () => {
-  if (achievementDataRef.value) {
-    achievementDataRef.value.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  }
-};
 
 // 切换对话框显示状态
 const toggleDialog = () => {

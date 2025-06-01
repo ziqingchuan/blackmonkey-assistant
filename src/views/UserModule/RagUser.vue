@@ -246,7 +246,7 @@
 
 </template>
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, nextTick} from 'vue';
 import { useRouter } from 'vue-router';
 import Logo from '../../assets/icons/Logo.vue';
 import Send from "../../assets/icons/Send.vue";
@@ -263,7 +263,7 @@ import {type CommonQuestion, type ConfigParams} from '../../apis/rag.ts';
 import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../../apis/dialog.ts';
 import {bindSteamAccount} from "../../apis/steam.ts";
 import GlobalLoading from "../../components/Dialog/GlobalLoading.vue";
-import {customAlert, showAlert, formatTime} from "../../utils/GlobalFunction.ts";
+import {customAlert, showAlert, formatTime, logout, scrollToBottom} from "../../utils/GlobalFunction.ts";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -327,6 +327,7 @@ const loadDialog = async (id: number) => {
     showAlert("加载失败，请稍后再试", 0);
     console.log(error);
   } finally {
+    await nextTick(() => scrollToBottom('.dialog-content'));
     isLoading.value = false;
   }
 };
@@ -378,6 +379,8 @@ const sendQuestion = async () => {
     text: question.value,
     role: 'USER'
   });
+
+  await nextTick(() => scrollToBottom('.dialog-content'));
 
   // 为RAG回答预留位置
   const ragMessageIndex = displayContentList.value.length;
@@ -551,8 +554,8 @@ const handleStreamMessage = (data: any, messageIndex: number): boolean => {
       // 逐步添加内容
       if (data.content) {
         ragMessage.text += data.content;
-        // 自动滚动到底部以显示最新内容
-        setTimeout(scrollToBottom, 10);
+        // 自动滚动到底部显示最新内容
+        scrollToBottom('.dialog-content');
       }
       break;
 
@@ -594,17 +597,6 @@ function showConfig() {
   showConfigDialog.value = true
 }
 
-//处理退出逻辑
-function logout() {
-  showAlert('天命人，确认要离开吗？', 1).then((res: any) => {
-    if(res) { // 点击确认
-      localStorage.removeItem('userProfile');
-      localStorage.removeItem('token');
-      router.push('/index');
-    }
-  });
-}
-
 // 进入成就页面
 const toAchievementPage = async () => {
   //console.log(localStorage.getItem('hasBindSteam'));
@@ -639,14 +631,6 @@ const toBossTipsPage = async () => {
   await router.push('/boss-tips');
 }
 
-const scrollToBottom = () => {
-  const dialogContent = document.querySelector('.dialog-content');
-  if (dialogContent) {
-    dialogContent.scrollTop = dialogContent.scrollHeight;
-  }
-}
-
-
 // 界面初始化加载
 onMounted(async () => {
   try {
@@ -663,6 +647,7 @@ onMounted(async () => {
         currentDialog.value = await getDialogDetail(dialogList.value[0].id);
         displayContentList.value = convertToDisplayFormat(currentDialog.value.contentList); // 转换数据格式
       }
+      await nextTick(() => scrollToBottom('.dialog-content'));
     } else {
       showAlert('天命人，请您先去登录，再来求问', 0).then(() => {
         router.push('/account'); // 跳转到登录页面

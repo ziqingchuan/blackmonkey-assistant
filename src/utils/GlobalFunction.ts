@@ -6,6 +6,28 @@ import {ref} from "vue";
 import * as echarts from 'echarts';
 export const customAlert = ref(); // 获取弹窗组件的引用
 
+export const scrollToBottom = (element: string) => {
+    const htmlElement = document.querySelector(element);
+    if (htmlElement) {
+        // 使用平滑滚动
+        htmlElement.scrollTo({
+            top: htmlElement.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+}
+
+export const scrollToTop = (element: string) => {
+    const htmlElement = document.querySelector(element);
+    if (htmlElement) {
+        // 使用平滑滚动
+        htmlElement.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+}
+
 // 退出登录
 export function logout(router: any) {
     showAlert('天命人，确认要离开吗？', 1).then((res: any) => {

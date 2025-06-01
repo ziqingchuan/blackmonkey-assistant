@@ -40,21 +40,6 @@ export interface AchievementQuestion {
 }
 
 /**
- * 获取主界面用户回答
- * @param question 用户问题
- */
-export const getCommonAnswer = async (question: CommonQuestion): Promise<string> => {
-    return axios.post<any>(`${RAG_MODULE}/get`, question, {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Accept': 'text/event-stream',
-            'Cache-Control': 'no-cache'
-        },
-    }).then(response => response.data);
-}
-
-/**
  * 获取武学问答回答
  * @param question 用户问题
  * @returns 武学相关回答

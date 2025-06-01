@@ -169,7 +169,7 @@
         </div>
   <!-- 右下角固定按钮 -->
   <div class="floating-buttons">
-    <button class="floating-button" title="返回顶部" @click="scrollToTop">
+    <button class="floating-button" title="返回顶部" @click="scrollToTop('.dialog-content')">
       <ScrollToTopIcon />
     </button>
     <button class="floating-button" title="问答助手" @click="openQuestionDialog">
@@ -179,7 +179,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref, computed} from 'vue';
+import {onMounted, ref, computed, nextTick} from 'vue';
 import {useRouter} from 'vue-router';
 import Logo from '../../assets/icons/Logo.vue';
 import CloudUnderLogo from "../../assets/icons/Clouds/Cloud-under-logo.vue";
@@ -193,7 +193,7 @@ import AchievementDialog from "../../components/Dialog/AchievementDialog.vue";
 import MenuBtn from "../../assets/icons/MenuBtn.vue";
 import Taiji from "../../assets/icons/Taiji.vue";
 import Jingu from "../../assets/icons/Jingu.vue";
-import {customAlert, logout, showAlert} from "../../utils/GlobalFunction.ts";
+import {customAlert, logout, scrollToBottom, showAlert, scrollToTop} from "../../utils/GlobalFunction.ts";
 import ScrollToTopIcon from "../../assets/icons/ScrollToTop.vue";
 import ChatBot from "../../assets/icons/ChatBot.vue";
 import {
@@ -318,8 +318,8 @@ const backToBasics = async () => {
       conversationMessages.value = [];
       await startConversation();
     }
-    
-    scrollToBottom();
+
+    await nextTick(() => scrollToBottom('.dialog-content'));
   }
 };
 
@@ -350,8 +350,8 @@ const backToStickSelection = async () => {
       // 保留到流派推荐消息
       conversationMessages.value = conversationMessages.value.slice(0, schoolRecommendationIndex + 1);
     }
-    
-    scrollToBottom();
+
+    await nextTick(() => scrollToBottom('.dialog-content'));
   }
 };
 
@@ -376,8 +376,8 @@ const backToSchoolTraining = async () => {
       // 保留到修炼指导消息
       conversationMessages.value = conversationMessages.value.slice(0, trainingGuideIndex + 1);
     }
-    
-    scrollToBottom();
+
+    await nextTick(() => scrollToBottom('.dialog-content'));
   }
 };
 
@@ -401,8 +401,8 @@ const backToCombatTraining = async () => {
       // 保留到实战教学消息
       conversationMessages.value = conversationMessages.value.slice(0, combatTrainingIndex + 1);
     }
-    
-    scrollToBottom();
+
+    await nextTick(() => scrollToBottom('.dialog-content'));
   }
 };
 
@@ -433,7 +433,7 @@ const typewriterEffect = (
     streamingMessageIndex.value = messageIndex;
     
     // 滚动到底部
-    scrollToBottom();
+    nextTick(() => scrollToBottom('.dialog-content'));
     
     let currentIndex = 0;
     const timer = setInterval(() => {
@@ -442,11 +442,11 @@ const typewriterEffect = (
         conversationMessages.value[messageIndex].content += text[currentIndex];
         currentIndex++;
         // 每次更新内容后滚动到底部
-        scrollToBottom();
+        nextTick(() => scrollToBottom('.dialog-content'));
       } else {
         clearInterval(timer);
         streamingMessageIndex.value = -1;
-        scrollToBottom();
+        nextTick(() => scrollToBottom('.dialog-content'));
         disableBtns.value = false;
         resolve();
       }
@@ -474,7 +474,7 @@ const handleStickChoice = async (choice: string) => {
   };
   
   conversationMessages.value.push(userMessage);
-  scrollToBottom();
+  await nextTick(() => scrollToBottom('.dialog-content'));
   hasChosenStick.value = true;
   chosenStickType.value = choice;
   
@@ -565,7 +565,7 @@ const handleSchoolChoice = async (schoolName: string) => {
   };
   
   conversationMessages.value.push(userMessage);
-  scrollToBottom();
+  await nextTick(() => scrollToBottom('.dialog-content'));
   hasChosenSchool.value = true;
   chosenSchoolName.value = schoolName;
   
@@ -593,7 +593,7 @@ const startCombatTraining = async (schoolName: string) => {
   };
   
   conversationMessages.value.push(userMessage);
-  scrollToBottom();
+  await nextTick(() => scrollToBottom('.dialog-content'));
   hasStartedCombat.value = true;
   
   // 等待一下，然后开始实战教学
@@ -632,8 +632,8 @@ const restartFromFoundation = async () => {
       conversationMessages.value = [];
       await startConversation();
     }
-    
-    scrollToBottom();
+
+    await nextTick(() => scrollToBottom('.dialog-content'));
   }
 };
 
@@ -656,8 +656,8 @@ const backToAdvancedSchools = async () => {
       // 保留到上层流派消息
       conversationMessages.value = conversationMessages.value.slice(0, advancedSchoolsIndex + 1);
     }
-    
-    scrollToBottom();
+
+    await nextTick(() => scrollToBottom('.dialog-content'));
   }
 };
 
@@ -675,7 +675,7 @@ const exploreAdvancedSchools = async () => {
   };
   
   conversationMessages.value.push(userMessage);
-  scrollToBottom();
+  await nextTick(() => scrollToBottom('.dialog-content'));
   hasReachedAdvanced.value = true;
   
   // 等待一下，然后显示上层流派介绍
@@ -700,7 +700,7 @@ const selectAdvancedSchool = async (schoolName: string) => {
   };
   
   conversationMessages.value.push(userMessage);
-  scrollToBottom();
+  await nextTick(() => scrollToBottom('.dialog-content'));
   hasSelectedAdvancedSchool.value = true;
   selectedAdvancedSchool.value = schoolName;
   
@@ -725,8 +725,8 @@ const backToAdvancedSchoolDetails = async () => {
       // 保留到上层流派详情消息
       conversationMessages.value = conversationMessages.value.slice(0, advancedSchoolDetailsIndex + 1);
     }
-    
-    scrollToBottom();
+
+    await nextTick(() => scrollToBottom('.dialog-content'));
   }
 };
 
@@ -774,34 +774,6 @@ const toggleMethodsList = () => {
  */
 const closeScripturePanel = () => {
   showScripturePanel.value = false;
-};
-
-/**
- * 滚动到顶部
- */
-const scrollToTop = () => {
-  const dialogContent = document.querySelector('.dialog-content');
-  if (dialogContent) {
-    dialogContent.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  }
-};
-
-/**
- * 自动滚动到底部
- */
-const scrollToBottom = () => {
-  const dialogContent = document.querySelector('.dialog-content');
-  if (dialogContent) {
-    setTimeout(() => {
-      dialogContent.scrollTo({
-        top: dialogContent.scrollHeight,
-        behavior: 'smooth'
-      });
-    }, 100);
-  }
 };
 
 /**
