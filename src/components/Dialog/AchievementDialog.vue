@@ -2,7 +2,7 @@
   <div class="dialog-overlay" v-if="show" @click.self="close">
     <div class="dialog-container">
       <div class="dialog-header">
-        <h3>八十一难问答录</h3>
+        <h3>{{ dialogTitle }}</h3>
         <button class="close-button" @click="close">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M18 6L6 18M6 6L18 18" stroke="#e7cc80" stroke-width="2" stroke-linecap="round"/>
@@ -17,7 +17,7 @@
             <img src="/chatBot.png" alt="悟空" />
           </div>
           <div class="text">
-            天命人，有何困惑？贫僧可为你解惑八十一难之道。
+            {{ welcomeMessage }}
           </div>
         </div>
 
@@ -60,7 +60,7 @@
       <div class="dialog-input">
         <input
             type="text"
-            placeholder="输入你的问题..."
+            :placeholder="inputPlaceholder"
             v-model="question"
             :disabled="isLoading"
             @keyup.enter="sendQuestion"
@@ -76,11 +76,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, watch } from 'vue';
+import { ref, nextTick, watch, computed } from 'vue';
+import { getCombatMethodsAnswer, getAchievementAnswer } from '../../apis/rag.ts';
 
-defineProps({
+const props = defineProps({
   show: Boolean,
-  userAvatar: String
+  userAvatar: String,
+  userAchievements: {
+    type: Array,
+    default: () => []
+  },
+  mode: {
+    type: String,
+    default: 'achievement',
+    validator: (value: string) => ['achievement', 'combat'].includes(value)
+  }
 });
 
 const emit = defineEmits(['close']);
@@ -93,6 +103,25 @@ const messages = ref<Array<{sender: 'user' | 'bot', content: string}>>([]);
 const isLoading = ref(false);
 // 聊天容器引用
 const chatContainer = ref<HTMLElement | null>(null);
+
+// 根据模式计算标题
+const dialogTitle = computed(() => {
+  return props.mode === 'combat' ? '武学问道传习录' : '八十一难问答录';
+});
+
+// 根据模式计算欢迎消息
+const welcomeMessage = computed(() => {
+  return props.mode === 'combat' 
+    ? '天命人，武学之道博大精深，如有疑惑可问于老夫，定当倾囊相授。'
+    : '天命人，有何困惑？贫僧可为你解惑八十一难之道。';
+});
+
+// 根据模式计算输入框提示
+const inputPlaceholder = computed(() => {
+  return props.mode === 'combat' 
+    ? '请教武学心得...'
+    : '输入你的问题...';
+});
 
 const close = () => {
   emit('close');
@@ -119,8 +148,15 @@ const sendQuestion = async () => {
   scrollToBottom();
 
   try {
-    // 模拟API调用获取答案
-    const answer = await getAnswer(userQuestion);
+    let answer: string;
+    
+    if (props.mode === 'combat') {
+      // 调用武学相关的API
+      answer = await getCombatMethodsAnswer(userQuestion);
+    } else {
+      // 调用成就相关的API（真实API），传递用户成就数据
+      answer = await getAchievementAnswer(userQuestion, props.userAchievements);
+    }
 
     // 保存机器人回答
     messages.value.push({
@@ -129,32 +165,19 @@ const sendQuestion = async () => {
     });
   } catch (error) {
     console.error('获取答案失败:', error);
+    
+    const errorMessage = props.mode === 'combat'
+      ? '贫僧修为尚浅，此武学奥义暂未参透，还需苦修方能为你解惑。'
+      : '贫僧修行尚浅，此问题暂未能解，待我西行归来再为你解惑。';
+    
     messages.value.push({
       sender: 'bot',
-      content: '贫僧修行尚浅，此问题暂未能解，待我西行归来再为你解惑。'
+      content: errorMessage
     });
   } finally {
     isLoading.value = false;
     scrollToBottom();
   }
-};
-
-// 模拟API获取答案
-const getAnswer = (question: string): Promise<string> => {
-  return new Promise((resolve) => {
-    // 模拟网络延迟
-    setTimeout(() => {
-      // mock
-      const answers = [
-        `欲得"${question}"成就，需历经三劫九难：\n一劫：勇闯南天门\n二劫：力战十万天兵\n三劫：踏碎凌霄殿`,
-        `"${question}"乃大造化，需集齐三样法宝：\n• 金箍棒\n• 筋斗云\n• 火眼金睛\n方可证得此道`,
-        `此成就需解五行封印：\n金：击败金甲神将\n木：破除蟠桃园结界\n水：渡过天河弱水\n火：炼就三昧真火\n土：翻越五指神山`,
-        `"${question}"之道，在乎心性修为：\n• 破妄：识破天宫幻境\n• 明心：坚定本我道心\n• 证果：成就齐天伟业`
-      ];
-
-      resolve(answers[Math.floor(Math.random() * answers.length)]);
-    }, 1500);
-  });
 };
 
 // 滚动到聊天底部
