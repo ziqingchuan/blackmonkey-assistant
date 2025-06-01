@@ -221,7 +221,6 @@ const startCountdown = () => {
 };
 
 const handleLogin = async () => {
-  localStorage.setItem("hasBindSteam", 'false');
   try {
     const saltResponse = await getSalt(formData.value.email);
     const salt = saltResponse.data.salt;
@@ -236,6 +235,13 @@ const handleLogin = async () => {
 
     await login(loginInfo.value).then((res: any) => {
       //console.log("登录返回信息:", res.data);
+      if (res.data.steam_id) {
+        localStorage.setItem('hasBindSteam', 'true');
+        //console.log("已绑定steam");
+      } else {
+        localStorage.setItem('hasBindSteam', 'false');
+        //console.log("未绑定steam");
+      }
       const token = res.data.token.access_token;
       localStorage.setItem('token', token);
       localStorage.setItem('userProfile', JSON.stringify(res.data));
@@ -247,6 +253,7 @@ const handleLogin = async () => {
     });
   } catch (error) {
     console.error(error);
+    localStorage.setItem('hasBindSteam', 'false');
     showAlert('登录失败，请检查邮箱或密码是否正确', 0);
   }
 };
@@ -262,6 +269,7 @@ const handleRegister = async () => {
       validCode: formData.value.validCode
     }).then(() => {
       //console.log("注册返回信息:", res.data);
+      localStorage.setItem('hasBindSteam', 'false');
     });
     showAlert('注册成功！请登录', 0);
     signIn();
@@ -281,7 +289,6 @@ const signIn = () => {
 
 onMounted(() => {
   // 获取随机文案
-  localStorage.setItem("hasBindSteam", 'false');
   getHeaderText();
   setupFloatAnimation();
 })

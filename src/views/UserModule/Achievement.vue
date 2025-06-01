@@ -450,7 +450,7 @@ function AnalyzeAchievementInfo() {
     achievementsAnalysis.value.lastAchievementTime = '尚未证道';
     achievementsAnalysis.value.achievingSpeed = 0;
   }
-  console.log(achievementsAnalysis.value)
+  //console.log(achievementsAnalysis.value)
 }
 
 function AnalyzeUserInfo() {
@@ -515,7 +515,7 @@ function CalculateAchievementsTimeMap() {
     dayAndCount,
   }));
 
-  console.log("AchievementsTimeMap:", achievementsTimeMap.value); // 控制台输出结果
+  //console.log("AchievementsTimeMap:", achievementsTimeMap.value); // 控制台输出结果
 }
 // 切换视图
 const toggleAchievementsView = () => {
@@ -671,12 +671,12 @@ onMounted(async () => {
       steamUser.value.user.avatar = localStorage.getItem('avatar') || '';
       steamUser.value.user.name = localStorage.getItem('name') || '';
       achievements.value = JSON.parse(localStorage.getItem('achievements') || '[]');
-      console.log('用户信息:', steamUser.value);
-      console.log('用户成就信息:', achievements.value);
+      //console.log('用户信息:', steamUser.value);
+      //console.log('用户成就信息:', achievements.value);
     } else {
       await getSteamUserInfo()
           .then(userInfo => {
-            console.log('获取用户信息成功:', userInfo);
+            //console.log('获取用户信息成功:', userInfo);
             localStorage.setItem('last_played', userInfo.game.last_played);
             localStorage.setItem('playtime_hours', userInfo.game.playtime_hours);
             localStorage.setItem('avatar', userInfo.user.avatar);
@@ -688,7 +688,7 @@ onMounted(async () => {
           });
       await getUserAchievements()
           .then(response => {
-            console.log('获取成就信息成功:', response);
+            //console.log('获取成就信息成功:', response);
             localStorage.setItem('achievements', JSON.stringify(response));
             achievements.value = response;
           })

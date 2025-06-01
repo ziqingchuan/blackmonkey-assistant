@@ -777,7 +777,6 @@ const returnToMainPage = async () => {
 
 // 进入成就页面
 const toAchievementPage = async () => {
-  console.log(localStorage.getItem('hasBindSteam'));
   if(localStorage.getItem('hasBindSteam') === 'false') {
     const steamId = await showAlert('天命人，请输入SteamID后再查看成就', 2);
     if(steamId) {

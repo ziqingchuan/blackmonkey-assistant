@@ -663,7 +663,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第二回头目词条【地狼】的下方。\n" +
             "\n" +
             "具体位置：主线必定遇到。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/沙国王父子/sgwfz-position.png',
         difficulty: 3,
         experience: "主要加定身法，然后把三棍势点出来就行。\n" +
             "\n" +
@@ -719,7 +719,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第二回头目词条【沙国王父子】的下方。\n" +
             "\n" +
             "具体位置：击败沙国王父子后，往左侧的不济谷土地庙旁边的洞穴走，如果放过了沙国王就会进入剧情，如果击杀了沙国王则是用掉落道具【沙国王的肉】来召唤。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/沙大郎/sdl-position.png',
         difficulty: 2,
         experience: "沙大郎的战斗强度很低，使用自己最熟悉的一套就够了。\n" +
             "\n" +
@@ -753,8 +753,8 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第二回妖王词条的第一位。\n" +
             "\n" +
             "具体位置：主线必定遇到。",
-        positionImgUrl: '',
-        difficulty: 8,
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-position.png',
+        difficulty: 9,
         experience: "主要加定身法，然后把三棍势点出来就行，其他按照自己喜好来。\n" +
             "\n" +
             "招式解析与应对方法\n" +
@@ -775,7 +775,64 @@ export const bossInfo: BossInfo[] = [
             "虎先锋本人也是非常有武德的，打完一套连招如果玩家打过来还会慢慢的等玩家恢复状态。\n" +
             "\n",
         reward: "玲珑内丹1、灵蕴1364、蚕丝3、【法术】铜头铁臂，虎之锋",
-        bossTrick: []
+        bossTrick: [
+            {
+                name: "腾空砸地",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick1.gif"
+            },
+            {
+                name: "拔刀三连斩",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick2.gif"
+            },
+            {
+                name: "拔刀四连斩",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick3.gif"
+            },
+            {
+                name: "拔刀五连斩",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick4.gif"
+            },
+            {
+                name: "拔刀斩",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick5.gif"
+            },
+            {
+                name: "寸拳",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick6.gif"
+            },
+            {
+                name: "军体拳",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick7.gif"
+            },
+            {
+                name: "铁山靠",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick8.gif"
+            },
+            {
+                name: "铁山靠七连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick9.gif"
+            },
+            {
+                name: "铁山靠三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick10.gif"
+            },
+            {
+                name: "铜头铁臂一",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick11.gif"
+            },
+            {
+                name: "铜头铁臂二",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick12.gif"
+            },
+            {
+                name: "血刃七连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick13.gif"
+            },
+            {
+                name: "爪击三连",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎先锋/hxf-trick14.gif"
+            },
+        ]
     },
     {
         bossId: 11, chapterIndex: 1, name: "虎伥",
@@ -808,7 +865,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第二回头目词条【沙大郎】的下方。\n" +
             "\n" +
             "具体位置：击败虎先锋继续往卧虎寺后方的道路走，连续经过定风桥与定风庄走到终点的桥上遇到虎伥。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/虎伥/hc-position.png',
         difficulty: 3,
         experience: "主要加定身法，然后把三棍势点出来就行，其他按照自己喜好来。\n" +
             "\n" +
@@ -842,7 +899,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第二回妖王词条【虎先锋】的下方。\n" +
             "\n" +
             "具体位置：主线必定遇到。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/石先锋/sxf-position.png',
         difficulty: 2,
         experience: "主要加定身法，然后把三棍势点出来就行，其他按照自己喜好来。\n" +
             "\n" +
@@ -880,7 +937,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第二回头目词条【石母】的下方。\n" +
             "\n" +
             "具体位置：此BOSS位于镇风门土地庙附近。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/百目真人/bmzr-position.png',
         difficulty: 2,
         experience: "主要加定身法，然后把三棍势点出来就行，其他按照自己喜好来。\n" +
             "\n" +
@@ -928,7 +985,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第二回头目词条【百目真人】的下方。\n" +
             "\n" +
             "具体位置：首先要击败虎伥获得拨浪鼓，然后在下图所示的三个位置一次敲响拨浪鼓，在位置3处进入枯井下方触发与疯虎的战斗。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/疯虎/fh-position.png',
         difficulty: 5,
         experience: "主要加定身法，然后把三棍势点出来就行，其他按照自己喜好来。\n" +
             "\n" +
@@ -942,7 +999,32 @@ export const bossInfo: BossInfo[] = [
             "积攒棍势寻找出招的破绽使用重击慢慢消耗血量即可，如果暂时打不过可以先去下一回，我们随时可以回来打这个疯虎。\n" +
             "\n",
         reward: "【精魄】疯虎、灵蕴1033、棉纱2、蚕丝2",
-        bossTrick: []
+        bossTrick: [
+            {
+                name: "跳跃重击+三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/疯虎/fh-trick1.gif"
+            },
+            {
+                name: "吼叫三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/疯虎/fh-trick2.gif"
+            },
+            {
+                name: "吼叫五连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/疯虎/fh-trick3.gif"
+            },
+            {
+                name: "锄地",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/疯虎/fh-trick4.gif"
+            },
+            {
+                name: "砸石",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/疯虎/fh-trick5.gif"
+            },
+            {
+                name: "抓取",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/疯虎/fh-trick6.gif"
+            },
+        ]
     },
     {
         bossId: 15, chapterIndex: 1, name: "石中人",
@@ -969,7 +1051,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记人物词条【黑风山土地】的下方。\n" +
             "\n" +
             "具体位置：详情可查看石中人的完整支线流程",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/石中人/szr-position.png',
         difficulty: 3,
         experience: "主要加定身法，然后把三棍势点出来就行，其他按照自己喜好来。\n" +
             "\n" +
@@ -1003,7 +1085,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第二回妖王词条【石先锋】的下方。\n" +
             "\n" +
             "具体位置：石敢当位于土地庙枕石坪左前方的区域，需要收集藏风山凹地区的六个佛目珠激活战斗。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/石敢当/sgd-position.png',
         difficulty: 4,
         experience: "主要加定身法，然后把三棍势点出来就行，其他按照自己喜好来。\n" +
             "\n" +
@@ -1037,7 +1119,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第二回妖王词条【黄风大圣】的下方。\n" +
             "\n" +
             "具体位置：需要先击败沙大郎获得重要道具龙鳞，然后来到枕石评右侧楼梯顶层处触发战斗",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/小骊龙/xll-position.png',
         difficulty: 3,
         experience: "主要加定身法，然后把三棍势点出来就行，其他按照自己喜好来。\n" +
             "\n" +
@@ -1051,7 +1133,40 @@ export const bossInfo: BossInfo[] = [
             "\n" +
             "小骊龙的连招节奏感很好，且速度很慢，所以最好的应对方式就是站在小骊龙的身后不断翻滚并穿插普攻，如果走位够好甚至都不用翻滚，慢慢抓后摇并熟悉招式的应对就能轻松将其击败。",
         reward: "玲玲内丹1、灵蕴1600、镔铁砂2、龙珠1、振雷骨1，【珍玩】砗磲佩",
-        bossTrick: []
+        bossTrick: [
+            {
+                name: "锄地连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/小骊龙/xll-trick1.gif"
+            },
+            {
+                name: "锄地冲击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/小骊龙/xll-trick2.gif"
+            },
+            {
+                name: "风暴雷击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/小骊龙/xll-trick3.gif"
+            },
+            {
+                name: "三连锄地",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/小骊龙/xll-trick4.gif"
+            },
+            {
+                name: "三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/小骊龙/xll-trick5.gif"
+            },
+            {
+                name: "三敲雷",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/小骊龙/xll-trick6.gif"
+            },
+            {
+                name: "四连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/小骊龙/xll-trick7.gif"
+            },
+            {
+                name: "跳劈",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/小骊龙/xll-trick8.gif"
+            },
+        ]
     },
     {
         bossId: 18, chapterIndex: 1, name: "蝜蝂",
@@ -1084,7 +1199,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第二回妖王词条【小骊龙】的下方。\n" +
             "\n" +
             "具体位置：击败黄袍员外前往隐·斯哈里国，蝜蝂是这个隐藏地图的最终BOSS",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/蝜蝂/fb-position.png',
         difficulty: 4,
         experience: "主要加定身法，然后把三棍势点出来就行，其他按照自己喜好来。\n" +
             "\n" +
@@ -1148,7 +1263,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置”位于游记第二回妖王词条【石敢当】的下方。\n" +
             "\n" +
             "具体位置：主线必定遇到。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-position.png',
         difficulty: 7,
         experience: "主要加定身法，然后把三棍势点出来就行，其他按照自己喜好来。\n" +
             "\n" +
@@ -1185,7 +1300,60 @@ export const bossInfo: BossInfo[] = [
             "当血量剩下三分之一时黄风大圣进入第三阶段，第三阶段开始大量使用剑气远程攻击玩家，这时俩方的状态都不好，而且黄风大圣还会出现你可能没见过的攻击，这时候变形多一管血既能提高容错率，还能观察其他技能，用广智收尾即可。\n" +
             "\n",
         reward: "【阿罗金片】、变身能力【碧尘】",
-        bossTrick: []
+        bossTrick: [
+            {
+                name: "单次践踏",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick1.gif"
+            },
+            {
+                name: "二连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick2.gif"
+            },
+            {
+                name: "三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick3.gif"
+            },
+            {
+                name: "四连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick4.gif"
+            },
+            {
+                name: "三连剑气",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick5.gif"
+            },
+            {
+                name: "撼地三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick6.gif"
+            },
+            {
+                name: "重击塌地二连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick7.gif"
+            },
+            {
+                name: "转二阶段连招",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick8.gif"
+            },
+            {
+                name: "六连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick9.gif"
+            },
+            {
+                name: "八连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick10.gif"
+            },
+            {
+                name: "抓取",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick11.gif"
+            },
+            {
+                name: "制作旋风",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick12.gif"
+            },
+            {
+                name: "召唤蝜蝂",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄风大圣/hfds-trick13.gif"
+            },
+        ]
     },
 
     // ================== 小西天 (20-30) ==================
@@ -1204,7 +1372,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第三回妖王词条的第一位。\n" +
             "\n" +
             "具体位置：主线必定遇到。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/亢金龙/kjl-position.png',
         difficulty: 7,
         experience: "打法有正常流程与棍花逃课，正常流程就按自己常用的配装来即可。\n" +
             "\n" +
@@ -1264,7 +1432,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于第三回头目词条【赤尻马猴】的下方。\n" +
             "\n" +
             "具体位置：位于浮屠塔土地庙【山层】旁边，从土地庙转头往后走，在前方尽头往下面的房顶上跳到下层，然后往右走就会触发BOSS战。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/魔将莲眼/mjly-position.png',
         difficulty: 5,
         experience: "根基将武艺下方棍花的技能点满。棍法选择劈棍，点到20点激活四棍势。\n" +
             "\n" +
@@ -1318,7 +1486,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第三回妖王词条【亢金星君】的下方。\n" +
             "\n" +
             "具体位置：主线必定遇到。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/魔将妙音/mjmy-position.png',
         difficulty: 5,
         experience: "法宝携带定风珠，精魄携带幽魂，棍法选择劈棍，点20技能点激活四棍势，法术携带身外身法、定身术、聚形散气，法术加点主加身外身法即可。\n" +
             "\n" +
@@ -1356,7 +1524,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置:位于第三回头目词条的第一位。\n" +
             "\n" +
             "具体位置:主线必定遇到，总共会遇到三次，第一次是在披霜道，第二次是在安身寺，第三次是与黄眉BOSS战的中间。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/赤尻马猴/ckmh-position.png',
         difficulty: 4,
         experience: "主要加“身外身法”与“定身法”，棍法选择劈棍，建议前期不要加立棍或戳棍，其他加点对这个BOSS没什么加成。\n" +
             "\n" +
@@ -1416,7 +1584,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第三回妖王词条【亢金龙】的下方。\n" +
             "\n" +
             "具体位置：主线流程必定遇到。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/亢金星君/kjxj-position.png',
         difficulty: 6,
         experience: "法宝携带定风珠，精魄携带幽魂，棍法选择劈棍，点20技能点激活四棍势，法术携带身外身法、定身术、聚形散气，法术加点主加身外身法即可。\n" +
             "\n" +
@@ -1440,7 +1608,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第三回妖王词条【魔将妙音】的下方。\n" +
             "\n" +
             "具体位置：从龟岛土地庙出发，面对土地庙转头往后一直走就能看到下方的青背龙，需要拿到第二章的鳞片才能触发战斗。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/青背龙/qbl-position.png',
         difficulty: 6,
         experience: "法宝携带定风珠，精魄携带幽魂，棍法选择劈棍，点20技能点激活四棍势，法术携带身外身法、定身术、聚形散气，法术加点主加身外身法即可。\n" +
             "\n" +
@@ -1454,7 +1622,32 @@ export const bossInfo: BossInfo[] = [
             "\n" +
             "这一套不仅跳过了数值更高的二阶段，还留足了玩家自身的状态，就算变身后因失误没能打死，此时我们还是满血瓶，耗着打就行。",
         reward: "击杀青背龙获得【龙珠】；开宝箱得到【泡酒物】十二重楼胶。",
-        bossTrick: []
+        bossTrick: [
+            {
+                name: "单次雷击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/青背龙/qbl-trick1.gif"
+            },
+            {
+                name: "二阶段起始招式",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/青背龙/qbl-trick2.gif"
+            },
+            {
+                name: "三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/青背龙/qbl-trick3.gif"
+            },
+            {
+                name: "腾空突刺",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/青背龙/qbl-trick4.gif"
+            },
+            {
+                name: "尾巴扫击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/青背龙/qbl-trick5.gif"
+            },
+            {
+                name: "横扫重击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/青背龙/qbl-trick6.gif"
+            },
+        ]
     },
     {
         bossId: 26, chapterIndex: 2, name: "不白",
@@ -1475,7 +1668,7 @@ export const bossInfo: BossInfo[] = [
         position: "小西游记位置：位于游记第三回头目词条【不净】的下方。\n" +
             "\n" +
             "具体位置：主线必定遇到。天金刚殿",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不白/bb-position.png',
         difficulty: 6,
         experience: "手残玩家建议直接将身外身法与定身术点满，1V1真男人大战则加定身术与聚形散气，其他加点随意。\n" +
             "\n" +
@@ -1497,7 +1690,52 @@ export const bossInfo: BossInfo[] = [
             "\n" +
             "冰形态下通过背板所有招式并识破敌人的攻击比较好用，而在毒形态则是多使用退寸与戳棍重击来强制打断不白的虚影位置非常好用。",
         reward: "【精魄】不白",
-        bossTrick: []
+        bossTrick: [
+            {
+                name: "寒冰突刺",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不白/bb-trick1.gif"
+            },
+            {
+                name: "寒冰突刺三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不白/bb-trick2.gif"
+            },
+            {
+                name: "寒冰突刺五连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不白/bb-trick3.gif"
+            },
+            {
+                name: "突刺连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不白/bb-trick4.gif"
+            },
+            {
+                name: "寒冰五连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不白/bb-trick5.gif"
+            },
+            {
+                name: "吐毒攻击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不白/bb-trick6.gif"
+            },
+            {
+                name: "吐毒二连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不白/bb-trick7.gif"
+            },
+            {
+                name: "毒飞镖",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不白/bb-trick8.gif"
+            },
+            {
+                name: "五连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不白/bb-trick9.gif"
+            },
+            {
+                name: "剑雨三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不白/bb-trick10.gif"
+            },
+            {
+                name: "双重连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不白/bb-trick11.gif"
+            },
+        ]
     },
     {
         bossId: 27, chapterIndex: 2, name: "不能",
@@ -1523,7 +1761,7 @@ export const bossInfo: BossInfo[] = [
             "\n" +
             "具体位置：头目的具体位置在【小西天-极乐谷-无忧涧】土地庙，朝着桥的反方向沿着道路前进。",
         difficulty: 5,
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不能/bn-position.png',
         experience: "不空的双手被绑住，所以他的主要输出手段是头和脚。如果想逃课的话，可以选择用猴子猴孙打，或者自己使用劈棍，然后蓄力拉开距离，蓄满了再去敲，基本上多消耗点时间还是很轻松的。\n" +
             "\n" +
             "前空翻→头槌：这招前空翻有一定的延迟，如果闪避快了容易中招。\n" +
@@ -1534,7 +1772,48 @@ export const bossInfo: BossInfo[] = [
             "\n" +
             "前滚翻→倒转腿→踢腿：只要看到他向前翻滚，直接石化，他必定会踢到石头上，如果闪避可能要稍微慢个0.5秒。如果拉开距离，要小心后接的踢腿有一段小位移，距离太近会被踢到。",
         reward: "【精魄】不能",
-        bossTrick: []
+        bossTrick: [
+            {
+                name: "普通连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不能/bn-trick1.gif"
+            },
+            {
+                name: "寸拳",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不能/bn-trick2.gif"
+            },
+            {
+                name: "单拳连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不能/bn-trick3.gif"
+            },
+            {
+                name: "双拳连击一",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不能/bn-trick4.gif"
+            },
+            {
+                name: "双拳连击二",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不能/bn-trick5.gif"
+            },
+            {
+                name: "踢脚三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不能/bn-trick6.gif"
+            },
+            {
+                name: "踢脚突刺",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不能/bn-trick7.gif"
+            },
+            {
+                name: "铁山靠连击一",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不能/bn-trick8.gif"
+            },
+            {
+                name: "铁山靠连击二",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不能/bn-trick9.gif"
+            },
+            {
+                name: "抓取",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不能/bn-trick10.gif"
+            },
+        ]
     },
     {
         bossId: 28, chapterIndex: 2, name: "魔将·劫波",
@@ -1563,7 +1842,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于第三回头目词条【魔将莲眼】的下方。\n" +
             "\n" +
             "具体位置：魔将劫波位于小雷音寺的门口，主线流程必定会遇到。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/魔将劫波/mjjb-position.png',
         difficulty: 2,
         experience: "这个BOSS的难度很低，使用自己最常用的流派BD即可。\n" +
             "\n" +
@@ -1609,7 +1888,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于第三回头目词条【无量蝠】下方。\n" +
             "\n" +
             "具体位置：先传送到土地庙极乐谷的快活林，与下图所示的狐狸对话，接取任务并获得道具【白狐毫】。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不空/bk-position.png',
         difficulty: 4,
         experience: "法术必带聚形散气，其他加点按照自己喜好来即可。\n" +
             "\n" +
@@ -1619,7 +1898,44 @@ export const bossInfo: BossInfo[] = [
             "\n" +
             "这里建议将变形留到最后时刻，当不空只剩下丝血时攻击欲望明显增强，变形能增加不少容错，一直重复上述流程就能轻松将其击败。",
         reward: "击败不空回去找小狐狸交任务获得【珍玩】白狐毫",
-        bossTrick: []
+        bossTrick: [
+            {
+                name: "不空掌",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不空/bk-trick1.gif"
+            },
+            {
+                name: "弹反连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不空/bk-trick2.gif"
+            },
+            {
+                name: "二连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不空/bk-trick3.gif"
+            },
+            {
+                name: "聚气",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不空/bk-trick4.gif"
+            },
+            {
+                name: "瞬移",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不空/bk-trick5.gif"
+            },
+            {
+                name: "五连击一",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不空/bk-trick6.gif"
+            },
+            {
+                name: "五连击二",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不空/bk-trick7.gif"
+            },
+            {
+                name: "蓄力法球",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不空/bk-trick8.gif"
+            },
+            {
+                name: "远程法球",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/不空/bk-trick9.gif"
+            },
+        ]
     },
     {
         bossId: 30, chapterIndex: 2, name: "黄眉",
@@ -1686,7 +2002,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第三回妖王词条【青背龙】的下方。\n" +
             "\n" +
             "具体位置：主线必定遇到，第三回最终BOSS。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄眉/hm-position.png',
         difficulty: 8,
         experience: "跟随主线即可遇到，位于游记第三回妖王词条青背龙的下方。\n" +
             "\n" +
@@ -1727,7 +2043,44 @@ export const bossInfo: BossInfo[] = [
             "因此十分建议将变形留在最后一次金身使用，用变形的额外血量提高我们的容错率。",
 
         reward: "金身护臂",
-        bossTrick: []
+        bossTrick: [
+            {
+                name: "大雷刃",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄眉/hm-trick1.gif"
+            },
+            {
+                name: "单次戳击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄眉/hm-trick2.gif"
+            },
+            {
+                name: "困雷击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄眉/hm-trick3.gif"
+            },
+            {
+                name: "雷暴",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄眉/hm-trick4.gif"
+            },
+            {
+                name: "两连砸地",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄眉/hm-trick5.gif"
+            },
+            {
+                name: "竖状雷击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄眉/hm-trick6.gif"
+            },
+            {
+                name: "旋转雷击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄眉/hm-trick7.gif"
+            },
+            {
+                name: "远程雷击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄眉/hm-trick8.gif"
+            },
+            {
+                name: "召雷",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黄眉/hm-trick9.gif"
+            },
+        ]
     },
 
     // ================== 盘丝岭 (31-41) ==================
