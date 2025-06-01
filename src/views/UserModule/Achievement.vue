@@ -315,7 +315,11 @@
   </div>
 
   <!-- 问答助手对话框 -->
-  <AchievementDialog :show="showDialog" :userAvatar="steamUser.user.avatar" @close="toggleDialog" />
+  <AchievementDialog 
+    :show="showDialog" 
+    :userAvatar="steamUser.user.avatar" 
+    :userAchievements="achievements"
+    @close="toggleDialog" />
 </template>
 <script setup lang="ts">
 import {ref, onMounted, computed} from 'vue';

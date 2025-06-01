@@ -5,6 +5,7 @@
   <AchievementDialog
       :show="showQuestionDialog"
       :userAvatar="'/avatar.png'"
+      mode="combat"
       @close="closeQuestionDialog"
   />
 
