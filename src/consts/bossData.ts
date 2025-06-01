@@ -372,7 +372,36 @@ export const bossInfo: BossInfo[] = [
             "\n" +
             "所以第二阶段建议多把自己放在被动的一方，将变形留在二形态自己或BOSS没血再用，在白衣秀士的一招一式下穿插普攻，少用重击给自己创造真空破绽是最优解。",
         reward: "玉垂牙、棉纱、灵蕴",
-        bossTrick: []
+        bossTrick: [
+            {
+                name: "八连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/白衣秀士/byxs-trick1.gif"
+            },
+            {
+                name: "后撤步突刺",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/白衣秀士/byxs-trick2.gif"
+            },
+            {
+                name: "急速突击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/白衣秀士/byxs-trick3.gif"
+            },
+            {
+                name: "枪击突刺",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/白衣秀士/byxs-trick4.gif"
+            },
+            {
+                name: "扔枪三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/白衣秀士/byxs-trick5.gif"
+            },
+            {
+                name: "四连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/白衣秀士/byxs-trick6.gif"
+            },
+            {
+                name: "蓄力重击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/白衣秀士/byxs-trick7.gif"
+            },
+        ]
     },
     {
         bossId: 5, chapterIndex: 0, name: "金池长老",
@@ -413,7 +442,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第一回妖王词条【黑风大王】的下方。\n" +
             "\n" +
             "具体位置：需要敲向地图内的三口打钟，第一口位于广智的BOSS战场地，第二口位于广谋的BOSS战场地，第三口位于白衣秀士的BOSS战场地，击败白衣秀士后往左边的道路走。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/金池长老/jczl-position.png',
         difficulty: 2,
         experience: "此时整体等级不高，加点优先将三棍势点出来，然后根基将任翻腾点出来，其他没啥要求。\n" +
             "\n" +
@@ -449,7 +478,7 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第一回妖王词条【灵虚字】的下方。\n" +
             "\n" +
             "具体位置：主线流程必定遇到。",
-        positionImgUrl: '',
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑风大王/hfdw-position.png',
         difficulty: 3,
         experience: "此时整体等级不高，加点优先将三棍势点出来，然后根基将任翻腾点出来，其他没啥要求。\n" +
             "\n" +
@@ -470,7 +499,40 @@ export const bossInfo: BossInfo[] = [
             "\n" +
             "也需要注意黑风大王的人形突进招式，常常在猴子喝药的时候使用，建议在耗掉黑风大王大半管血后再使用变形技能，通过狼形态收尾。",
         reward: "灵蕴696、奇术【聚形散气】、精石1",
-        bossTrick: []
+        bossTrick: [
+            {
+                name: "近战三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑风大王/hfdw-trick1.gif"
+            },
+            {
+                name: "近战四连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑风大王/hfdw-trick2.gif"
+            },
+            {
+                name: "近战五连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑风大王/hfdw-trick3.gif"
+            },
+            {
+                name: "变风",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑风大王/hfdw-trick4.gif"
+            },
+            {
+                name: "持枪突进",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑风大王/hfdw-trick5.gif"
+            },
+            {
+                name: "隐身突刺",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑风大王/hfdw-trick6.gif"
+            },
+            {
+                name: "吐火",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑风大王/hfdw-trick7.gif"
+            },
+            {
+                name: "远程剑气",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑风大王/hfdw-trick8.gif"
+            },
+        ]
     },
     {
         bossId: 7, chapterIndex: 0, name: "黑熊精",
@@ -523,8 +585,8 @@ export const bossInfo: BossInfo[] = [
         position: "游记位置：位于游记第一回妖王词条【黑风大王】的下方。\n" +
             "\n" +
             "具体位置：主线必定遇到。",
-        positionImgUrl: '',
-        difficulty: 2,
+        positionImgUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑熊精/hxj-position.png',
+        difficulty: 3,
         experience: "点出【棍法-劈棍-展足】，携带白衣秀士掉落的【锦鳞战袍】和【行者戒箍】，其余优先点满【定身术】。\n" +
             "\n" +
             "开局定身术，然后奔跑蓄力，蓄力满了就靠近重击，半血以下不要急着回血，【锦鳞战袍】会自动回血，全程拉开距离慢慢磨，当黑熊精化成风，就要抓一下他发光的瞬间进行闪避。\n" +
@@ -539,7 +601,36 @@ export const bossInfo: BossInfo[] = [
             "\n" +
             "在黑熊的血量到半管及以下时，固定会幻化成一团火开始连续突刺，其机制与黑风大王的风相同，只需要在发现爆炸后翻滚即可，这场BOSS战的难度很低。",
         reward: " 兽棍·熊罴、烈火乌金",
-        bossTrick: []
+        bossTrick: [
+            {
+                name: "近战三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑熊精/hxj-trick1.gif"
+            },
+            {
+                name: "双爪拍地",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑熊精/hxj-trick2.gif"
+            },
+            {
+                name: "跳跃背摔",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑熊精/hxj-trick3.gif"
+            },
+            {
+                name: "隐身一击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑熊精/hxj-trick4.gif"
+            },
+            {
+                name: "近战二连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑熊精/hxj-trick5.gif"
+            },
+            {
+                name: "火焰三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑熊精/hxj-trick6.gif"
+            },
+            {
+                name: "突进三连击",
+                gifUrl: "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/黑熊精/hxj-trick7.gif"
+            },
+        ]
     },
 
     // ================== 黄风岭 (8-19) ==================
@@ -663,7 +754,7 @@ export const bossInfo: BossInfo[] = [
             "\n" +
             "具体位置：主线必定遇到。",
         positionImgUrl: '',
-        difficulty: 7,
+        difficulty: 8,
         experience: "主要加定身法，然后把三棍势点出来就行，其他按照自己喜好来。\n" +
             "\n" +
             "招式解析与应对方法\n" +
