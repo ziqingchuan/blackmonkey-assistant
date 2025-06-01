@@ -2,7 +2,7 @@
   <GlobalLoading :is-loading="isWaiting" />
   <CustomAlert ref="customAlert" />
   <!-- 追问对话弹窗 -->
-  <AchievementDialog
+  <RagChatBotDialog
       :show="showQuestionDialog"
       :userAvatar="avatar"
       mode="combat"
@@ -189,7 +189,7 @@ import CloudBeforeTitle from "../../assets/icons/Clouds/Cloud-before-title.vue";
 import CloudBeforeList from "../../assets/icons/Clouds/Cloud-before-list.vue";
 import CustomAlert from "../../components/Dialog/CustomAlert.vue";
 import GlobalLoading from '../../components/Dialog/GlobalLoading.vue';
-import AchievementDialog from "../../components/Dialog/AchievementDialog.vue";
+import RagChatBotDialog from "../../components/Dialog/RagChatBotDialog.vue";
 import MenuBtn from "../../assets/icons/MenuBtn.vue";
 import Taiji from "../../assets/icons/Taiji.vue";
 import Jingu from "../../assets/icons/Jingu.vue";

@@ -159,7 +159,20 @@
       </div>
     </div>
   </div>
-
+  <!-- 右下角固定按钮 -->
+  <div class="floating-buttons">
+    <button class="floating-button" title="返回顶部" @click="scrollToTop('.bossTip-information')">
+      <ScrollToTopIcon />
+    </button>
+    <button class="floating-button" title="问答助手" @click="showDialog = !showDialog">
+      <ChatBot />
+    </button>
+  </div>
+  <BossTipsDialog
+    :show="showDialog"
+    :userAvatar="avatar"
+    @close="showDialog = false"
+  />
 </template>
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
@@ -173,10 +186,14 @@ import CloudBeforeList from "../../assets/icons/Clouds/Cloud-before-list.vue";
 import CustomAlert from "../../components/Dialog/CustomAlert.vue";
 import GlobalLoading from '../../components/Dialog/GlobalLoading.vue';
 import MenuBtn from "../../assets/icons/MenuBtn.vue";
-import {customAlert, logout, showAlert} from "../../utils/GlobalFunction.ts";
+import {customAlert, logout, scrollToTop, showAlert} from "../../utils/GlobalFunction.ts";
 import {bossInfo, chapterName, type TipInfo, type BossInfo} from "../../consts/bossData";
+import ScrollToTopIcon from "../../assets/icons/ScrollToTop.vue";
+import ChatBot from "../../assets/icons/ChatBot.vue";
+import BossTipsDialog from "../../components/Dialog/BossTipsDialog.vue";
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
+const avatar = "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/avatar.png";
 const token = ref(''); // 用户登录token
 const currentChapter = ref<TipInfo>();
 const isWaiting = ref(false); // 记录加载状态
@@ -185,6 +202,7 @@ const isLogoHovered = ref(false); // 记录展开目录图标是否被鼠标悬�
 const isBossTipsListVisible = ref(true); // 记录列表的显示状态
 const showBossDetail = ref(false); // 是否显示boss详情
 const currentBoss = ref<BossInfo>(); // 当前选中的boss
+const showDialog = ref(false); // 问答助手弹窗状态
 const BossTipsList = ref<TipInfo[]>([
     {
         id: 0,
@@ -873,6 +891,40 @@ input, button {
         border-top: 1px solid #3a3a3f;
         margin-top: 20px;
       }
+    }
+  }
+}
+/* 浮动按钮样式 */
+.floating-buttons {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 1000;
+
+  .floating-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 30%;
+    background: rgba(40, 40, 45, 0.9);
+    border: 2px solid #d3b479;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s;
+
+    &:hover {
+      background: rgba(211, 180, 121, 0.2);
+      transform: translateY(-3px);
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
     }
   }
 }

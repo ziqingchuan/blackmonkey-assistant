@@ -315,7 +315,7 @@
   </div>
 
   <!-- 问答助手对话框 -->
-  <AchievementDialog 
+  <RagChatBotDialog
     :show="showDialog" 
     :userAvatar="steamUser.user.avatar" 
     :userAchievements="achievements"
@@ -343,7 +343,7 @@ import {
 } from "../../apis/steam.ts";
 import {logout, showAlert, customAlert} from "../../utils/GlobalFunction.ts";
 import { onBeforeUnmount, nextTick } from 'vue';
-import AchievementDialog from "../../components/Dialog/AchievementDialog.vue";
+import RagChatBotDialog from "../../components/Dialog/RagChatBotDialog.vue";
 import ScrollToTopIcon from "../../assets/icons/ScrollToTop.vue";
 import ChatBot from "../../assets/icons/ChatBot.vue";
 import { setupFloatAnimation, formatDate, initLineChart, initPieChart, destroyLineChart, destroyPieChart,
