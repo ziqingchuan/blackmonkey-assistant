@@ -61,19 +61,6 @@
               <CloudBeforeTitle />
               <span class="bossTip-title" @click="backToChapter">{{currentChapter?.chapterName}}</span>
             </div>
-            <!-- 右侧按钮 -->
-            <div class="header-right">
-              <!-- 成就页面按钮 -->
-              <button class="achieve-btn" @click="toAchievementPage">
-                <span class="text-container">功德成就</span>
-              </button>
-              <button class="achieve-btn" @click="toPlayMethodsPage">
-                <span class="text-container">打法推荐</span>
-              </button>
-              <button class="achieve-btn" @click="toRAGPage">
-                <span class="text-container">三界问答</span>
-              </button>
-            </div>
           </div>
 
         <!-- 主内容 -->
@@ -120,7 +107,7 @@
                   <div class="position-info">
                     <h3>位置</h3>
                     <p>{{ currentBoss?.position }}</p>
-                    <a href="#" class="map-link" @click.prevent="showPositionMap">
+                    <a v-if="currentBoss?.positionImgUrl" href="#" class="map-link" @click.prevent="showPositionMap">
                       <i class="map-icon"></i> 点击查看地图信息
                     </a>
                   </div>
@@ -271,40 +258,6 @@ const loadTip = (id: number) => {
     isWaiting.value = false;
   }
 };
-
-// 进入成就页面
-const toAchievementPage = async () => {
-  if(localStorage.getItem('hasBindSteam') === 'false') {
-    const steamId = await showAlert('天命人，请输入SteamID后再查看成就', 2);
-    if(steamId) {
-      isWaiting.value = true;
-      await bindSteamAccount(steamId)
-          .then(response => {
-            if(response) {
-              isWaiting.value = false;
-              localStorage.setItem('hasBindSteam', 'true');
-              router.push('/achievement');
-            }
-          })
-          .catch(error => {
-            showAlert('绑定Steam账号失败，请稍后再试', 0);
-            isWaiting.value = false;
-            console.error('获取成就信息失败:', error.response?.data || error.message);
-          });
-    }
-  } else { // 已经绑定了steam
-    await router.push('/achievement');
-  }
-}
-
-const toPlayMethodsPage = async () => {
-  await router.push('/play-methods');
-}
-
-const toRAGPage = async () => {
-  await router.push('/rag-user');
-}
-
 
 // 界面初始化加载
 onMounted(async () => {
@@ -505,54 +458,24 @@ input, button {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 20px 30px 30px;
+      padding: 30px;
 
       .bossTip-header {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         .header-left {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          margin-bottom: 10px;
             .bossTip-title {
               font-size: 18px;
               letter-spacing: 2px;
               color: #d3b479;
               border-bottom: 2px solid #c0aa6a;
               padding-bottom: 10px;
-            }
-          }
-        .header-right {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            letter-spacing: 2px;
-            color: #d3b479;
-            margin-bottom: 10px;
-            .achieve-btn {
-              width: 50px;
-              height: 50px;
-              font-family: 'Ma Shan Zheng', cursive;
-              color: #c0aa6a;
-              border-radius: 10%;
-              background: #0e0e11;
-              border: none;
-              cursor: pointer;
-              transition: all 0.3s;
-              position: relative;
-              overflow: hidden;
-              .text-container {
-                font-size: 16px;
-                font-weight: bold;
-                color: #d3b479;
-                font-family: 'Ma Shan Zheng', cursive;
-              }
-              &:hover {
-                transform: scale(1.2);
-              }
             }
           }
       }

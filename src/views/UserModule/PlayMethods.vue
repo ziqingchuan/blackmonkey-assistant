@@ -116,19 +116,6 @@
             <CloudBeforeTitle />
             <span class="dialog-title">{{ dynamicTitle }}</span>
           </div>
-          <!-- 右侧按钮 -->
-          <div class="header-right">
-            <!-- 成就页面按钮 -->
-            <button class="achieve-btn" @click="toAchievementPage">
-              <span class="text-container">功德成就</span>
-            </button>
-            <button class="achieve-btn" @click="toBossTipsPage">
-              <span class="text-container">Boss攻略</span>
-            </button>
-            <button class="achieve-btn" @click="toRAGPage">
-              <span class="text-container">三界问答</span>
-            </button>
-          </div>
         </div>
 
         <!-- 对话内容 -->
@@ -221,7 +208,6 @@ import {
   type MessageType,
   type ConversationMessage
 } from "../../apis/playMethods.ts";
-import {bindSteamAccount} from "../../apis/steam.ts";
 import {getCombatTrainingContent, getTrainingGuide} from "../../consts/methodsData.ts";
 import ScripturePanelDialog from "../../components/Dialog/ScripturePanelDialog.vue";
 // ==================== 接口定义 ====================
@@ -774,39 +760,6 @@ const returnToMainPage = async () => {
   }
 };
 
-// 进入成就页面
-const toAchievementPage = async () => {
-  if(localStorage.getItem('hasBindSteam') === 'false') {
-    const steamId = await showAlert('天命人，请输入SteamID后再查看成就', 2);
-    if(steamId) {
-      isWaiting.value = true;
-      await bindSteamAccount(steamId)
-          .then(response => {
-            if(response) {
-              isWaiting.value = false;
-              localStorage.setItem('hasBindSteam', 'true');
-              router.push('/achievement');
-            }
-          })
-          .catch(error => {
-            showAlert('绑定Steam账号失败，请稍后再试', 0);
-            isWaiting.value = false;
-            console.error('获取成就信息失败:', error.response?.data || error.message);
-          });
-    }
-  } else { // 已经绑定了steam
-    await router.push('/achievement');
-  }
-}
-
-const toBossTipsPage = async () => {
-  await router.push('/boss-tips');
-}
-
-const toRAGPage = async () => {
-  await router.push('/rag-user');
-}
-
 /**
  * 切换侧边栏显示状态
  */
@@ -1080,7 +1033,7 @@ input, button {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 20px 30px 30px;
+      padding: 30px;
       /* 对话头部 */
       .dialog-header {
         display: flex;
@@ -1090,6 +1043,7 @@ input, button {
         .header-left {
           display: flex;
           align-items: center;
+          margin-bottom: 10px;
           gap: 10px;
 
           .dialog-title {
@@ -1099,38 +1053,6 @@ input, button {
             border-bottom: 2px solid #c0aa6a;
             padding-bottom: 10px;
             text-shadow: 0 0 10px rgba(192, 170, 106, 0.4);
-          }
-        }
-
-        .header-right {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 18px;
-          letter-spacing: 2px;
-          color: #d3b479;
-          margin-bottom: 10px;
-          .achieve-btn {
-            width: 50px;
-            height: 50px;
-            font-family: 'Ma Shan Zheng', cursive;
-            color: #c0aa6a;
-            border-radius: 10%;
-            background: #0e0e11;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            .text-container {
-              font-size: 16px;
-              font-weight: bold;
-              color: #d3b479;
-              font-family: 'Ma Shan Zheng', cursive;
-            }
-            &:hover {
-              transform: scale(1.2);
-            }
           }
         }
       }
