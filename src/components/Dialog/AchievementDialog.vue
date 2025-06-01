@@ -77,7 +77,12 @@
 
 <script setup lang="ts">
 import { ref, nextTick, watch, computed } from 'vue';
-import { getCombatMethodsAnswer, getAchievementAnswer } from '../../apis/rag.ts';
+import {
+  getCombatMethodsAnswer,
+  getAchievementAnswer,
+  type ConfigParams,
+  type CombatMethodsQuestion, type AchievementQuestion
+} from '../../apis/rag.ts';
 
 const props = defineProps({
   show: Boolean,
@@ -94,6 +99,12 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
+
+const defaultConfig: ConfigParams = {
+  searchStrategy: 0, // 混合检索
+  resultCount: 3,
+  similarity: 0.4,
+}
 
 // 用户输入的问题
 const question = ref('');
@@ -133,36 +144,66 @@ const sendQuestion = async () => {
 
   // 保存用户问题
   const userQuestion = question.value.trim();
+
   messages.value.push({
     sender: 'user',
     content: userQuestion
   });
 
-  // 清空输入框
-  question.value = '';
+  const combatMethodsQuestion: CombatMethodsQuestion = {
+    question: userQuestion,
+    config: defaultConfig
+  };
 
-  // 显示加载状态
-  isLoading.value = true;
+  const achievementQuestion: AchievementQuestion = {
+    question: userQuestion,
+    config: defaultConfig,
+    userAchievements: props.userAchievements
+  }
 
-  // 滚动到底部
-  scrollToBottom();
+  question.value = '';  // 清空输入框
+  isLoading.value = true;  // 显示加载状态
+  scrollToBottom(); // 滚动到底部
 
   try {
-    let answer: string;
+
+    let answer: "服务器繁忙，请重试";
     
-    if (props.mode === 'combat') {
-      // 调用武学相关的API
-      answer = await getCombatMethodsAnswer(userQuestion);
-    } else {
-      // 调用成就相关的API（真实API），传递用户成就数据
-      answer = await getAchievementAnswer(userQuestion, props.userAchievements);
+    if (props.mode === 'combat') { // 调用武学秘籍相关的API
+
+      try {
+        getCombatMethodsAnswer(combatMethodsQuestion).then(res => {
+          console.log('获取答案成功:', res);
+          answer = res.data.answer;
+        });
+      } catch (error) {
+        answer = '贫僧修为尚浅，此武学奥义暂未参透，还需苦修方能为你解惑。';
+        console.error('获取答案失败:', error);
+      } finally {
+        messages.value.push({
+          sender: 'bot',
+          content: answer
+        });
+      }
+
+    } else { // 调用成就相关的API，传递用户成就数据
+
+      try {
+        getAchievementAnswer(achievementQuestion).then(res => {
+          console.log('获取答案成功:', res);
+          answer = res.data.answer;
+        });
+      } catch (error) {
+        answer = '贫僧修行尚浅，此问题暂未能解，待我西行归来再为你解惑。';
+        console.error('获取答案失败:', error);
+      } finally {
+        messages.value.push({
+          sender: 'bot',
+          content: answer
+        });
+      }
     }
 
-    // 保存机器人回答
-    messages.value.push({
-      sender: 'bot',
-      content: answer
-    });
   } catch (error) {
     console.error('获取答案失败:', error);
     
@@ -174,6 +215,7 @@ const sendQuestion = async () => {
       sender: 'bot',
       content: errorMessage
     });
+
   } finally {
     isLoading.value = false;
     scrollToBottom();
