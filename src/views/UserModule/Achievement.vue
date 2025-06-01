@@ -839,7 +839,7 @@ input, button {
       padding: 30px;
 
       .achievement-data {
-        background-image: url('/wukong.png');
+        background-image: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/wukong.png');
         background-repeat: no-repeat;
         background-position-x: center;
         background-position-y: center;
@@ -862,7 +862,7 @@ input, button {
             display: grid;
             grid-template-columns: 1fr 1fr;
             padding: 50px;
-            background: rgba(40, 40, 45, 0.8) url("../../assets/BlackMonkey/img_bg_introduce_2_a.png") no-repeat center;
+            background: rgba(40, 40, 45, 0.8) url("https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/asserts/BlackMonkey/img_bg_introduce_2_a.png") no-repeat center;
             background-size: cover;
             border-radius: 20px;
 
@@ -951,7 +951,7 @@ input, button {
             }
           }
           .user-info-analysis {
-            background: rgba(40, 40, 45, 0.8) url("../../assets/BlackMonkey/img_bg_introduce_1_a.png") no-repeat right;
+            background: rgba(40, 40, 45, 0.8) url("https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/asserts/BlackMonkey/img_bg_introduce_1_a.png") no-repeat right;
             background-size: contain;
             width: 40%;
             gap: 30px;

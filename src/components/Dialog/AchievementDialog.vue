@@ -14,7 +14,7 @@
         <!-- 初始机器人欢迎消息 -->
         <div class="message bot-message">
           <div class="avatar">
-            <img src="/chatBot.png" alt="悟空" />
+            <img :src="chatBotAvatar" alt="chatBot" />
           </div>
           <div class="text">
             {{ welcomeMessage }}
@@ -36,7 +36,7 @@
           <!-- 机器人消息 -->
           <div v-else class="message bot-message">
             <div class="avatar">
-              <img src="/chatBot.png" alt="悟空" />
+              <img :src="chatBotAvatar" alt="chatBot" />
             </div>
             <div class="text">
               {{ item.content }}
@@ -47,7 +47,7 @@
         <!-- 加载状态 -->
         <div v-if="isLoading" class="message bot-message">
           <div class="avatar">
-            <img src="/chatBot.png" alt="悟空" />
+            <img :src="chatBotAvatar" alt="chatBot" />
           </div>
           <div class="text loading">
             <span class="dot"></span>
@@ -83,6 +83,8 @@ import {
   type ConfigParams,
   type CombatMethodsQuestion, type AchievementQuestion
 } from '../../apis/rag.ts';
+
+const chatBotAvatar = "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/chatBot.png"
 
 const props = defineProps({
   show: Boolean,

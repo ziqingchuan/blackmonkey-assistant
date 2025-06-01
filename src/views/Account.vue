@@ -5,7 +5,7 @@
     <header class="header">
       <div class="header-container">
         <div class="logo" @click="router.push('/index')">
-          <img src="/wukong-header.png" alt="黑神话悟空" />
+          <img src="https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/wukong-header.png" alt="黑神话悟空" />
           <span>问答助手</span>
         </div>
         <div class="header-right">
@@ -25,7 +25,7 @@
     <div class="body">
       <div class="container" id="container" :class="{ 'right-panel-active': rightPanelActive }">
         <div class="form-container sign-up-container">
-          <div class="form" style="background-image: url('/sing-up-bkg.jpg')">
+          <div class="form" style="background-image: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/sing-up-bkg.jpg')">
             <h1>凝聚元神，重铸法身</h1>
             <div class="input-container">
               <div class="input-tips">邮&nbsp;箱：</div>
@@ -67,7 +67,7 @@
           </div>
         </div>
         <div class="form-container sign-in-container">
-          <div class="form" style="background-image: url('/sing-in-bkg.jpg')">
+          <div class="form" style="background-image: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/sing-in-bkg.jpg')">
             <h1 class="float-up float-delay-1">大圣归来，再战苍穹</h1>
             <div class="input-container float-up float-delay-2">
               <div class="input-tips">邮&nbsp;箱：</div>
@@ -582,7 +582,7 @@ button {
         z-index: 100;
         .overlay {
           background-size: cover;
-          background: url('src/assets/BlackMonkey/img_bg_introduce_4_b.png') no-repeat center;
+          background: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/asserts/BlackMonkey/img_bg_introduce_4_b.png') no-repeat center;
           color: #d3b479;
           text-shadow: 3px 3px 2px #5d523c;
           position: relative;

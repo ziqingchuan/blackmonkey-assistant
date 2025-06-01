@@ -4,7 +4,7 @@
   <!-- 追问对话弹窗 -->
   <AchievementDialog
       :show="showQuestionDialog"
-      :userAvatar="'/avatar.png'"
+      :userAvatar="avatar"
       mode="combat"
       @close="closeQuestionDialog"
   />
@@ -228,6 +228,7 @@ interface ConversationMessage {
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);
+const avatar = "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/avatar.png";
 const token = ref('');
 const isWaiting = ref(false);
 const router = useRouter();
@@ -478,12 +479,12 @@ const handleStickChoice = async (choice: string) => {
   chosenStickType.value = choice;
   
   // 等待一下，然后获取流派推荐
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise(resolve => setTimeout(resolve, 100));
   
   try {
     const response = await getSchoolRecommendation(choice, hasChosenSchool.value, chosenSchoolName.value);
     if (response.success) {
-      await typewriterEffect(response.data.content, 25, 'school_recommendation', choice);
+      await typewriterEffect(response.data.content, 35, 'school_recommendation', choice);
     } else {
       showAlert('获取流派推荐失败，请重试', 0);
     }
@@ -501,7 +502,7 @@ const startConversation = async () => {
     // 获取欢迎消息
     const response = await getWelcomeMessage(hasChosenStick.value);
     if (response.success) {
-      await typewriterEffect(response.data.content, 25, response.data.messageType, chosenStickType.value as StickType);
+      await typewriterEffect(response.data.content, 35, response.data.messageType, chosenStickType.value as StickType);
     } else {
       showAlert('获取系统消息失败，请重试', 0);
     }
@@ -569,12 +570,12 @@ const handleSchoolChoice = async (schoolName: string) => {
   chosenSchoolName.value = schoolName;
   
   // 等待一下，然后显示合并的回复（确认+流派详解）
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise(resolve => setTimeout(resolve, 100));
   
   const trainingGuide = getTrainingGuide(schoolName);
   const combinedText = `极好！你已选择修炼 ${schoolName}。此流派精深莫测，需日夜苦练方可有成。记住，武学修行在于悟性，不在于速度。<br><br>现在，你的修炼之路正式开始！愿你能在此道上有所突破，成就一代宗师！<br><br>${trainingGuide}`;
   
-  await typewriterEffect(combinedText, 25, 'training_progress', chosenStickType.value);
+  await typewriterEffect(combinedText, 35, 'training_progress', chosenStickType.value);
 };
 
 /**
@@ -596,10 +597,10 @@ const startCombatTraining = async (schoolName: string) => {
   hasStartedCombat.value = true;
   
   // 等待一下，然后开始实战教学
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise(resolve => setTimeout(resolve, 100));
   
   const combatText = getCombatTrainingContent(schoolName);
-  await typewriterEffect(combatText, 25, 'combat_training', chosenStickType.value);
+  await typewriterEffect(combatText, 35, 'combat_training', chosenStickType.value);
 };
 
 /**
@@ -678,10 +679,10 @@ const exploreAdvancedSchools = async () => {
   hasReachedAdvanced.value = true;
   
   // 等待一下，然后显示上层流派介绍
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise(resolve => setTimeout(resolve, 100));
   
   const advancedSchoolsContent = getAdvancedSchoolsContent();
-  await typewriterEffect(advancedSchoolsContent, 25, 'advanced_schools', chosenStickType.value);
+  await typewriterEffect(advancedSchoolsContent, 35, 'advanced_schools', chosenStickType.value);
 };
 
 /**
@@ -704,10 +705,10 @@ const selectAdvancedSchool = async (schoolName: string) => {
   selectedAdvancedSchool.value = schoolName;
   
   // 等待一下，然后显示上层流派详情
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise(resolve => setTimeout(resolve, 100));
   
   const advancedSchoolDetails = getAdvancedSchoolDetails(schoolName);
-  await typewriterEffect(advancedSchoolDetails, 25, 'advanced_school_details', chosenStickType.value);
+  await typewriterEffect(advancedSchoolDetails, 35, 'advanced_school_details', chosenStickType.value);
 };
 /**
  * 返回到上层流派详情
@@ -957,7 +958,7 @@ input, button {
     /* 侧边列表样式 */
     .methods-list {
       width: 250px;
-      background-image: url('/dragon.png');
+      background-image: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/dragon.png');
       background-repeat: no-repeat;
       background-position-y: center;
       background-position-x: 50px;

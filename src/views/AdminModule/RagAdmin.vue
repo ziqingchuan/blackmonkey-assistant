@@ -330,7 +330,7 @@ input, button {
     display: flex;
     .DB-list {
       width: 250px;
-      background-image: url('/dragon.png');
+      background-image: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/dragon.png');
       background-repeat: no-repeat;
       background-position-y: center;
       background-position-x: 50px;

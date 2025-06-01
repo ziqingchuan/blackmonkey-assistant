@@ -390,7 +390,7 @@ input, button {
     display: flex;
     .bossTips-list {
       width: 250px;
-      background-image: url('/dragon.png');
+      background-image: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/dragon.png');
       background-repeat: no-repeat;
       background-position-y: center;
       background-position-x: 50px;
@@ -480,7 +480,7 @@ input, button {
           }
       }
       .bossTip-information {
-        background-image: url('/wukong.png');
+        background-image: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/wukong.png');
         background-repeat: no-repeat;
         background-position-x: center;
         background-position-y: center;

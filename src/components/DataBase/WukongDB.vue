@@ -231,7 +231,7 @@ input, button {
 }
 
 .DB-information {
-  background-image: url('/wukong.png');
+  background-image: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/wukong.png');
   background-repeat: no-repeat;
   background-position-x: center;
   background-position-y: center;

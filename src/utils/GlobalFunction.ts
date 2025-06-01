@@ -57,6 +57,20 @@ export function formatDate(date: Date): string {
     return `${year}-${month}-${day}`;
 }
 
+// 格式化日期与时间
+export const formatTime = (isoString: string): string => {
+    const date = new Date(isoString);
+
+    // 提取年月日时分
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // 月份从0开始
+    const day = date.getDate();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    return `${year}.${month}.${day} ${hours}:${minutes}`;
+};
+
 // 图表数据变量
 export const pieChartData = ref<{name: string, value: number}[]>([]);
 export const lineChartData = ref<{date: string, count: number}[]>([]);

@@ -50,7 +50,7 @@
           >
             <div class="dialog-title">{{ dialog.title.length > 9 ? dialog.title.slice(0, 9) + '...' : dialog.title }}</div>
             <div class="dialog-time">
-              {{ formatDateTime(dialog.createTime.toString()) }}
+              {{ formatTime(dialog.createTime.toString()) }}
             </div>
           </div>
           <div v-if="dialogList.length === 0" class="empty-tip">
@@ -259,10 +259,11 @@ import Taiji from "../../assets/icons/Taiji.vue";
 import Jingu from "../../assets/icons/Jingu.vue";
 import CustomAlert from "../../components/Dialog/CustomAlert.vue";
 import MenuBtn from "../../assets/icons/MenuBtn.vue";
-import { type ConfigParams} from '../../apis/rag.ts';
+import {type CommonQuestion, type ConfigParams} from '../../apis/rag.ts';
 import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../../apis/dialog.ts';
 import {bindSteamAccount} from "../../apis/steam.ts";
 import GlobalLoading from "../../components/Dialog/GlobalLoading.vue";
+import {customAlert, showAlert, formatTime} from "../../utils/GlobalFunction.ts";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -278,7 +279,6 @@ const router = useRouter()
 const showCreateDialog = ref(false) // 控制新建对话弹窗的显示
 const showConfigDialog = ref(false) // 控制参数设置弹窗的显示
 const newDialogTitle = ref('') // 新建对话的标题
-const customAlert = ref(); // 获取弹窗组件的引用
 const isLogoHovered = ref(false); // 记录左上角logo是否被鼠标悬停
 const isDialogListVisible = ref(false); // 记录对话列表的显示状态
 const sourceDocVisibility = ref<Record<number, boolean>>({}); // 记录SourceDoc的显示状态（折叠与收起）
@@ -348,20 +348,6 @@ const convertToDisplayFormat = (contentList: Content[]) => {
   }, []);
 };
 
-// 格式化日期
-const formatDateTime = (isoString: string): string => {
-  const date = new Date(isoString);
-
-  // 提取年月日时分
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1; // 月份从0开始
-  const day = date.getDate();
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-
-  return `${year}.${month}.${day} ${hours}:${minutes}`;
-};
-
 // 处理用户发送新问题
 const sendQuestion = async () => {
   if (!inputValue.value.trim()) return;
@@ -405,14 +391,15 @@ const sendQuestion = async () => {
     isLoading.value = true;
     streamingMessageIndex.value = ragMessageIndex; // 标记正在流式接收的消息
 
-    // 使用流式传输获取回答
-    await getStreamingAnswer({
+    const commonQuestion: CommonQuestion = {
       dialogId: currentDialog.value.id,
       question: question.value,
       searchStrategy: configParams.value.searchStrategy,
       resultCount: configParams.value.resultCount,
       similarity: configParams.value.similarity
-    }, ragMessageIndex);
+    }
+    // 使用流式传输获取回答
+    await getStreamingAnswer(commonQuestion, ragMessageIndex);
 
   } catch (error) {
     console.error('发送问题失败:', error);
@@ -429,7 +416,7 @@ const sendQuestion = async () => {
 };
 
 // 流式获取答案
-const getStreamingAnswer = async (params: any, messageIndex: number) => {
+const getStreamingAnswer = async (params: CommonQuestion, messageIndex: number) => {
   const token = localStorage.getItem('token');
   if (!token) {
     throw new Error('未登录');
@@ -517,7 +504,7 @@ const getStreamingAnswer = async (params: any, messageIndex: number) => {
         }
       };
 
-      readStream();
+      readStream(response);
     }).catch(error => {
       console.error('建立SSE连接失败:', error);
       clearTimeout(timeoutId);
@@ -618,11 +605,6 @@ function logout() {
   });
 }
 
-// 显示弹窗
-const showAlert = (message: string, type: number) => {
-  return customAlert.value.show(message, type);
-};
-
 // 进入成就页面
 const toAchievementPage = async () => {
   //console.log(localStorage.getItem('hasBindSteam'));
@@ -657,13 +639,13 @@ const toBossTipsPage = async () => {
   await router.push('/boss-tips');
 }
 
-// 自动滚动到底部
 const scrollToBottom = () => {
   const dialogContent = document.querySelector('.dialog-content');
   if (dialogContent) {
     dialogContent.scrollTop = dialogContent.scrollHeight;
   }
 }
+
 
 // 界面初始化加载
 onMounted(async () => {
@@ -786,7 +768,7 @@ input, button {
     display: flex;
     .dialog-list {
       width: 250px;
-      background-image: url('/dragon.png');
+      background-image: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/dragon.png');
       background-repeat: no-repeat;
       background-position-y: center;
       background-position-x: 50px;
@@ -912,7 +894,7 @@ input, button {
         }
       }
       .dialog-content {
-        background-image: url('/wukong.png');
+        background-image: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/wukong.png');
         background-repeat: no-repeat;
         background-position-x: center;
         background-position-y: center;
