@@ -20,13 +20,21 @@
             :class="{ 'hovered': isLogoHovered }"
             @mouseenter="isLogoHovered = true"
             @mouseleave="isLogoHovered = false"
-            @click="isDBListVisible = !isDBListVisible"
+            @click="toggleSidebar"
         />
       </div>
       <div class="btn-group">
-        <button class="btn" @click="openFormDialog" title="添加数据">
+        <button class="btn" @click="openFormDialog" title="添加数据" v-if="!isDialogView">
           <span class="btn-origin-text">纂天</span>
           <span class="btn-new-text">添加数据</span>
+        </button>
+        <button class="btn switch-btn" @click="switchToDialogView" title="查看对话" v-if="!isDialogView">
+          <span class="btn-origin-text">问录</span>
+          <span class="btn-new-text">查看对话</span>
+        </button>
+        <button class="btn switch-btn" @click="switchToDBView" title="查看数据" v-if="isDialogView">
+          <span class="btn-origin-text">典藏</span>
+          <span class="btn-new-text">查看数据</span>
         </button>
         <button class="btn" @click="logout(router)" title="退出">
           <span class="btn-origin-text">归尘</span>
@@ -37,55 +45,68 @@
 
     <!-- 主体 -->
     <div class="main-container">
-      <!-- 数据库列表 -->
-      <div class="DB-list" v-if="isDBListVisible">
-        <div class="list-title">
-          <CloudBeforeList class="cloud-decoration" />
-          <span class="title-text">数据库列表</span>
-        </div>
-        <div class="DB-list-wrapper">
-          <div
-              v-if=" DBlist.length > 0"
-              v-for="DBitem in DBlist"
-              :key="DBitem.id"
-              class="database-item"
-              :class="{ active: currentDB?.id === DBitem.id }"
-              @click="loadDataBase(DBitem.id)"
-          >
-            <div class="database-name">{{ DBitem.name.length > 12 ? DBitem.name.slice(0, 12) + '...' : DBitem.name }}</div>
+      <!-- 数据库管理视图 -->
+      <div v-if="!isDialogView" class="db-management-view">
+        <!-- 数据库列表 -->
+        <div class="DB-list" v-if="isDBListVisible">
+          <div class="list-title">
+            <CloudBeforeList class="cloud-decoration" />
+            <span class="title-text">数据库列表</span>
           </div>
-          <div v-if="DBlist.length === 0" class="empty-tip">
-            暂无数据库
+          <div class="DB-list-wrapper">
+            <div
+                v-if=" DBlist.length > 0"
+                v-for="DBitem in DBlist"
+                :key="DBitem.id"
+                class="database-item"
+                :class="{ active: currentDB?.id === DBitem.id }"
+                @click="loadDataBase(DBitem.id)"
+            >
+              <div class="database-name">{{ DBitem.name.length > 12 ? DBitem.name.slice(0, 12) + '...' : DBitem.name }}</div>
+            </div>
+            <div v-if="DBlist.length === 0" class="empty-tip">
+              暂无数据库
+            </div>
+          </div>
+        </div>
+
+        <!-- 数据库信息 -->
+        <div class="database-container">
+          <!-- 头部 -->
+          <div class="database-header">
+            <div class="header-container">
+              <CloudBeforeTitle />
+              <span class="database-title">数据库: {{ currentDB?.name || "请选择数据库" }},&nbsp;&nbsp;共{{ currentDB?.database.length || 0 }}条数据</span>
+            </div>
+          </div>
+          <WukongDB
+              v-if="currentDB?.name === 'wukong'"
+              :currentDB="currentDB?.database"
+              @confirmDelete="handleConfirmDeleteWukongData"
+          />
+          <AchievementsDB
+              v-else
+              :currentDB="currentDB?.database"
+              @confirmDelete="handleConfirmDeleteAchievementsData"
+          />
+          <!-- 底部 -->
+          <div class="footer">
+            <RedCloudLeft />
+            <span> 玄铁锻锋 · 天书易篆 </span>
+            <RedCloudRight />
           </div>
         </div>
       </div>
 
-      <!-- 数据库信息 -->
-      <div class="database-container">
-        <!-- 头部 -->
-        <div class="database-header">
-          <div class="header-container">
-            <CloudBeforeTitle />
-            <span class="database-title">数据库: {{ currentDB?.name || "请选择数据库" }},&nbsp;&nbsp;共{{ currentDB?.database.length || 0 }}条数据</span>
-          </div>
-        </div>
-        <WukongDB
-            v-if="currentDB?.name === 'wukong'"
-            :currentDB="currentDB?.database"
-            @confirmDelete="handleConfirmDeleteWukongData"
-        />
-        <AchievementsDB
-            v-else
-            :currentDB="currentDB?.database"
-            @confirmDelete="handleConfirmDeleteAchievementsData"
-        />
+      <!-- 对话管理视图 -->
+      <div v-if="isDialogView" class="dialog-management-view">
+        <DialogViewer :sidebarVisible="isDialogSidebarVisible" />
         <!-- 底部 -->
         <div class="footer">
           <RedCloudLeft />
-          <span> 玄铁锻锋 · 天书易篆 </span>
+          <span> 问录天下 · 对话千里 </span>
           <RedCloudRight />
         </div>
-
       </div>
     </div>
   </div>
@@ -116,6 +137,7 @@ import WukongDB from "../../components/DataBase/WukongDB.vue";
 import AchievementsDB from "../../components/DataBase/AchievementsDB.vue";
 import AddWukongDataForm from "../../components/Form/AddWukongDataForm.vue";
 import AddAchievementsDataForm from "../../components/Form/AddAchievementsDataForm.vue";
+import DialogViewer from "../../components/Form/DialogViewer.vue";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -141,6 +163,19 @@ const DBlist = ref<DataBase[]>([
     database: achievementsDB.value
   },
 ])
+const isDialogView = ref(false); // 记录是否为对话管理视图
+const isDialogSidebarVisible = ref(true); // 记录对话管理视图侧边栏的显示状态
+
+// 切换侧边栏显示状态
+const toggleSidebar = () => {
+  if (isDialogView.value) {
+    // 在对话管理视图中，切换对话侧边栏显示
+    isDialogSidebarVisible.value = !isDialogSidebarVisible.value;
+  } else {
+    // 在数据库管理视图中，切换数据库列表显示
+    isDBListVisible.value = !isDBListVisible.value;
+  }
+};
 
 // 加载具体数据库
 const loadDataBase = (id: number) => {
@@ -239,6 +274,18 @@ const openFormDialog = () => {
     isAchievementsUploading.value = true;
   }
 }
+
+// 切换到对话管理视图
+const switchToDialogView = () => {
+  isDialogView.value = true;
+  isDBListVisible.value = false;
+};
+
+// 切换到数据库管理视图
+const switchToDBView = () => {
+  isDialogView.value = false;
+  isDBListVisible.value = true;
+};
 
 // 界面初始化加载
 onMounted(async () => {
@@ -419,6 +466,19 @@ input, button {
           color: #7a6a4a;
         }
       }
+    }
+
+    .db-management-view {
+      flex: 1;
+      display: flex;
+    }
+
+    .dialog-management-view {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
     }
 
     .database-container {

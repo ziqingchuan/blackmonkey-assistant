@@ -79,3 +79,19 @@ export const createDialog = async (title: string): Promise<boolean> => {
         },
     }).then(response => response.data);
 };
+
+/**
+ * 管理员获取所有用户对话
+ * @returns Dialog[]
+ */
+export const getAllUserDialogs = async (): Promise<Dialog[]> => {
+    return axios.get<any>(`${DIALOG_MODULE}/admin/getAllUserDialogs`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    }).then(response => {
+        
+        return response.data.data || [];
+    })
+};
