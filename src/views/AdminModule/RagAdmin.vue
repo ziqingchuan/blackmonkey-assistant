@@ -72,10 +72,12 @@
         <WukongDB
             v-if="currentDB?.name === 'wukong'"
             :currentDB="currentDB?.database"
+            @confirmDelete="handleConfirmDeleteWukongData"
         />
         <AchievementsDB
             v-else
             :currentDB="currentDB?.database"
+            @confirmDelete="handleConfirmDeleteAchievementsData"
         />
         <!-- 底部 -->
         <div class="footer">
@@ -201,6 +203,32 @@ const handleAchievementsInsert = async (data: InsertAchievementsDBInfo) => {
     isWaiting.value = false;
   }
 };
+
+const handleConfirmDeleteWukongData = async (isDeleted: boolean) => {
+  try {
+    if(isDeleted) {
+      isWaiting.value = true;
+      await fetchAllWukongData();
+    }
+  } catch (error) {
+    console.error('数据删除失败:', error);
+  } finally {
+    isWaiting.value = false;
+  }
+}
+
+const handleConfirmDeleteAchievementsData = async (isDeleted: boolean) => {
+  try {
+    if (isDeleted) {
+      isWaiting.value = true;
+      await fetchAllAchievementsData();
+    }
+  } catch (error) {
+    console.error('数据删除失败:', error);
+  } finally {
+    isWaiting.value = false;
+  }
+}
 
 const openFormDialog = () => {
   if (currentDB.value?.name === 'wukong') {

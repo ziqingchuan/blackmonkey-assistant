@@ -121,6 +121,7 @@ const props = defineProps<{
   currentDB: AchievementsDBInfo[];
 }>()
 const { currentDB } = toRefs(props)
+const emit = defineEmits(['confirmDelete']);
 
 const paginatedData = computed(() => {
   // 创建数据副本用于排序
@@ -202,7 +203,7 @@ const deleteItem = async (item: AchievementsDBInfo) => {
   try {
     isWaiting.value = true;
     await deleteAchievementsData(item.primary_key);
-    window.location.reload();
+    emit('confirmDelete', true);
     showAlert('删除数据成功!', 0);
   } catch (error) {
     console.error('删除失败:', error);
