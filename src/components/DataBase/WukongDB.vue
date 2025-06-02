@@ -119,7 +119,7 @@ const props = defineProps<{
   currentDB: WukongDBInfo[];
 }>()
 const { currentDB } = toRefs(props)
-
+const emit = defineEmits(['confirmDelete']);
 
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
@@ -210,7 +210,7 @@ const deleteItem = async (item: WukongDBInfo) => {
   try {
     isWaiting.value = true;
     await deleteWukongData(item.pk);
-    window.location.reload();
+    emit('confirmDelete', true);
     showAlert('删除数据成功!', 0);
   } catch (error) {
     console.error('删除失败:', error);
