@@ -24,7 +24,7 @@
           <span class="btn-origin-text">造化</span>
           <span class="btn-new-text">参数设置</span>
         </button>
-        <button class="btn" @click="logout" title="退出">
+        <button class="btn" @click="logout(router)" title="退出">
           <span class="btn-origin-text">归尘</span>
           <span class="btn-new-text">退出登录</span>
         </button>
