@@ -23,13 +23,13 @@
           @click="selectDialog(dialog)"
         >
           <div class="dialog-item-header">
-            <div class="dialog-title-text">{{ dialog.title?.length > 15 ? dialog.title.slice(0, 15) + '...' : dialog.title }}</div>
+            <div class="dialog-title-text">{{ dialog.title && dialog.title.length > 15 ? dialog.title.slice(0, 15) + '...' : dialog.title || '未知对话' }}</div>
             <div class="dialog-meta">
               <span class="dialog-time">{{ formatTime(dialog.createTime) }}</span>
               <span class="dialog-count">{{ dialog.contentList?.length || 0 }}条</span>
             </div>
           </div>
-          <div class="dialog-user-id">用户: {{ dialog.userId.slice(-6) || 'Unknown' }}</div>
+          <div class="dialog-user-id">用户: {{ dialog.userId.toString().slice(-6) || 'Unknown' }}</div>
         </div>
       </div>
       
@@ -49,24 +49,24 @@
 
     <!-- 右侧对话详情 -->
     <div class="dialog-detail-container">
-      <div v-if="!selectedDialog" class="no-selection">
+      <div v-if="!selectedDialog && dialogList.length === 0" class="no-selection">
         <div class="selection-tip">
           <h3>请选择一个对话查看详情</h3>
           <p>从左侧列表中点击任意对话即可查看完整内容</p>
         </div>
       </div>
       
-      <div v-else class="dialog-detail">
+      <div v-if="selectedDialog" class="dialog-detail">
         <div class="detail-header">
           <div class="header-info">
             <CloudBeforeTitle />
             <div class="header-content">
-              <h3>{{ selectedDialog.title }}</h3>
-              <div class="detail-meta">
-                <span>用户ID: {{ selectedDialog.userId }}</span>
-                <span>创建时间: {{ formatTime(selectedDialog.createTime) }}</span>
-                <span>消息数量: {{ selectedDialog.contentList?.length || 0 }}</span>
-              </div>
+              <span class="dialog-info">
+                对话: {{ selectedDialog.title || '未知对话' }},&nbsp;&nbsp;
+                用户: {{ selectedDialog.userId ? String(selectedDialog.userId).slice(-6) : 'Unknown' }},&nbsp;&nbsp;
+                创建时间: {{ formatTime(selectedDialog.createTime) }},&nbsp;&nbsp;
+                共{{ selectedDialog.contentList?.length || 0 }}条消息
+              </span>
             </div>
           </div>
         </div>
@@ -143,12 +143,23 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
-import {type Dialog, getAllUserDialogs} from '../../apis/dialog.ts';
+import { ref, onMounted } from 'vue';
+import { getAllUserDialogs, type Dialog, type Content } from '../../apis/dialog.ts';
+
 import CustomAlert from '../Dialog/CustomAlert.vue';
 import GlobalLoading from '../Dialog/GlobalLoading.vue';
 import CloudBeforeTitle from '../../assets/icons/Clouds/Cloud-before-title.vue';
 import CloudBeforeList from '../../assets/icons/Clouds/Cloud-before-list.vue';
+
+// 扩展Content接口添加selected属性
+interface ExtendedContent extends Content {
+  selected?: boolean;
+}
+
+// 扩展Dialog接口
+interface ExtendedDialog extends Omit<Dialog, 'contentList'> {
+  contentList?: ExtendedContent[];
+}
 
 // 定义props
 const props = defineProps<{
@@ -172,7 +183,6 @@ const showAlert = (message: string, type: number) => {
   return customAlert.value.show(message, type);
 };
 
-// 格式化时间
 const formatTime = (time: Date | string) => {
   if (!time) return '未知时间';
   const date = new Date(time);
@@ -186,7 +196,7 @@ const formatTime = (time: Date | string) => {
 };
 
 // 选择对话
-const selectDialog = (dialog: Dialog) => {
+const selectDialog = (dialog: ExtendedDialog) => {
   selectedDialog.value = dialog;
   
   // 恢复这个对话中的选择状态
@@ -201,16 +211,16 @@ const selectDialog = (dialog: Dialog) => {
 };
 
 // 处理问答对的选择
-const handleQASelection = (content: any, index: number) => {
+const handleQASelection = (content: ExtendedContent, index: number) => {
   if (!selectedDialog.value) return;
   
   const qaItem = {
     dialogId: selectedDialog.value.id,
-    dialogTitle: selectedDialog.value.title,
+    dialogTitle: selectedDialog.value.title || '未知对话',
     index: index,
     content: content,
-    question: content.question,
-    answer: content.answer,
+    question: content.question || '',
+    answer: content.answer || '',
     createTime: content.createTime,
     sourceDoc: content.sourceDoc || []
   };
@@ -218,7 +228,7 @@ const handleQASelection = (content: any, index: number) => {
   if (content.selected) {
     // 添加到选中列表（检查是否已存在）
     const existingIndex = selectedQAPairs.value.findIndex(
-      item => item.dialogId === selectedDialog.value?.id && item.index === index
+      item => String(item.dialogId) === String(selectedDialog.value?.id) && item.index === index
     );
     if (existingIndex === -1) {
       selectedQAPairs.value.push(qaItem);
@@ -227,7 +237,7 @@ const handleQASelection = (content: any, index: number) => {
   } else {
     // 从选中列表移除
     const removeIndex = selectedQAPairs.value.findIndex(
-      item => item.dialogId === selectedDialog.value?.id && item.index === index
+      item => String(item.dialogId) === String(selectedDialog.value?.id) && item.index === index
     );
     if (removeIndex > -1) {
       selectedQAPairs.value.splice(removeIndex, 1);
@@ -280,11 +290,11 @@ const exportToCSV = () => {
     const csvData = selectedQAPairs.value.map(item => {
       // 处理引用资料，将多个文档合并为一个字符串
       const retrievedContexts = item.sourceDoc && item.sourceDoc.length > 0 
-        ? item.sourceDoc.map(doc => `[${doc.category}] ${doc.source}: ${doc.content}`).join(' | ')
+        ? item.sourceDoc.map((doc: any) => `[${doc.category || ''}] ${doc.source || ''}: ${doc.content || ''}`).join(' | ')
         : '';
       
       // 清理和转义文本内容
-      const cleanText = (text) => {
+      const cleanText = (text: string | undefined | null): string => {
         if (!text) return '';
         return text.toString()
           .replace(/\r\n/g, ' ')  // 替换回车换行
@@ -376,7 +386,7 @@ onMounted(() => {
   display: flex;
   height: 100%;
   font-family: 'Ma Shan Zheng', cursive;
-  
+
   .dialog-sidebar {
     width: 250px;
     background-image: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/dragon.png');
@@ -389,17 +399,16 @@ onMounted(() => {
     flex-direction: column;
     height: 100vh;
     max-height: 100vh;
-    
+
     .sidebar-header {
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       position: relative;
-      padding: 10px 0;
+      padding: 12px 0;
       border-bottom: 2px solid #c0aa6a;
-      flex-shrink: 0;
-      
+
       .sidebar-title {
         font-size: 20px;
         color: #d3b479;
@@ -409,7 +418,7 @@ onMounted(() => {
         font-family: 'Ma Shan Zheng', cursive;
       }
     }
-    
+
     .dialog-list {
       flex: 1;
       overflow-y: auto;
@@ -420,13 +429,13 @@ onMounted(() => {
       &::-webkit-scrollbar {
         display: none; /* Chrome/Safari/Opera */
       }
-      
+
       .empty-tip {
         text-align: center;
         padding: 20px;
         color: #7a6a4a;
       }
-      
+
       .dialog-item {
         padding: 12px;
         margin: 8px 0;
@@ -435,37 +444,36 @@ onMounted(() => {
         cursor: pointer;
         transition: all 0.3s;
         border: 1px solid transparent;
-        
+
         &:hover {
           background: rgba(50, 50, 55, 0.9);
           border-color: #c0aa6a33;
         }
-        
+
         &.active {
           background: rgba(60, 60, 65, 0.9);
           border-color: #c0aa6a;
         }
-        
+
         .dialog-item-header {
           .dialog-title-text {
             font-size: 18px;
             letter-spacing: 2px;
             color: #d3b479;
-            padding-bottom: 10px;
-            line-height: 1.3;
+            margin-bottom: 10px;
           }
-          
+
           .dialog-meta {
             display: flex;
             justify-content: space-between;
             font-size: 12px;
             color: #c0aa6a;
-            
+
             .dialog-time {
               opacity: 0.8;
               flex: 1;
             }
-            
+
             .dialog-count {
               background: rgba(211, 180, 121, 0.2);
               padding: 2px 6px;
@@ -474,7 +482,7 @@ onMounted(() => {
             }
           }
         }
-        
+
         .dialog-user-id {
           margin-top: 8px;
           font-size: 11px;
@@ -484,31 +492,31 @@ onMounted(() => {
       }
     }
   }
-  
+
   .dialog-detail-container {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    
+
     .no-selection {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100%;
-      
+
       .selection-tip {
         text-align: center;
         padding: 40px;
         color: #7a6a4a;
-        
+
         h3 {
           color: #d3b479;
           font-size: 24px;
           margin-bottom: 15px;
           font-family: 'Ma Shan Zheng', cursive;
         }
-        
+
         p {
           font-size: 16px;
           line-height: 1.6;
@@ -516,52 +524,36 @@ onMounted(() => {
         }
       }
     }
-    
+
     .dialog-detail {
       flex: 1;
+      padding: 15px 10px 10px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      
+
       .detail-header {
-        margin-bottom: 20px;
         padding: 20px 20px 15px;
-        border-bottom: 1px solid #3a3a3f;
-        
+
         .header-info {
           display: flex;
-          align-items: center;
-          gap: 15px;
-          
+          align-items: flex-start;
+          gap: 10px;
+
           .header-content {
-            display: flex;
-            flex-direction: row;
-            h3 {
+            flex: 1;
+
+            .dialog-info {
+              font-size: 18px;
+              letter-spacing: 2px;
               color: #d3b479;
-              font-size: 22px;
-              font-family: 'Ma Shan Zheng', cursive;
-            }
-            
-            .detail-meta {
-              display: flex;
-              flex-wrap: wrap;
-              gap: 15px;
-              font-size: 14px;
-              color: #c0aa6a;
-              
-              span {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background: rgba(192, 170, 106, 0.1);
-                border-radius: 4px;
-                border: 1px solid rgba(192, 170, 106, 0.2);
-              }
+              border-bottom: 2px solid #c0aa6a;
+              padding-bottom: 10px;
             }
           }
         }
       }
-      
+
       .content-list {
         flex: 1;
         overflow-y: auto;
@@ -572,17 +564,17 @@ onMounted(() => {
         &::-webkit-scrollbar {
           display: none; /* Chrome/Safari/Opera */
         }
-        
+
         .empty-content {
           text-align: center;
           padding: 60px 40px;
           color: #7a6a4a;
           font-size: 18px;
         }
-        
+
         .content-item {
           margin-bottom: 30px;
-          
+
           .qa-pair {
             display: flex;
             align-items: flex-start;
@@ -591,23 +583,23 @@ onMounted(() => {
             border-radius: 8px;
             border: 1px solid rgba(60, 60, 65, 0.3);
             transition: all 0.3s;
-            
+
             &:hover {
               background: rgba(50, 50, 55, 0.7);
               border-color: rgba(192, 170, 106, 0.3);
             }
-            
+
             .qa-checkbox {
               margin-right: 15px;
               margin-top: 2px;
-              
+
               .qa-checkbox-input {
                 display: none;
-                
+
                 &:checked + .qa-checkbox-label {
                   background: #c0aa6a;
                   border-color: #d3b479;
-                  
+
                   &::after {
                     content: '✓';
                     display: block;
@@ -619,7 +611,7 @@ onMounted(() => {
                   }
                 }
               }
-              
+
               .qa-checkbox-label {
                 display: inline-block;
                 width: 16px;
@@ -628,74 +620,74 @@ onMounted(() => {
                 border-radius: 4px;
                 cursor: pointer;
                 transition: all 0.3s;
-                
+
                 &:hover {
                   border-color: #d3b479;
                   background: rgba(192, 170, 106, 0.1);
                 }
               }
             }
-            
+
             .qa-content {
               flex: 1;
-              
+
               .question-section {
                 margin-bottom: 15px;
-                
+
                 .message-header {
                   display: flex;
                   justify-content: space-between;
                   align-items: center;
                   margin-bottom: 8px;
-                  
+
                   .message-label {
                     font-weight: bold;
                     font-size: 15px;
                     color: #4682b4;
                   }
-                  
+
                   .message-time {
                     font-size: 12px;
                     opacity: 0.7;
                     color: #c0aa6a;
                   }
                 }
-                
+
                 .message-content {
                   line-height: 1.6;
                   color: #e7cc80;
                   font-size: 15px;
                 }
               }
-              
+
               .qa-divider {
                 height: 1px;
                 background: linear-gradient(to right, transparent, #3a3a3f, transparent);
                 margin: 15px 0;
               }
-              
+
               .answer-section {
                 margin-bottom: 10px;
-                
+
                 .message-header {
                   display: flex;
                   justify-content: space-between;
                   align-items: center;
                   margin-bottom: 8px;
-                  
+
                   .message-label {
                     font-weight: bold;
                     font-size: 15px;
                     color: #6aaac0;
                   }
-                  
+
                   .source-count {
                     font-size: 12px;
                     opacity: 0.7;
                     color: #c0aa6a;
                   }
                 }
-                
+
                 .message-content {
                   line-height: 1.6;
                   color: #e7cc80;
@@ -703,31 +695,31 @@ onMounted(() => {
                   margin-bottom: 10px;
                 }
               }
-              
+
               .source-docs {
                 margin-top: 15px;
                 padding-top: 15px;
                 border-top: 1px solid #3a3a3f;
-                
+
                 .source-header {
                   font-size: 14px;
                   color: #c0aa6a;
                   margin-bottom: 10px;
                   font-weight: bold;
                 }
-                
+
                 .source-doc {
                   margin-bottom: 10px;
                   padding: 12px;
                   background: rgba(30, 30, 35, 0.5);
                   border-radius: 6px;
                   border: 1px solid rgba(60, 60, 65, 0.3);
-                  
+
                   .source-info {
                     display: flex;
                     gap: 10px;
                     margin-bottom: 8px;
-                    
+
                     .source-category {
                       background: rgba(211, 180, 121, 0.2);
                       color: #d3b479;
@@ -736,13 +728,13 @@ onMounted(() => {
                       font-size: 12px;
                       border: 1px solid rgba(211, 180, 121, 0.3);
                     }
-                    
+
                     .source-name {
                       color: #c0aa6a;
                       font-size: 12px;
                     }
                   }
-                  
+
                   .source-content {
                     font-size: 13px;
                     color: #999;
@@ -756,14 +748,14 @@ onMounted(() => {
       }
     }
   }
-  
+
   .export-section {
     margin-top: 8px;
     padding: 15px 0;
     border-top: 1px solid #3a3a3f;
     flex-shrink: 0;
     min-height: 80px;
-    
+
     .export-btn {
       width: 100%;
       padding: 14px 16px;
@@ -780,25 +772,25 @@ onMounted(() => {
       justify-content: center;
       gap: 8px;
       min-height: 50px;
-      
+
       &:hover:not(:disabled) {
         background: rgba(192, 170, 106, 0.2);
         border-color: #d3b479;
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(192, 170, 106, 0.3);
       }
-      
+
       &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
         color: #7a6a4a;
         border-color: #7a6a4a;
       }
-      
+
       .export-text {
         font-weight: bold;
       }
-      
+
       .export-count {
         background: rgba(211, 180, 121, 0.3);
         padding: 2px 6px;
@@ -809,4 +801,5 @@ onMounted(() => {
     }
   }
 }
+
 </style> 

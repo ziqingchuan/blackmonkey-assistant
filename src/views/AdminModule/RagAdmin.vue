@@ -33,7 +33,7 @@
           <span class="btn-new-text">查看对话</span>
         </button>
         <button class="btn switch-btn" @click="switchToDBView" title="查看数据" v-if="isDialogView">
-          <span class="btn-origin-text">典藏</span>
+          <span class="btn-origin-text">天机</span>
           <span class="btn-new-text">查看数据</span>
         </button>
         <button class="btn" @click="logout(router)" title="退出">
