@@ -4,7 +4,7 @@
   
   <div class="dialog-viewer-container">
     <!-- 左侧对话列表（侧边栏） -->
-    <div class="dialog-sidebar" v-show="props.sidebarVisible !== false">
+    <div class="dialog-sidebar" v-show="props.sidebarVisible">
       <div class="sidebar-header">
         <CloudBeforeList class="cloud-decoration" />
         <span class="sidebar-title">对话列表</span>
@@ -16,7 +16,7 @@
         </div>
         
         <div 
-          v-for="dialog in dialogList || []" 
+          v-for="dialog in dialogList"
           :key="dialog.id"
           class="dialog-item"
           :class="{ active: selectedDialog?.id === dialog.id }"
@@ -29,7 +29,7 @@
               <span class="dialog-count">{{ dialog.contentList?.length || 0 }}条</span>
             </div>
           </div>
-          <div class="dialog-user-id">用户: {{ dialog.userId?.slice(-6) || 'Unknown' }}</div>
+          <div class="dialog-user-id">用户: {{ dialog.userId.slice(-6) || 'Unknown' }}</div>
         </div>
       </div>
       
@@ -51,7 +51,6 @@
     <div class="dialog-detail-container">
       <div v-if="!selectedDialog" class="no-selection">
         <div class="selection-tip">
-          <CloudBeforeTitle />
           <h3>请选择一个对话查看详情</h3>
           <p>从左侧列表中点击任意对话即可查看完整内容</p>
         </div>
@@ -78,7 +77,7 @@
           </div>
           
           <div 
-            v-for="(content, index) in selectedDialog.contentList || []" 
+            v-for="(content, index) in selectedDialog.contentList"
             :key="index"
             class="content-item"
           >
@@ -144,8 +143,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { getAllUserDialogs, type Dialog } from '../../apis/dialog.ts';
+import {onMounted, ref} from 'vue';
+import {type Dialog, getAllUserDialogs} from '../../apis/dialog.ts';
 import CustomAlert from '../Dialog/CustomAlert.vue';
 import GlobalLoading from '../Dialog/GlobalLoading.vue';
 import CloudBeforeTitle from '../../assets/icons/Clouds/Cloud-before-title.vue';
@@ -159,7 +158,13 @@ const props = defineProps<{
 const customAlert = ref();
 const isLoading = ref(false);
 const dialogList = ref<Dialog[]>([]);
-const selectedDialog = ref<Dialog | null>(null);
+const selectedDialog = ref<Dialog>({
+  id: 0,
+  userId: 0,
+  title: '',
+  createTime: '',
+  contentList: [],
+});
 const selectedQAPairs = ref<Array<{dialogId: string, index: number, content: any}>>([]);
 
 // 显示弹窗
@@ -188,10 +193,9 @@ const selectDialog = (dialog: Dialog) => {
   if (selectedDialog.value?.contentList) {
     selectedDialog.value.contentList.forEach((content, index) => {
       // 检查这个问答对是否在全局选中列表中
-      const isSelected = selectedQAPairs.value.some(
-        item => item.dialogId === selectedDialog.value?.id && item.index === index
+      content.selected = selectedQAPairs.value.some(
+          item => item.dialogId === selectedDialog.value?.id && item.index === index
       );
-      content.selected = isSelected;
     });
   }
 };
@@ -336,8 +340,10 @@ const exportToCSV = () => {
 const fetchDialogs = async () => {
   try {
     isLoading.value = true;
-    const result = await getAllUserDialogs();
-    dialogList.value = result || [];
+    dialogList.value = await getAllUserDialogs();
+    if(dialogList.value.length > 0) {
+      selectedDialog.value = dialogList.value[0];
+    }
   } catch (error: any) {
     console.error('获取对话列表失败:', error);
     dialogList.value = [];
@@ -524,18 +530,16 @@ onMounted(() => {
         
         .header-info {
           display: flex;
-          align-items: flex-start;
+          align-items: center;
           gap: 15px;
           
           .header-content {
-            flex: 1;
-            
+            display: flex;
+            flex-direction: row;
             h3 {
               color: #d3b479;
               font-size: 22px;
-              margin-bottom: 12px;
               font-family: 'Ma Shan Zheng', cursive;
-              line-height: 1.3;
             }
             
             .detail-meta {
@@ -546,8 +550,10 @@ onMounted(() => {
               color: #c0aa6a;
               
               span {
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 background: rgba(192, 170, 106, 0.1);
-                padding: 6px 10px;
                 border-radius: 4px;
                 border: 1px solid rgba(192, 170, 106, 0.2);
               }
