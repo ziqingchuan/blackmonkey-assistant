@@ -49,25 +49,25 @@
 
     <!-- 右侧对话详情 -->
     <div class="dialog-detail-container">
-      <div v-if="!selectedDialog" class="no-selection">
+      <div v-if="!selectedDialog && dialogList.length === 0" class="no-selection">
         <div class="selection-tip">
           <CloudBeforeTitle />
-          <h3>请选择一个对话查看详情</h3>
-          <p>从左侧列表中点击任意对话即可查看完整内容</p>
+          <h3>暂无对话记录</h3>
+          <p>当前没有任何对话内容可以查看</p>
         </div>
       </div>
       
-      <div v-else class="dialog-detail">
+      <div v-if="selectedDialog" class="dialog-detail">
         <div class="detail-header">
           <div class="header-info">
             <CloudBeforeTitle />
             <div class="header-content">
-              <h3>{{ selectedDialog.title }}</h3>
-              <div class="detail-meta">
-                <span>用户ID: {{ selectedDialog.userId }}</span>
-                <span>创建时间: {{ formatTime(selectedDialog.createTime) }}</span>
-                <span>消息数量: {{ selectedDialog.contentList?.length || 0 }}</span>
-              </div>
+              <span class="dialog-info">
+                对话: {{ selectedDialog.title }},&nbsp;&nbsp;
+                用户: {{ selectedDialog.userId?.slice(-6) || 'Unknown' }},&nbsp;&nbsp;
+                创建时间: {{ formatTime(selectedDialog.createTime) }},&nbsp;&nbsp;
+                共{{ selectedDialog.contentList?.length || 0 }}条消息
+              </span>
             </div>
           </div>
         </div>
@@ -338,6 +338,11 @@ const fetchDialogs = async () => {
     isLoading.value = true;
     const result = await getAllUserDialogs();
     dialogList.value = result || [];
+    
+    // 自动选中第一条对话
+    if (dialogList.value.length > 0) {
+      selectDialog(dialogList.value[0]);
+    }
   } catch (error: any) {
     console.error('获取对话列表失败:', error);
     dialogList.value = [];
@@ -530,27 +535,12 @@ onMounted(() => {
           .header-content {
             flex: 1;
             
-            h3 {
+            .dialog-info {
+              font-size: 18px;
+              letter-spacing: 2px;
               color: #d3b479;
-              font-size: 22px;
-              margin-bottom: 12px;
-              font-family: 'Ma Shan Zheng', cursive;
-              line-height: 1.3;
-            }
-            
-            .detail-meta {
-              display: flex;
-              flex-wrap: wrap;
-              gap: 15px;
-              font-size: 14px;
-              color: #c0aa6a;
-              
-              span {
-                background: rgba(192, 170, 106, 0.1);
-                padding: 6px 10px;
-                border-radius: 4px;
-                border: 1px solid rgba(192, 170, 106, 0.2);
-              }
+              border-bottom: 2px solid #c0aa6a;
+              padding-bottom: 10px;
             }
           }
         }
