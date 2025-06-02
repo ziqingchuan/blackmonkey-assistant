@@ -23,13 +23,13 @@
           @click="selectDialog(dialog)"
         >
           <div class="dialog-item-header">
-            <div class="dialog-title-text">{{ dialog.title?.length > 15 ? dialog.title.slice(0, 15) + '...' : dialog.title }}</div>
+            <div class="dialog-title-text">{{ dialog.title && dialog.title.length > 15 ? dialog.title.slice(0, 15) + '...' : dialog.title || '未知对话' }}</div>
             <div class="dialog-meta">
               <span class="dialog-time">{{ formatTime(dialog.createTime) }}</span>
               <span class="dialog-count">{{ dialog.contentList?.length || 0 }}条</span>
             </div>
           </div>
-          <div class="dialog-user-id">用户: {{ dialog.userId?.slice(-6) || 'Unknown' }}</div>
+          <div class="dialog-user-id">用户: {{ dialog.userId ? String(dialog.userId).slice(-6) : 'Unknown' }}</div>
         </div>
       </div>
       
@@ -63,8 +63,8 @@
             <CloudBeforeTitle />
             <div class="header-content">
               <span class="dialog-info">
-                对话: {{ selectedDialog.title }},&nbsp;&nbsp;
-                用户: {{ selectedDialog.userId?.slice(-6) || 'Unknown' }},&nbsp;&nbsp;
+                对话: {{ selectedDialog.title || '未知对话' }},&nbsp;&nbsp;
+                用户: {{ selectedDialog.userId ? String(selectedDialog.userId).slice(-6) : 'Unknown' }},&nbsp;&nbsp;
                 创建时间: {{ formatTime(selectedDialog.createTime) }},&nbsp;&nbsp;
                 共{{ selectedDialog.contentList?.length || 0 }}条消息
               </span>
@@ -145,11 +145,21 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { getAllUserDialogs, type Dialog } from '../../apis/dialog.ts';
+import { getAllUserDialogs, type Dialog, type Content } from '../../apis/dialog.ts';
 import CustomAlert from '../Dialog/CustomAlert.vue';
 import GlobalLoading from '../Dialog/GlobalLoading.vue';
 import CloudBeforeTitle from '../../assets/icons/Clouds/Cloud-before-title.vue';
 import CloudBeforeList from '../../assets/icons/Clouds/Cloud-before-list.vue';
+
+// 扩展Content接口添加selected属性
+interface ExtendedContent extends Content {
+  selected?: boolean;
+}
+
+// 扩展Dialog接口
+interface ExtendedDialog extends Omit<Dialog, 'contentList'> {
+  contentList?: ExtendedContent[];
+}
 
 // 定义props
 const props = defineProps<{
@@ -158,9 +168,18 @@ const props = defineProps<{
 
 const customAlert = ref();
 const isLoading = ref(false);
-const dialogList = ref<Dialog[]>([]);
-const selectedDialog = ref<Dialog | null>(null);
-const selectedQAPairs = ref<Array<{dialogId: string, index: number, content: any}>>([]);
+const dialogList = ref<ExtendedDialog[]>([]);
+const selectedDialog = ref<ExtendedDialog | null>(null);
+const selectedQAPairs = ref<Array<{
+  dialogId: string | number;
+  dialogTitle: string;
+  index: number;
+  content: ExtendedContent;
+  question: string;
+  answer: string;
+  createTime: Date;
+  sourceDoc: any[];
+}>>([]);
 
 // 显示弹窗
 const showAlert = (message: string, type: number) => {
@@ -181,7 +200,7 @@ const formatTime = (time: Date | string) => {
 };
 
 // 选择对话
-const selectDialog = (dialog: Dialog) => {
+const selectDialog = (dialog: ExtendedDialog) => {
   selectedDialog.value = dialog;
   
   // 恢复这个对话中的选择状态
@@ -189,7 +208,7 @@ const selectDialog = (dialog: Dialog) => {
     selectedDialog.value.contentList.forEach((content, index) => {
       // 检查这个问答对是否在全局选中列表中
       const isSelected = selectedQAPairs.value.some(
-        item => item.dialogId === selectedDialog.value?.id && item.index === index
+        item => String(item.dialogId) === String(selectedDialog.value?.id) && item.index === index
       );
       content.selected = isSelected;
     });
@@ -197,16 +216,16 @@ const selectDialog = (dialog: Dialog) => {
 };
 
 // 处理问答对的选择
-const handleQASelection = (content: any, index: number) => {
+const handleQASelection = (content: ExtendedContent, index: number) => {
   if (!selectedDialog.value) return;
   
   const qaItem = {
     dialogId: selectedDialog.value.id,
-    dialogTitle: selectedDialog.value.title,
+    dialogTitle: selectedDialog.value.title || '未知对话',
     index: index,
     content: content,
-    question: content.question,
-    answer: content.answer,
+    question: content.question || '',
+    answer: content.answer || '',
     createTime: content.createTime,
     sourceDoc: content.sourceDoc || []
   };
@@ -214,7 +233,7 @@ const handleQASelection = (content: any, index: number) => {
   if (content.selected) {
     // 添加到选中列表（检查是否已存在）
     const existingIndex = selectedQAPairs.value.findIndex(
-      item => item.dialogId === selectedDialog.value?.id && item.index === index
+      item => String(item.dialogId) === String(selectedDialog.value?.id) && item.index === index
     );
     if (existingIndex === -1) {
       selectedQAPairs.value.push(qaItem);
@@ -223,7 +242,7 @@ const handleQASelection = (content: any, index: number) => {
   } else {
     // 从选中列表移除
     const removeIndex = selectedQAPairs.value.findIndex(
-      item => item.dialogId === selectedDialog.value?.id && item.index === index
+      item => String(item.dialogId) === String(selectedDialog.value?.id) && item.index === index
     );
     if (removeIndex > -1) {
       selectedQAPairs.value.splice(removeIndex, 1);
@@ -276,11 +295,11 @@ const exportToCSV = () => {
     const csvData = selectedQAPairs.value.map(item => {
       // 处理引用资料，将多个文档合并为一个字符串
       const retrievedContexts = item.sourceDoc && item.sourceDoc.length > 0 
-        ? item.sourceDoc.map(doc => `[${doc.category}] ${doc.source}: ${doc.content}`).join(' | ')
+        ? item.sourceDoc.map((doc: any) => `[${doc.category || ''}] ${doc.source || ''}: ${doc.content || ''}`).join(' | ')
         : '';
       
       // 清理和转义文本内容
-      const cleanText = (text) => {
+      const cleanText = (text: string | undefined | null): string => {
         if (!text) return '';
         return text.toString()
           .replace(/\r\n/g, ' ')  // 替换回车换行
@@ -337,7 +356,14 @@ const fetchDialogs = async () => {
   try {
     isLoading.value = true;
     const result = await getAllUserDialogs();
-    dialogList.value = result || [];
+    // 转换为ExtendedDialog类型
+    dialogList.value = (result || []).map(dialog => ({
+      ...dialog,
+      contentList: dialog.contentList?.map(content => ({
+        ...content,
+        selected: false
+      })) || []
+    }));
     
     // 自动选中第一条对话
     if (dialogList.value.length > 0) {
