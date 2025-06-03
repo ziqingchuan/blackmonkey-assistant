@@ -145,7 +145,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { getAllUserDialogs, type Dialog, type Content } from '../../apis/dialog.ts';
-
+import { showAlert, customAlert } from '../../utils/GlobalFunction.ts';
 import CustomAlert from '../Dialog/CustomAlert.vue';
 import GlobalLoading from '../Dialog/GlobalLoading.vue';
 import CloudBeforeTitle from '../../assets/icons/Clouds/Cloud-before-title.vue';
@@ -154,8 +154,6 @@ import CloudBeforeList from '../../assets/icons/Clouds/Cloud-before-list.vue';
 const props = defineProps<{
   sidebarVisible?: boolean;
 }>();
-
-const customAlert = ref();
 const isLoading = ref(false);
 const dialogList = ref<Dialog[]>([]);
 const selectedDialog = ref<Dialog>({
@@ -166,11 +164,6 @@ const selectedDialog = ref<Dialog>({
   contentList: [],
 });
 const selectedQAPairs = ref<Array<{dialogId: number, index: number, content: any}>>([]);
-
-// 显示弹窗
-const showAlert = (message: string, type: number) => {
-  return customAlert.value.show(message, type);
-};
 
 const formatTime = (time: Date | string) => {
   if (!time) return '未知时间';
@@ -296,7 +289,6 @@ const exportToCSV = () => {
       return [
         `"${cleanText(item.content.question)}"`,      // 用户提问
         `"${cleanText(item.content.answer)}"`,        // AI回答
-        '""',                                 // reference字段为空
         `"${cleanText(retrievedContexts)}"`   // 引用资料
       ];
     });
@@ -327,7 +319,7 @@ const exportToCSV = () => {
     // 清理URL对象
     URL.revokeObjectURL(url);
     
-    showAlert(`成功导出${selectedQAPairs.value.length}条数据`, 1);
+    showAlert(`成功导出${selectedQAPairs.value.length}条数据`, 0);
     
   } catch (error) {
     console.error('导出失败:', error);
