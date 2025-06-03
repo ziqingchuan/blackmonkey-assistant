@@ -118,7 +118,7 @@
                     <!--天机来源组件-->
                     <transition name="slide">
                       <div v-show="sourceDocVisibility[index]" class="source-doc-content">
-                        <div v-for="(doc, docIndex) in content?.sourceDoc || []" :key="docIndex" class="doc-item">
+                        <div v-for="(doc, docIndex) in content?.sourceDoc || emptySourceDoc" :key="docIndex" class="doc-item">
                           <div class="doc-header">
                             <span class="doc-source">{{ doc.source }}</span>
                             <span class="doc-category">{{ doc.category }}</span>
@@ -259,7 +259,7 @@ import Taiji from "../../assets/icons/Taiji.vue";
 import Jingu from "../../assets/icons/Jingu.vue";
 import CustomAlert from "../../components/Dialog/CustomAlert.vue";
 import MenuBtn from "../../assets/icons/MenuBtn.vue";
-import {type CommonQuestion, type ConfigParams} from '../../apis/rag.ts';
+import {type CommonQuestion, type ConfigParams, type SourceDoc, type StreamData} from '../../apis/rag.ts';
 import { getDialogDetail, createDialog, getAllHistory, type Dialog, type DisplayContent, type Content } from '../../apis/dialog.ts';
 import {bindSteamAccount} from "../../apis/steam.ts";
 import GlobalLoading from "../../components/Dialog/GlobalLoading.vue";
@@ -287,7 +287,12 @@ const configParams = ref<ConfigParams>({ // 初始化参数配置信息
   searchStrategy: 0,
   resultCount: 5,
   similarity: 0.7
-})
+});
+const emptySourceDoc: SourceDoc[] = [{
+  source: '',
+  category: '',
+  content: ''
+}]
 
 // ==================== 函数声明 ====================
 // 创建新对话
@@ -535,12 +540,17 @@ const processBuffer = (buffer: string, messageIndex: number) => {
 };
 
 // 处理流式消息
-const handleStreamMessage = (data: any, messageIndex: number): boolean => {
+const handleStreamMessage = (data: StreamData, messageIndex: number): boolean => {
+  console.log(data)
   const ragMessage = displayContentList.value[messageIndex];
   if (!ragMessage) return true;
 
   switch (data.type) {
     case 'start':
+      break;
+
+    case 'intent':
+      console.log('意图:', data.intent_info);
       break;
 
     case 'documents':

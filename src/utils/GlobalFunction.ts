@@ -40,6 +40,7 @@ export function logout(router: any) {
             localStorage.removeItem('avatar');
             localStorage.removeItem('name');
             localStorage.removeItem('achievements');
+            localStorage.removeItem('report')
             router.push('/index');
         }
     });

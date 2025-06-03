@@ -140,7 +140,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
+import { ref, watch } from 'vue';
 import type { CombatKnowledgeDBInfo } from '../../apis/database.ts';
 import CustomAlert from "../Dialog/CustomAlert.vue";
 

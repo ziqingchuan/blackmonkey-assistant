@@ -9,7 +9,11 @@
         <CloudUnderLogo style="margin-top: -25px;" />
       </div>
       <div class="btn-group">
-        <button class="btn" @click="router.back()" title="退出">
+        <button class="btn" @click="showReport = !showReport" title="查看报告">
+          <span class="btn-origin-text">功勋</span>
+          <span class="btn-new-text">分析报告</span>
+        </button>
+        <button class="btn" @click="router.back()" title="上一页">
           <span class="btn-origin-text">遁形</span>
           <span class="btn-new-text">返回上页</span>
         </button>
@@ -320,6 +324,9 @@
     :userAvatar="steamUser.user.avatar" 
     :userAchievements="achievements"
     @close="toggleDialog" />
+  <AchievementsReportDialog
+      :show="showReport"
+      @close="showReport = false" />
 </template>
 <script setup lang="ts">
 import {ref, onMounted, computed} from 'vue';
@@ -350,10 +357,12 @@ import { setupFloatAnimation, formatDate, initLineChart, initPieChart, destroyLi
   lineChartData, pieChartData, scrollToTop } from "../../utils/GlobalFunction.ts";
 import ArrowLeftIcon from "../../assets/icons/ArrowLeftIcon.vue";
 import ArrowRightIcon from "../../assets/icons/ArrowRightIcon.vue";
+import AchievementsReportDialog from "../../components/Dialog/AchievementsReportDialog.vue";
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
 const token = ref(''); // 用户登录token
 const isWaiting = ref(false); // 记录等待状态
+const showReport = ref(false);
 const router = useRouter();
 const achievementDataRef = ref<HTMLElement | null>(null); // 对.achievement-data容器的引用
 const showAllAchievements = ref(false); // 显示所有成就列表

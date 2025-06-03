@@ -10,6 +10,17 @@ export interface SourceDoc {
     category: string;
     content: string;
 }
+/**
+ * @Description: RAG的意图识别
+ */
+export interface IntentInfo {
+    confidence: number;
+    description: string;
+    intent: string;
+    intent_name: string;
+    method: string;
+    original_text: string;
+}
 
 /**
  * @Description: RAG检索的配置参数信息
@@ -37,6 +48,13 @@ export interface AchievementQuestion {
   question: string;
   config: ConfigParams;
   userAchievements: Achievement[];
+}
+
+export interface StreamData {
+    type: string;
+    documents: SourceDoc[];
+    content: string;
+    intent_info: IntentInfo;
 }
 
 /**
