@@ -215,7 +215,7 @@ const handleQASelection = (content: Content, index: number) => {
     if (existingIndex === -1) {
       selectedQAPairs.value.push(qaItem);
     }
-    console.log('选中问答对:', qaItem);
+    //console.log('选中问答对:', qaItem);
   } else {
     // 从选中列表移除
     const removeIndex = selectedQAPairs.value.findIndex(
@@ -224,11 +224,7 @@ const handleQASelection = (content: Content, index: number) => {
     if (removeIndex > -1) {
       selectedQAPairs.value.splice(removeIndex, 1);
     }
-    console.log('取消选中问答对');
   }
-  
-  console.log('当前选中的问答对数量:', selectedQAPairs.value.length);
-  console.log('选中列表:', selectedQAPairs.value);
 };
 
 // 处理CSV导出
@@ -238,17 +234,11 @@ const handleExport = async () => {
     return;
   }
   
-  console.log('导出前选中的数据数量:', selectedQAPairs.value.length);
-  console.log('导出前选中的数据:', selectedQAPairs.value);
-  
   try {
     const confirmed = await showAlert(
       `是否确定导出选定的${selectedQAPairs.value.length}条数据？`, 
       1
     );
-    
-    console.log('用户确认结果:', confirmed);
-    console.log('确认后选中的数据数量:', selectedQAPairs.value.length);
     
     if (confirmed === true) {
       exportToCSV();
@@ -301,7 +291,7 @@ const exportToCSV = () => {
     const BOM = '\uFEFF';
     const csvContentWithBOM = BOM + csvContent;
     
-    console.log('CSV内容预览:', csvContent.substring(0, 500) + '...');
+    //console.log('CSV内容预览:', csvContent.substring(0, 500) + '...');
     
     // 创建并下载文件
     const blob = new Blob([csvContentWithBOM], { type: 'text/csv;charset=utf-8;' });

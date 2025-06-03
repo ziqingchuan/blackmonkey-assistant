@@ -541,7 +541,6 @@ const processBuffer = (buffer: string, messageIndex: number) => {
 
 // 处理流式消息
 const handleStreamMessage = (data: StreamData, messageIndex: number): boolean => {
-  console.log(data)
   const ragMessage = displayContentList.value[messageIndex];
   if (!ragMessage) return true;
 

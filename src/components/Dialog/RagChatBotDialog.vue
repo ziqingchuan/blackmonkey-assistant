@@ -173,7 +173,7 @@ const sendQuestion = async () => {
       isLoading.value = true;  // 显示加载状态
       try {
         getCombatMethodsAnswer(combatMethodsQuestion).then((res: any) => {
-          console.log('获取答案成功:', res);
+          //console.log('获取答案成功:', res);
           answer.value = res.answer;
           messages.value.push({
             sender: 'bot',
@@ -190,7 +190,7 @@ const sendQuestion = async () => {
       try {
         isLoading.value = true;  // 显示加载状态
         getAchievementAnswer(achievementQuestion).then((res: any) => {
-          console.log('获取答案成功:', res);
+          //console.log('获取答案成功:', res);
           answer.value = res.answer;
           messages.value.push({
             sender: 'bot',

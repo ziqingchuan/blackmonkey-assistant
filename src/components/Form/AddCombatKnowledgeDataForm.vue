@@ -189,8 +189,6 @@ const handleConfirm = () => {
   formData.value.related_skills = toArray(relatedSkillsString.value);
 
   if (!validateForm()) return;
-
-  console.log('formData:', formData.value);
   emit('confirm', formData.value);
   resetForm();
   emit('update:visible', false);
