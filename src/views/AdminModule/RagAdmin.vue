@@ -9,6 +9,10 @@
       v-model:visible="isAchievementsUploading"
       @confirm="handleAchievementsInsert"
   />
+  <AddCombatKnowledgeDataForm
+      v-model:visible="isCombatKnowledgeUploading"
+      @confirm="handleCombatKnowledgeInsert"
+  />
   <div class="page-container">
     <!-- 玄铁侧栏 -->
     <div class="sidebar">
@@ -62,7 +66,7 @@
                 :class="{ active: currentDB?.id === DBitem.id }"
                 @click="loadDataBase(DBitem.id)"
             >
-              <div class="database-name">{{ DBitem.name.length > 12 ? DBitem.name.slice(0, 12) + '...' : DBitem.name }}</div>
+              <div class="database-name">{{ DBitem.name.length > 20 ? DBitem.name.slice(0, 20) + '...' : DBitem.name }}</div>
             </div>
             <div v-if="DBlist.length === 0" class="empty-tip">
               暂无数据库
@@ -85,9 +89,14 @@
               @confirmDelete="handleConfirmDeleteWukongData"
           />
           <AchievementsDB
-              v-else
+              v-else-if="currentDB?.name === 'achievements'"
               :currentDB="currentDB?.database"
               @confirmDelete="handleConfirmDeleteAchievementsData"
+          />
+          <CombatKnowledgeDB
+              v-else-if="currentDB?.name === 'combatKnowledge'"
+              :currentDB="currentDB?.database"
+              @confirmDelete="handleConfirmDeleteCombatKnowledgeData"
           />
           <!-- 底部 -->
           <div class="footer">
@@ -100,13 +109,7 @@
 
       <!-- 对话管理视图 -->
       <div v-if="isDialogView" class="dialog-management-view">
-        <DialogViewer :sidebarVisible="isDialogSidebarVisible" />
-        <!-- 底部 -->
-        <div class="footer">
-          <RedCloudLeft />
-          <span> 问录天下 · 对话千里 </span>
-          <RedCloudRight />
-        </div>
+        <ExportDialogInfoForm :sidebarVisible="isDialogSidebarVisible" />
       </div>
     </div>
   </div>
@@ -129,7 +132,12 @@ import {
   type InsertWukongDBInfo,
   type WukongDBInfo,
   type AchievementsDBInfo,
-  type InsertAchievementsDBInfo, insertAchievementsData
+  type CombatKnowledgeDBInfo,
+  type InsertAchievementsDBInfo,
+  insertAchievementsData,
+  getAllCombatKnowledgeData,
+  type InsertCombatKnowledgeDBInfo,
+  insertCombatKnowledgeData
 } from "../../apis/database.ts";
 import {customAlert, logout, showAlert} from "../../utils/GlobalFunction.ts";
 import {getAllWukongData, getAllAchievementsData, insertWukongData} from '../../apis/database.ts';
@@ -137,7 +145,9 @@ import WukongDB from "../../components/DataBase/WukongDB.vue";
 import AchievementsDB from "../../components/DataBase/AchievementsDB.vue";
 import AddWukongDataForm from "../../components/Form/AddWukongDataForm.vue";
 import AddAchievementsDataForm from "../../components/Form/AddAchievementsDataForm.vue";
-import DialogViewer from "../../components/Form/DialogViewer.vue";
+import ExportDialogInfoForm from "../../components/Form/ExportDialogInfoForm.vue";
+import CombatKnowledgeDB from "../../components/DataBase/CombatKnowledgeDB.vue";
+import AddCombatKnowledgeDataForm from "../../components/Form/AddCombatKnowledgeDataForm.vue";
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);  // 当前用户信息
@@ -149,8 +159,10 @@ const isLogoHovered = ref(false); // 记录展开目录图标是否被鼠标悬�
 const isDBListVisible = ref(false); // 记录数据库列表的显示状态
 const wukongDB = ref<WukongDBInfo[]>([]); // 用于存储wukong数据库信息，后续会添加其他xxxDB
 const achievementsDB = ref<AchievementsDBInfo[]>([]); // 用于存储achievements数据库信息
+const combatKnowledgeDB = ref<CombatKnowledgeDBInfo[]>([]); // 用于存储combatKnowledge数据库信息
 const isWukongUploading = ref(false); // 记录新增数据弹窗是否显示
 const isAchievementsUploading = ref(false);
+const isCombatKnowledgeUploading = ref(false);
 const DBlist = ref<DataBase[]>([
   {
     id: 0,
@@ -161,6 +173,11 @@ const DBlist = ref<DataBase[]>([
     id: 1,
     name: 'achievements',
     database: achievementsDB.value
+  },
+  {
+    id: 2,
+    name: 'combatKnowledge',
+    database: combatKnowledgeDB.value
   },
 ])
 const isDialogView = ref(false); // 记录是否为对话管理视图
@@ -212,6 +229,16 @@ const fetchAllAchievementsData = async () => {
   }
 };
 
+const fetchAllCombatKnowledgeData = async () => {
+  try {
+    DBlist.value[2].database = await getAllCombatKnowledgeData();
+  } catch (error) {
+    console.error('数据获取失败:', error);
+    showAlert('获取数据失败，请稍后再试', 0);
+    throw error;  // 保持错误传递
+  }
+}
+
 // 新增wukong数据库内容
 const handleWukongInsert = async (data: InsertWukongDBInfo) => {
   try {
@@ -231,6 +258,19 @@ const handleAchievementsInsert = async (data: InsertAchievementsDBInfo) => {
     isWaiting.value = true;
     await insertAchievementsData(data);
     await fetchAllAchievementsData();
+    showAlert('数据导入成功！', 0);
+  } catch (error) {
+    showAlert('数据导入失败，请稍后再试', 0);
+  } finally {
+    isWaiting.value = false;
+  }
+};
+
+const handleCombatKnowledgeInsert = async (data: InsertCombatKnowledgeDBInfo) => {
+  try {
+    isWaiting.value = true;
+    await insertCombatKnowledgeData(data);
+    await fetchAllCombatKnowledgeData();
     showAlert('数据导入成功！', 0);
   } catch (error) {
     showAlert('数据导入失败，请稍后再试', 0);
@@ -265,13 +305,32 @@ const handleConfirmDeleteAchievementsData = async (isDeleted: boolean) => {
   }
 }
 
+const handleConfirmDeleteCombatKnowledgeData = async (isDeleted: boolean) => {
+  try {
+    if (isDeleted) {
+      isWaiting.value = true;
+      await fetchAllCombatKnowledgeData();
+    }
+  } catch (error) {
+    console.error('数据删除失败:', error);
+  } finally {
+    isWaiting.value = false;
+  }
+}
+
 const openFormDialog = () => {
   if (currentDB.value?.name === 'wukong') {
     isWukongUploading.value = true;
     isAchievementsUploading.value = false;
-  } else {
+    isCombatKnowledgeUploading.value = false;
+  } else if (currentDB.value?.name === 'achievements') {
     isWukongUploading.value = false;
     isAchievementsUploading.value = true;
+    isCombatKnowledgeUploading.value = false;
+  } else if (currentDB.value?.name === 'combatKnowledge') {
+    isWukongUploading.value = false;
+    isAchievementsUploading.value = false;
+    isCombatKnowledgeUploading.value = true;
   }
 }
 
@@ -299,6 +358,7 @@ onMounted(async () => {
       // 默认加载wukong数据库
       await fetchAllWukongData();
       await fetchAllAchievementsData();
+      await fetchAllCombatKnowledgeData();
     } else {
       showAlert('管理员，请您先去登录，再来查看数据库', 0).then(() => {
         router.push('/account'); // 跳转到登录页面
