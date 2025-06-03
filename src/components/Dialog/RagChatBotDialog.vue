@@ -84,6 +84,7 @@ import {
   type CombatMethodsQuestion, type AchievementQuestion
 } from '../../apis/rag.ts';
 import {scrollToBottom} from "../../utils/GlobalFunction.ts";
+import {type Achievement} from "../../apis/steam.ts";
 
 const chatBotAvatar = "https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/chatBot.png"
 
@@ -91,7 +92,7 @@ const props = defineProps({
   show: Boolean,
   userAvatar: String,
   userAchievements: {
-    type: Array,
+    type: Array<Achievement>,
     default: () => []
   },
   mode: {
@@ -111,6 +112,8 @@ const defaultConfig: ConfigParams = {
 
 // 用户输入的问题
 const question = ref('');
+
+const answer = ref('');
 // 存储所有消息（用户问题+机器人回答）
 const messages = ref<Array<{sender: 'user' | 'bot', content: string}>>([]);
 // 加载状态
@@ -163,45 +166,42 @@ const sendQuestion = async () => {
   }
 
   question.value = '';  // 清空输入框
-  isLoading.value = true;  // 显示加载状态
   await nextTick(() => scrollToBottom('.dialog-content'));
 
   try {
-
-    let answer: "服务器繁忙，请重试";
-    
     if (props.mode === 'combat') { // 调用武学秘籍相关的API
-
+      isLoading.value = true;  // 显示加载状态
       try {
-        getCombatMethodsAnswer(combatMethodsQuestion).then(res => {
+        getCombatMethodsAnswer(combatMethodsQuestion).then((res: any) => {
           console.log('获取答案成功:', res);
-          answer = res.data.answer;
+          answer.value = res.answer;
+          messages.value.push({
+            sender: 'bot',
+            content:  answer.value
+          });
         });
       } catch (error) {
-        answer = '贫僧修为尚浅，此武学奥义暂未参透，还需苦修方能为你解惑。';
+        answer.value = '贫僧修为尚浅，此武学奥义暂未参透，还需苦修方能为你解惑。';
         console.error('获取答案失败:', error);
       } finally {
-        messages.value.push({
-          sender: 'bot',
-          content: answer
-        });
+        isLoading.value = false;
       }
-
     } else { // 调用成就相关的API，传递用户成就数据
-
       try {
-        getAchievementAnswer(achievementQuestion).then(res => {
+        isLoading.value = true;  // 显示加载状态
+        getAchievementAnswer(achievementQuestion).then((res: any) => {
           console.log('获取答案成功:', res);
-          answer = res.data.answer;
+          answer.value = res.answer;
+          messages.value.push({
+            sender: 'bot',
+            content:  answer.value
+          });
         });
       } catch (error) {
-        answer = '贫僧修行尚浅，此问题暂未能解，待我西行归来再为你解惑。';
+        answer.value = '贫僧修行尚浅，此问题暂未能解，待我西行归来再为你解惑。';
         console.error('获取答案失败:', error);
       } finally {
-        messages.value.push({
-          sender: 'bot',
-          content: answer
-        });
+        isLoading.value = false;
       }
     }
 
@@ -218,7 +218,6 @@ const sendQuestion = async () => {
     });
 
   } finally {
-    isLoading.value = false;
     await nextTick(() => scrollToBottom('.dialog-content'));
   }
 };

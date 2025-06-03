@@ -150,17 +150,6 @@ import CustomAlert from '../Dialog/CustomAlert.vue';
 import GlobalLoading from '../Dialog/GlobalLoading.vue';
 import CloudBeforeTitle from '../../assets/icons/Clouds/Cloud-before-title.vue';
 import CloudBeforeList from '../../assets/icons/Clouds/Cloud-before-list.vue';
-
-// 扩展Content接口添加selected属性
-interface ExtendedContent extends Content {
-  selected?: boolean;
-}
-
-// 扩展Dialog接口
-interface ExtendedDialog extends Omit<Dialog, 'contentList'> {
-  contentList?: ExtendedContent[];
-}
-
 // 定义props
 const props = defineProps<{
   sidebarVisible?: boolean;
@@ -173,10 +162,10 @@ const selectedDialog = ref<Dialog>({
   id: 0,
   userId: 0,
   title: '',
-  createTime: '',
+  createTime: new Date(),
   contentList: [],
 });
-const selectedQAPairs = ref<Array<{dialogId: string, index: number, content: any}>>([]);
+const selectedQAPairs = ref<Array<{dialogId: number, index: number, content: any}>>([]);
 
 // 显示弹窗
 const showAlert = (message: string, type: number) => {
@@ -196,7 +185,7 @@ const formatTime = (time: Date | string) => {
 };
 
 // 选择对话
-const selectDialog = (dialog: ExtendedDialog) => {
+const selectDialog = (dialog: Dialog) => {
   selectedDialog.value = dialog;
   
   // 恢复这个对话中的选择状态
@@ -211,7 +200,7 @@ const selectDialog = (dialog: ExtendedDialog) => {
 };
 
 // 处理问答对的选择
-const handleQASelection = (content: ExtendedContent, index: number) => {
+const handleQASelection = (content: Content, index: number) => {
   if (!selectedDialog.value) return;
   
   const qaItem = {
@@ -237,7 +226,7 @@ const handleQASelection = (content: ExtendedContent, index: number) => {
   } else {
     // 从选中列表移除
     const removeIndex = selectedQAPairs.value.findIndex(
-      item => String(item.dialogId) === String(selectedDialog.value?.id) && item.index === index
+      item => item.dialogId === selectedDialog.value?.id && item.index === index
     );
     if (removeIndex > -1) {
       selectedQAPairs.value.splice(removeIndex, 1);
@@ -289,8 +278,8 @@ const exportToCSV = () => {
     // 构建CSV数据
     const csvData = selectedQAPairs.value.map(item => {
       // 处理引用资料，将多个文档合并为一个字符串
-      const retrievedContexts = item.sourceDoc && item.sourceDoc.length > 0 
-        ? item.sourceDoc.map((doc: any) => `[${doc.category || ''}] ${doc.source || ''}: ${doc.content || ''}`).join(' | ')
+      const retrievedContexts = item.content.sourceDoc && item.content.sourceDoc.length > 0
+        ? item.content.sourceDoc.map((doc: any) => `[${doc.category || ''}] ${doc.source || ''}: ${doc.content || ''}`).join(' | ')
         : '';
       
       // 清理和转义文本内容
@@ -305,8 +294,8 @@ const exportToCSV = () => {
       };
       
       return [
-        `"${cleanText(item.question)}"`,      // 用户提问
-        `"${cleanText(item.answer)}"`,        // AI回答  
+        `"${cleanText(item.content.question)}"`,      // 用户提问
+        `"${cleanText(item.content.answer)}"`,        // AI回答
         '""',                                 // reference字段为空
         `"${cleanText(retrievedContexts)}"`   // 引用资料
       ];

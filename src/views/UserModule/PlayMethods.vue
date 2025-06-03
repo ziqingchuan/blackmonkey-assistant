@@ -212,19 +212,7 @@ import {
 import {getCombatTrainingContent, getTrainingGuide} from "../../consts/methodsData.ts";
 import ScripturePanelDialog from "../../components/Dialog/ScripturePanelDialog.vue";
 // ==================== 接口定义 ====================
-interface ConversationMessage {
-  role: 'RAG' | 'USER';
-  content: string;
-  timestamp: number;
-  messageType?:
-      'welcome' |
-      'school_recommendation' |
-      'training_progress' |
-      'combat_training' |
-      'advanced_schools' |
-      'advanced_school_details'; // 消息类型
-  stickType?: StickType; // 新增：关联的棍法类型
-}
+
 
 // ==================== 变量声明 ====================
 const currentUser = ref<any>([]);
@@ -237,7 +225,7 @@ const isMethodsListVisible = ref(false);
 const streamingMessageIndex = ref(-1);
 const conversationMessages = ref<ConversationMessage[]>([]);
 const hasChosenStick = ref(false); // 是否已选择棍法
-const chosenStickType = ref<StickType | ''>(''); // 选择的棍法类型
+const chosenStickType = ref<StickType>(); // 选择的棍法类型
 const hasChosenSchool = ref(false); // 是否已选择流派
 const chosenSchoolName = ref(''); // 选择的流派名称
 const hasStartedCombat = ref(false); // 是否已开始实战教学
@@ -261,7 +249,7 @@ const scriptureContent = ref<ScriptureResponse['data']>();
 const dynamicTitle = computed(() => {
   return getDynamicTitle(
     hasChosenStick.value,
-    chosenStickType.value,
+    chosenStickType.value ? chosenStickType.value : '',
     hasChosenSchool.value,
     chosenSchoolName.value,
     hasStartedCombat.value,
@@ -281,7 +269,7 @@ const resetConversation = async () => {
   if (confirmed) {
     conversationMessages.value = [];
     hasChosenStick.value = false;
-    chosenStickType.value = '';
+    chosenStickType.value = undefined;
     hasChosenSchool.value = false;
     chosenSchoolName.value = '';
     hasStartedCombat.value = false;
@@ -300,7 +288,7 @@ const backToBasics = async () => {
   if (confirmed) {
     // 重置所有状态
     hasChosenStick.value = false;
-    chosenStickType.value = '';
+    chosenStickType.value = undefined;
     hasChosenSchool.value = false;
     chosenSchoolName.value = '';
     hasStartedCombat.value = false;
@@ -611,7 +599,7 @@ const restartFromFoundation = async () => {
   if (confirmed) {
     // 重置所有状态
     hasChosenStick.value = false;
-    chosenStickType.value = '';
+    chosenStickType.value = undefined;
     hasChosenSchool.value = false;
     chosenSchoolName.value = '';
     hasStartedCombat.value = false;
@@ -739,7 +727,7 @@ const startNewCycle = async () => {
     // 重置所有状态到初始状态
     conversationMessages.value = [];
     hasChosenStick.value = false;
-    chosenStickType.value = '';
+    chosenStickType.value = undefined;
     hasChosenSchool.value = false;
     chosenSchoolName.value = '';
     hasStartedCombat.value = false;

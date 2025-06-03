@@ -507,7 +507,7 @@ const getStreamingAnswer = async (params: CommonQuestion, messageIndex: number) 
         }
       };
 
-      readStream(response);
+      readStream();
     }).catch(error => {
       console.error('建立SSE连接失败:', error);
       clearTimeout(timeoutId);

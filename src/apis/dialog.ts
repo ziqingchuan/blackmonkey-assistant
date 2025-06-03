@@ -13,6 +13,7 @@ export interface Dialog {
     title: string;
     createTime: Date;
     contentList: Content[];
+
 }
 
 /**
@@ -32,6 +33,7 @@ export interface Content {
     answer: string;
     sourceDoc: SourceDoc[];
     createTime: Date;
+    selected?: boolean;
 }
 
 /**
