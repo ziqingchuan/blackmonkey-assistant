@@ -287,7 +287,7 @@
                     class="bar-progress"
                     :style="{ width: achievement.completion_percentage + '%' }"
                 ></div>
-                <span class="percentage">{{ achievement.completion_percentage }}%的玩家达成</span>
+                <span class="percentage">{{ achievement.completion_percentage.toFixed(1) }}%的玩家达成</span>
               </div>
             </div>
           </div>
