@@ -351,7 +351,7 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
 
 .dialog-viewer-container {
   display: flex;

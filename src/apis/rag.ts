@@ -55,6 +55,7 @@ export interface StreamData {
     documents: SourceDoc[];
     content: string;
     intent_info: IntentInfo;
+    error: string;
 }
 
 /**

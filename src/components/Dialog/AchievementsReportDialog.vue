@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch, onBeforeUnmount, computed, onMounted, nextTick} from 'vue';
+import {ref, watch, onBeforeUnmount, computed, onMounted} from 'vue';
 import MarkdownIt from 'markdown-it';
 import {scrollToBottom} from "../../utils/GlobalFunction.ts";
 
@@ -106,6 +106,7 @@ const processStream = async () => {
 
     if (!response.ok || !response.body) {
       console.error(`请求失败: ${response.status} ${response.statusText}`);
+      return;
     }
 
     // 创建流读取器
@@ -243,10 +244,8 @@ watch(() => props.show, (newVal) => {
 });
 
 onMounted(() => {
-  if(localStorage.getItem('report')) {
-    content.value = localStorage.getItem('report');
-    isComplete.value = true;
-  }
+  content.value = localStorage.getItem('report') || "";
+  isComplete.value = true;
 });
 
 // 组件卸载时关闭连接
@@ -256,7 +255,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
 
 .report-dialog-overlay {
   position: fixed;

@@ -104,10 +104,10 @@ export interface ScriptureResponse {
   message: string;
   data: {
     methods: StickMethodContent[];
-    schools?: SchoolDetailContent[]; // 新增：流派说明
-    strategies?: SchoolStrategyContent[]; // 新增：流派攻略
-    combatDemos?: CombatDemoContent[]; // 新增：实战演示
-    messageType: MessageType; // 新增：消息类型
+    schools?: SchoolDetailContent[]; // 流派说明
+    strategies?: SchoolStrategyContent[]; // 流派攻略
+    combatDemos?: CombatDemoContent[]; // 实战演示
+    messageType: MessageType; // 消息类型
   };
 }
 

@@ -239,7 +239,7 @@ const showQuestionDialog = ref(false);
 
 // 经书参悟相关
 const showScripturePanel = ref(false);
-const scriptureContent = ref<ScriptureResponse['data']>();
+const scriptureContent = ref<ScriptureResponse['data']>({ methods: [], messageType: 'welcome' });
 
 // ==================== 计算属性 ====================
 
@@ -812,7 +812,7 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
 
 /* 全局样式 */
 input, button {

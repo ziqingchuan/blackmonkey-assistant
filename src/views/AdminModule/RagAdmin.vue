@@ -85,17 +85,17 @@
           </div>
           <WukongDB
               v-if="currentDB?.name === 'wukong'"
-              :currentDB="currentDB?.database"
+              :currentDB="currentDB?.database as WukongDBInfo[]"
               @confirmDelete="handleConfirmDeleteWukongData"
           />
           <AchievementsDB
               v-else-if="currentDB?.name === 'achievements'"
-              :currentDB="currentDB?.database"
+              :currentDB="currentDB?.database as AchievementsDBInfo[]"
               @confirmDelete="handleConfirmDeleteAchievementsData"
           />
           <CombatKnowledgeDB
               v-else-if="currentDB?.name === 'combatKnowledge'"
-              :currentDB="currentDB?.database"
+              :currentDB="currentDB?.database as CombatKnowledgeDBInfo[]"
               @confirmDelete="handleConfirmDeleteCombatKnowledgeData"
           />
           <!-- 底部 -->
@@ -376,7 +376,7 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
 /* 全局样式 */
 input, button {
   font-family: 'Ma Shan Zheng', cursive;

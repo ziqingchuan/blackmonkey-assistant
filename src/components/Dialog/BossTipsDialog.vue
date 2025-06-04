@@ -297,7 +297,7 @@ const sendQuestion = async () => {
         botResponse = `哦，${matchedBoss}啊，他在${location}呢，点击左侧目录中对应的章节，去找寻克敌制胜的奥秘吧！`;
       } else if (matchedLocation && !matchedBoss) {
         // 匹配位置但不匹配Boss
-        const bosses = locationBossMap[matchedLocation].join('、');
+        const bosses = locationBossMap[matchedLocation as keyof typeof locationBossMap].join('、');
         botResponse = `你说的${matchedLocation}，据老夫所知，有${bosses}，他们个个都是神通广大啊，不妨点击左侧目录对应章节，一一寻找克敌之术吧！`;
       } else {
         // 两者都不匹配
@@ -320,7 +320,7 @@ const sendQuestion = async () => {
 </script>
 
 <style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
 .dialog-overlay {
   position: fixed;
   top: 0;

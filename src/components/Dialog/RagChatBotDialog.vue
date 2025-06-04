@@ -225,7 +225,7 @@ const sendQuestion = async () => {
 </script>
 
 <style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
 .dialog-overlay {
   position: fixed;
   top: 0;

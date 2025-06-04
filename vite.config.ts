@@ -8,13 +8,7 @@ export default defineConfig({
     include: ['mammoth','pdfjs-dist']
   },
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'pdf.worker': ['pdfjs-dist/build/pdf.worker.min.mjs'],
-        },
-      },
-    },
+    chunkSizeWarningLimit: 1500,
   },
   server: {
     port: 3000,

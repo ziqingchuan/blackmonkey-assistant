@@ -4,7 +4,7 @@
  */
 import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
-pdfjsLib.GlobalWorkerOptions.workerSrc = '/node_modules/pdfjs-dist/build/pdf.worker.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 export const FileHandler = {
     async handleFile(file: File): Promise<string> {
         const extension = file.name.split('.').pop()?.toLowerCase();
