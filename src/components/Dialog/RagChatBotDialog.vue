@@ -144,6 +144,7 @@ const close = () => {
 
 // 发送问题
 const sendQuestion = async () => {
+  isLoading.value = true;
   if (!question.value.trim()) return;
 
   // 保存用户问题
@@ -166,13 +167,10 @@ const sendQuestion = async () => {
   }
 
   question.value = '';  // 清空输入框
-  await nextTick(() => scrollToBottom('.dialog-content'));
-
   try {
     if (props.mode === 'combat') { // 调用武学秘籍相关的API
-      isLoading.value = true;  // 显示加载状态
       try {
-        getCombatMethodsAnswer(combatMethodsQuestion).then((res: any) => {
+        await getCombatMethodsAnswer(combatMethodsQuestion).then((res: any) => {
           //console.log('获取答案成功:', res);
           answer.value = res.answer;
           messages.value.push({
@@ -183,14 +181,11 @@ const sendQuestion = async () => {
       } catch (error) {
         answer.value = '贫僧修为尚浅，此武学奥义暂未参透，还需苦修方能为你解惑。';
         console.error('获取答案失败:', error);
-      } finally {
-        isLoading.value = false;
       }
     } else { // 调用成就相关的API，传递用户成就数据
       try {
-        isLoading.value = true;  // 显示加载状态
-        getAchievementAnswer(achievementQuestion).then((res: any) => {
-          //console.log('获取答案成功:', res);
+        await getAchievementAnswer(achievementQuestion).then((res: any) => {
+          console.log('获取答案成功:', res);
           answer.value = res.answer;
           messages.value.push({
             sender: 'bot',
@@ -200,24 +195,23 @@ const sendQuestion = async () => {
       } catch (error) {
         answer.value = '贫僧修行尚浅，此问题暂未能解，待我西行归来再为你解惑。';
         console.error('获取答案失败:', error);
-      } finally {
-        isLoading.value = false;
       }
     }
 
   } catch (error) {
     console.error('获取答案失败:', error);
-    
+
     const errorMessage = props.mode === 'combat'
       ? '贫僧修为尚浅，此武学奥义暂未参透，还需苦修方能为你解惑。'
       : '贫僧修行尚浅，此问题暂未能解，待我西行归来再为你解惑。';
-    
+
     messages.value.push({
       sender: 'bot',
       content: errorMessage
     });
 
   } finally {
+    isLoading.value = false;
     await nextTick(() => scrollToBottom('.dialog-content'));
   }
 };
