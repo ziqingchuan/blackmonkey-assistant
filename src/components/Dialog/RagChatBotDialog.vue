@@ -185,7 +185,6 @@ const sendQuestion = async () => {
     } else { // 调用成就相关的API，传递用户成就数据
       try {
         await getAchievementAnswer(achievementQuestion).then((res: any) => {
-          console.log('获取答案成功:', res);
           answer.value = res.answer;
           messages.value.push({
             sender: 'bot',
@@ -343,7 +342,7 @@ const sendQuestion = async () => {
     input {
       flex: 1;
       padding: 12px 15px;
-      font-family: 'Ma Shan Zheng', cursive;
+      font-family: 'STKaiti', cursive;
       background: #202021FF;
       border: 1px solid #d3b479;
       border-radius: 8px;

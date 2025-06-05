@@ -329,7 +329,7 @@ input {
   margin: 20px 0 20px;
   width: 100%;
   height: 20px;
-  font-family: 'Ma Shan Zheng', cursive;
+  font-family: 'STKaiti', cursive;
   font-size: 18px;
 }
 
@@ -370,7 +370,7 @@ button {
   text-transform: uppercase;
   transition: background 0.3s;
   cursor: pointer;
-  font-family: 'Ma Shan Zheng', cursive;
+  font-family: 'STKaiti', cursive;
   color: #f1cb82;
   background: rgba(159, 157, 153, 0.2);
   border: 1px solid #f1cb82;
@@ -402,7 +402,7 @@ button {
       border-radius: 20px;
       cursor: pointer;
       color: #d3b479;
-      font-family: "Ma Shan Zheng", cursive;
+      font-family: "STKaiti", cursive;
       transition: background 0.3s;
       font-size: 18px;
       font-weight: bold;
@@ -474,7 +474,7 @@ button {
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: 'Ma Shan Zheng', cursive;
+      font-family: 'STKaiti', cursive;
       font-size: 24px;
       border-radius: 5px;
 
@@ -489,7 +489,7 @@ button {
         height: 100%;
         text-align: center;
         color: white;
-        font-family: 'Ma Shan Zheng', cursive;
+        font-family: 'STKaiti', cursive;
         font-size: 24px;
 
         &::before {
@@ -536,7 +536,7 @@ button {
             color: #FFFFFF;
             font-size: 16px;
             cursor: pointer;
-            font-family: 'Ma Shan Zheng', cursive;
+            font-family: 'STKaiti', cursive;
             transition: all 0.3s;
 
             &:hover:not(:disabled) {

@@ -444,7 +444,7 @@ const sendQuestion = async () => {
     input {
       flex: 1;
       padding: 12px 15px;
-      font-family: 'Ma Shan Zheng', cursive;
+      font-family: 'STKaiti', cursive;
       background: #202021FF;
       border: 1px solid #d3b479;
       border-radius: 8px;

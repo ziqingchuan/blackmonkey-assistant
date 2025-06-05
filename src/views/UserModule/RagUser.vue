@@ -432,7 +432,7 @@ const getStreamingAnswer = async (params: CommonQuestion, messageIndex: number) 
 
   return new Promise<void>((resolve, reject) => {
     // 构造URL
-    const url = `${window.location.origin}/api/rag/get`;
+    const url = 'http://101.37.171.135:8000/api/rag/get';
 
     // 设置超时控制
     const timeoutId = setTimeout(() => {
@@ -562,7 +562,8 @@ const handleStreamMessage = (data: StreamData, messageIndex: number): boolean =>
     case 'content':
       // 逐步添加内容
       if (data.content) {
-        ragMessage.text += data.content;
+        const filteredContent = data.content.replace(/[-*#]/g, '');
+        ragMessage.text += filteredContent;
         // 自动滚动到底部显示最新内容
         scrollToBottom('.dialog-content');
       }
@@ -676,13 +677,13 @@ onMounted(async () => {
 @import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
 /* 全局样式 */
 input, button {
-  font-family: 'Ma Shan Zheng', cursive;
+  font-family: 'STKaiti', cursive;
 }
 /* 页面整体样式 */
 .page-container {
   display: flex;
   background: linear-gradient(to right, #1a1a1d 0%, #0a0a0c 100%);
-  font-family: 'Ma Shan Zheng', cursive;
+  font-family: 'STKaiti', cursive;
   height: 100vh;
   overflow-x: auto;
   .sidebar {
@@ -726,7 +727,7 @@ input, button {
         height: 50px;
         border-radius: 30%;
         background: #37373d;
-        font-family: 'Ma Shan Zheng', cursive;
+        font-family: 'STKaiti', cursive;
         color: #e7cc80;
         font-size: 14px;
         font-weight: bold;
@@ -782,7 +783,7 @@ input, button {
           text-shadow: 0 0 8px rgba(192, 170, 106, 0.3);
           margin: 0 10px;
           position: relative;
-          font-family: 'Ma Shan Zheng', cursive;
+          font-family: 'STKaiti', cursive;
         }
       }
       .dialog-list-container {
@@ -866,7 +867,7 @@ input, button {
           .achieve-btn {
             width: 50px;
             height: 50px;
-            font-family: 'Ma Shan Zheng', cursive;
+            font-family: 'STKaiti', cursive;
             color: #c0aa6a;
             border-radius: 10%;
             background: #0e0e11;
@@ -879,7 +880,7 @@ input, button {
               font-size: 16px;
               font-weight: bold;
               color: #d3b479;
-              font-family: 'Ma Shan Zheng', cursive;
+              font-family: 'STKaiti', cursive;
             }
             &:hover {
               transform: scale(1.2);
@@ -959,7 +960,7 @@ input, button {
                   align-items: center;
                   gap: 8px;
                   padding: 4px 8px;
-                  font-family: 'Ma Shan Zheng', cursive;
+                  font-family: 'STKaiti', cursive;
                   transition: all 0.3s;
                   &:hover {
                     color: #c0aa6a;
@@ -1135,7 +1136,7 @@ input, button {
         .btn-send {
           width: 50px;
           height: 50px;
-          font-family: 'Ma Shan Zheng', cursive;
+          font-family: 'STKaiti', cursive;
           color: #c0aa6a;
           border-radius: 50%;
           background: #2d2d32;
@@ -1161,7 +1162,7 @@ input, button {
             color: #d3b479;
             opacity: 0;
             transition: opacity 0.3s ease;
-            font-family: 'Ma Shan Zheng', cursive;
+            font-family: 'STKaiti', cursive;
           }
 
           &:hover .icon-container {
@@ -1206,7 +1207,7 @@ input, button {
   box-shadow: 0 0 20px rgba(192, 170, 106, 0.2);
   z-index: 999;
   color: #c0aa6a;
-  font-family: 'Ma Shan Zheng', cursive;
+  font-family: 'STKaiti', cursive;
   font-size: 16px;
 
   .xuan-title {
@@ -1225,7 +1226,7 @@ input, button {
     color: #c0aa6a;
     width: 90%;
     margin: 10px 0;
-    font-family: 'Ma Shan Zheng', cursive;
+    font-family: 'STKaiti', cursive;
   }
 
   .xuan-button-group {

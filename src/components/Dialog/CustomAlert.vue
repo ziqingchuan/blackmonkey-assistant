@@ -119,7 +119,7 @@ defineExpose({ show });
     flex-direction: column;
     padding: 0;
     color: #e7cc80;
-    font-family: 'Ma Shan Zheng', cursive;
+    font-family: 'STKaiti', cursive;
     position: relative;
     overflow: hidden;
 
@@ -165,7 +165,7 @@ defineExpose({ show });
           border-radius: 6px;
           background: rgba(40, 40, 45, 0.8);
           color: #e7cc80;
-          font-family: 'Ma Shan Zheng', cursive;
+          font-family: 'STKaiti', cursive;
           outline: none;
           transition: border-color 0.3s;
 
@@ -191,7 +191,7 @@ defineExpose({ show });
         border-radius: 8px;
         cursor: pointer;
         transition: all 0.3s;
-        font-family: 'Ma Shan Zheng', cursive;
+        font-family: 'STKaiti', cursive;
         font-size: 18px;
         position: relative;
         overflow: hidden;

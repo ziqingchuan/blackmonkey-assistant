@@ -243,7 +243,7 @@ const handleExport = async () => {
     if (confirmed === true) {
       exportToCSV();
     } else {
-      console.log('用户取消了导出操作');
+      console.log('取消导出操作');
     }
   } catch (error) {
     console.error('确认对话框错误:', error);
@@ -356,7 +356,7 @@ onMounted(() => {
 .dialog-viewer-container {
   display: flex;
   height: 100%;
-  font-family: 'Ma Shan Zheng', cursive;
+  font-family: 'STKaiti', cursive;
 
   .dialog-sidebar {
     width: 250px;
@@ -386,7 +386,7 @@ onMounted(() => {
         text-shadow: 0 0 8px rgba(192, 170, 106, 0.3);
         margin: 0 10px;
         position: relative;
-        font-family: 'Ma Shan Zheng', cursive;
+        font-family: 'STKaiti', cursive;
       }
     }
 
@@ -485,7 +485,7 @@ onMounted(() => {
           color: #d3b479;
           font-size: 24px;
           margin-bottom: 15px;
-          font-family: 'Ma Shan Zheng', cursive;
+          font-family: 'STKaiti', cursive;
         }
 
         p {
@@ -734,7 +734,7 @@ onMounted(() => {
       border: 1px solid #c0aa6a;
       border-radius: 6px;
       color: #d3b479;
-      font-family: 'Ma Shan Zheng', cursive;
+      font-family: 'STKaiti', cursive;
       font-size: 16px;
       cursor: pointer;
       transition: all 0.3s;

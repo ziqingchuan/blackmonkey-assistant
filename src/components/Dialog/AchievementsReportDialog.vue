@@ -94,7 +94,7 @@ const processStream = async () => {
     const token = localStorage.getItem('token') || '';
 
     // 使用fetch API发起请求
-    const url = `${window.location.origin}/api/ach/report`;
+    const url = 'http://101.37.171.135:8000/api/ach/report';
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -290,7 +290,7 @@ onBeforeUnmount(() => {
 
     h3 {
       color: #d3b479;
-      font-family: 'Ma Shan Zheng', cursive;
+      font-family: 'STKaiti', cursive;
       font-size: 28px;
       margin: 0;
       letter-spacing: 2px;
@@ -366,7 +366,7 @@ onBeforeUnmount(() => {
         padding: 8px 20px;
         cursor: pointer;
         transition: all 0.3s;
-        font-family: 'Ma Shan Zheng', cursive;
+        font-family: 'STKaiti', cursive;
 
         &:hover {
           background: rgba(106, 170, 192, 0.25);
@@ -424,7 +424,7 @@ onBeforeUnmount(() => {
       border-radius: 6px;
       cursor: pointer;
       transition: all 0.3s;
-      font-family: 'Ma Shan Zheng', cursive;
+      font-family: 'STKaiti', cursive;
       font-size: 18px;
       border: none;
       min-width: 120px;

@@ -107,7 +107,7 @@ const handleConfirm = () => {
 
     h3 {
       color: #d3b479;
-      font-family: 'Ma Shan Zheng', cursive;
+      font-family: 'STKaiti', cursive;
       font-size: 24px;
       margin: 0;
     }
@@ -132,7 +132,7 @@ const handleConfirm = () => {
         border: 1px solid #c0aa6a;
         color: #e7cc80;
         border-radius: 4px;
-        font-family: 'Ma Shan Zheng', cursive;
+        font-family: 'STKaiti', cursive;
 
         &:focus {
           outline: none;
@@ -165,7 +165,7 @@ const handleConfirm = () => {
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.3s;
-      font-family: 'Ma Shan Zheng', cursive;
+      font-family: 'STKaiti', cursive;
 
       &.cancel-btn {
         background: rgba(192, 106, 106, 0.15);

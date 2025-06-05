@@ -58,7 +58,7 @@ defineProps({
     .loading-text {
       color: #d3b479;
       font-size: 18px;
-      font-family: 'Ma Shan Zheng', cursive;
+      font-family: 'STKaiti', cursive;
       text-shadow: 0 0 8px rgba(211, 180, 121, 0.5);
       letter-spacing: 2px;
       margin-top: 40px;

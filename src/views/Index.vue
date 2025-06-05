@@ -157,7 +157,7 @@ button {
   border-radius: 20px;
   cursor: pointer;
   color: #d3b479;
-  font-family: "Ma Shan Zheng", cursive;
+  font-family: "STKaiti", cursive;
   transition: background 0.3s;
   font-size: 18px;
   font-weight: bold;
@@ -168,7 +168,7 @@ button {
 }
 
 .home-page {
-  font-family: "Ma Shan Zheng", cursive;
+  font-family: "STKaiti", cursive;
   color: #d3b479;
   background: #1a1a1d;
   margin: 0;

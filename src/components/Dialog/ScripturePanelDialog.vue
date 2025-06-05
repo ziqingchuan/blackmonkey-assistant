@@ -209,7 +209,7 @@ const closeModal = () => {
         color: #fada9b;
         margin: 0;
         font-size: 24px;
-        font-family: 'Ma Shan Zheng', cursive;
+        font-family: 'STKaiti', cursive;
         text-shadow: 0 0 10px rgba(250, 218, 155, 0.3);
       }
 

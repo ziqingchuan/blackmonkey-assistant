@@ -227,7 +227,7 @@ const deleteItem = async (item: WukongDBInfo) => {
 @import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
 /* 全局样式 */
 input, button {
-  font-family: 'Ma Shan Zheng', cursive;
+  font-family: 'STKaiti', cursive;
 }
 
 .DB-information {

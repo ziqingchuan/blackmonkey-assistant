@@ -5,19 +5,21 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   optimizeDeps: {
-    include: ['mammoth','pdfjs-dist']
+    include: ['mammoth', 'pdfjs-dist'],
   },
   build: {
     chunkSizeWarningLimit: 1500,
   },
   server: {
     port: 3000,
-    host: false,
+    host: true, // 确保可以通过局域网访问
     proxy: {
       '/api': {
-        target: 'http://0.0.0.0:8000',
+        target: 'http://101.37.171.135:8000', // 确保地址和端口正确
+        changeOrigin: true,
+        secure: false, // 忽略 SSL 验证（仅用于开发环境）
       },
     },
   },
-  base: './'
-})
+  base: './',
+});

@@ -816,14 +816,14 @@ onMounted(async () => {
 
 /* 全局样式 */
 input, button {
-  font-family: 'Ma Shan Zheng', cursive;
+  font-family: 'STKaiti', cursive;
 }
 
 /* 页面整体样式 */
 .page-container {
   display: flex;
   background: linear-gradient(to right, #1a1a1d 0%, #0a0a0c 100%);
-  font-family: 'Ma Shan Zheng', cursive;
+  font-family: 'STKaiti', cursive;
   height: 100vh;
   overflow: hidden;
 
@@ -874,7 +874,7 @@ input, button {
         height: 50px;
         border-radius: 30%;
         background: #37373d;
-        font-family: 'Ma Shan Zheng', cursive;
+        font-family: 'STKaiti', cursive;
         color: #e7cc80;
         font-size: 14px;
         font-weight: bold;
@@ -940,7 +940,7 @@ input, button {
           text-shadow: 0 0 8px rgba(192, 170, 106, 0.3);
           margin: 0 10px;
           position: relative;
-          font-family: 'Ma Shan Zheng', cursive;
+          font-family: 'STKaiti', cursive;
         }
       }
 
@@ -1304,7 +1304,7 @@ input, button {
               border-radius: 15px;
               cursor: pointer;
               transition: all 0.3s ease;
-              font-family: 'Ma Shan Zheng', cursive;
+              font-family: 'STKaiti', cursive;
               font-size: 14px;
               color: #d3b479;
 
@@ -1388,7 +1388,7 @@ input, button {
       color: #fada9b;
       margin: 0;
       font-size: 18px;
-      font-family: 'Ma Shan Zheng', cursive;
+      font-family: 'STKaiti', cursive;
     }
 
     .close-button {
