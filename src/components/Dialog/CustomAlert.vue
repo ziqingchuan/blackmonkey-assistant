@@ -95,7 +95,7 @@ defineExpose({ show });
 </script>
 
 <style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
+
 .custom-alert-overlay {
   position: fixed;
   top: 0;

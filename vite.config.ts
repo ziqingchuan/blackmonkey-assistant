@@ -8,6 +8,9 @@ export default defineConfig({
     include: ['mammoth', 'pdfjs-dist'],
   },
   build: {
+    cssCodeSplit: true, // 确保 CSS 文件分割正常
+    outDir: 'dist', // 确保输出目录为 dist
+    assetsDir: 'assets', // 确保静态资源存放在 assets 中
     chunkSizeWarningLimit: 1500,
   },
   server: {
@@ -15,9 +18,8 @@ export default defineConfig({
     host: true, // 确保可以通过局域网访问
     proxy: {
       '/api': {
-        target: 'http://101.37.171.135:8000', // 确保地址和端口正确
+        target: 'https://101.37.171.135:8000', // 确保地址和端口正确
         changeOrigin: true,
-        secure: false, // 忽略 SSL 验证（仅用于开发环境）
       },
     },
   },

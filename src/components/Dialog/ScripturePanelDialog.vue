@@ -174,7 +174,6 @@ const closeModal = () => {
 
 
 <style scoped lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
 
 /* 经书参悟面板样式 */
 .scripture-panel-overlay {

@@ -693,7 +693,7 @@ onMounted(async () => {
             steamUser.value = userInfo;
           })
           .catch(error => {
-            console.error('获取用户信息失败:', error.response?.data || error.message);
+            console.error('获取用户信息失败:', error);
           });
       await getUserAchievements()
           .then(response => {
@@ -742,7 +742,6 @@ const toggleDialog = () => {
 </script>
 
 <style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
 /* 全局样式 */
 input, button {
   font-family: 'STKaiti', cursive;

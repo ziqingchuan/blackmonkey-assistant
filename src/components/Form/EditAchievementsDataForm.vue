@@ -92,8 +92,6 @@ const handleConfirm = () => {
 </script>
 
 <style scoped lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
-
 .edit-dialog-overlay {
   position: fixed;
   top: 0;

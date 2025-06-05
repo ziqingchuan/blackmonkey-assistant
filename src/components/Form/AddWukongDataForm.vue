@@ -101,8 +101,7 @@ const handleFileUpload = async (e: Event) => {
 
   try {
     formData.value.text = await FileHandler.handleFile(file);
-  } catch (error) {
-    console.error('文件解析失败:', error);
+  } catch {
     showAlert('文件解析失败，请检查文件格式!', 0)
   }
 };
@@ -139,7 +138,6 @@ watch(() => props.visible, (newVal) => {
 </script>
 
 <style scoped lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
 
 .edit-dialog-overlay {
   position: fixed;

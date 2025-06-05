@@ -19,7 +19,6 @@ defineProps({
 </script>
 
 <style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css2?family=STKaiti&display=swap');
 
 .global-loading-overlay {
   position: fixed;

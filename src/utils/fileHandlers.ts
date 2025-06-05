@@ -83,8 +83,7 @@ export const FileHandler = {
                 resStr += res[i];
             }
             return resStr;
-        } catch (error) {
-            console.error('PDF 解析失败:', error);
+        } catch {
             return '无法解析 PDF 文件，请检查文件内容！';
         }
     },
