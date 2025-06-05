@@ -773,8 +773,6 @@ export const getSchoolRecommendation = async (
   hasChosenSchool: boolean = false, 
   chosenSchoolName: string = ''
 ): Promise<SchoolRecommendationResponse> => {
-  // 模拟网络延迟
-  await new Promise(resolve => setTimeout(resolve, 100));
 
   const recommendation = SCHOOL_RECOMMENDATIONS[stickType];
   
@@ -838,7 +836,6 @@ export const getScriptureContent = async (
   schoolName?: string
 ): Promise<ScriptureResponse> => {
   try {
-    await new Promise(resolve => setTimeout(resolve, 100)); // 模拟网络延迟
     
     if (messageType === 'welcome') {
       // 第一条消息：返回基础棍法

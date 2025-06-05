@@ -403,7 +403,7 @@ const backToCombatTraining = async () => {
  */
 const typewriterEffect = (
     text: string,
-    speed: number = 30,
+    speed: number = 5,
     messageType?: MessageType, stickType?: StickType
 ): Promise<void> => {
   return new Promise((resolve) => {
