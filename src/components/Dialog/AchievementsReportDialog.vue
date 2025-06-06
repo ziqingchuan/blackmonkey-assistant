@@ -94,7 +94,7 @@ const processStream = async () => {
     const token = localStorage.getItem('token') || '';
 
     // 使用fetch API发起请求
-    const url = 'http://101.37.171.135:8000/api/ach/report';
+    const url = '/proxy/ach/report';
     const response = await fetch(url, {
       method: 'POST',
       headers: {

@@ -432,7 +432,7 @@ const getStreamingAnswer = async (params: CommonQuestion, messageIndex: number) 
 
   return new Promise<void>((resolve, reject) => {
     // 构造URL
-    const url = 'http://101.37.171.135:8000/api/rag/get';
+    const url = '/proxy/rag/get';
 
     // 设置超时控制
     const timeoutId = setTimeout(() => {
