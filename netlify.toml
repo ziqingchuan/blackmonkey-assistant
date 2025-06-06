@@ -1,0 +1,7 @@
+[[redirects]]
+  from = "/api"
+  to = "http://101.37.171.135:8000/api"
+  status = 200
+  force = true
+  headers = {X-From = "Netlify"}
+  signed = "API_SIGNATURE_TOKEN"
