@@ -3,8 +3,8 @@
     { "source": "/:path*",
       "destination": "/index.html"
     },
-    { "source": "/api/:match*",
-      "destination": "http://localhost:8000/api/:match*"
+    { "source": "/proxy/:match*",
+      "destination": "http://localhost:8000/:match*"
     }
   ]
 }
