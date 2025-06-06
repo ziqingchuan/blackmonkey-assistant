@@ -17,7 +17,7 @@ export default defineConfig({
     port: 3000,
     host: true, // 确保可以通过局域网访问
     proxy: {
-      '/api': {
+      '/proxy': {
         target: 'http://101.37.171.135:8000', // 确保地址和端口正确
         changeOrigin: true,
         secure: false,
