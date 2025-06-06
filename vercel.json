@@ -1,12 +1,10 @@
 {
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "http://101.37.171.135:8000/api/$1"
+    { "source": "/:path*",
+      "destination": "/index.html"
     },
-    {
-      "source": "/(.*)",
-      "destination": "/$1"
+    { "source": "/proxy/:match*",
+      "destination": "http://101.37.171.135:8000/:match*"
     }
   ]
 }
