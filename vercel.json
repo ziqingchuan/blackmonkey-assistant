@@ -1,15 +1,12 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     { "source": "/:path*",
       "destination": "/index.html"
-    }
-  ],
-
-  "routes": [
+    },
     {
-      "src": "/api/(.*)",
-      "dest": "http://localhost:8000/api:path*",
-      "methods": ["GET", "POST", "PUT", "DELETE"]
+      "source": "/api/:path*",
+      "destination": "http://101.37.171.135:8000/api/:path*"
     }
   ]
 }
