@@ -2,8 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/src/api/proxy"
+      "source": "https://blackmonkey-assistant.vercel.app/api/(.*)",
+      "destination": "http://101.37.171.135:8000/api/$1"
     },
     {
       "source": "/(.*)",
