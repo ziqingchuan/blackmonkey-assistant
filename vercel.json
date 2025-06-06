@@ -2,10 +2,7 @@
   "rewrites": [
     { "source": "/:path*",
       "destination": "/index.html"
-    },
-//    { "source": "/proxy/:match*",
-//      "destination": "http://localhost:8000/:match*"
-//    }
+    }
   ],
   "routes": [
     {
