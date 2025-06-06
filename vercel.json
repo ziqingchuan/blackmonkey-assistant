@@ -4,7 +4,7 @@
       "destination": "/index.html"
     },
     { "source": "/api/:match*",
-      "destination": "http://101.37.171.135:8000/api/:match*"
+      "destination": "http://localhost:8000/api/:match*"
     }
   ]
 }
