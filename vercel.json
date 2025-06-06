@@ -6,7 +6,7 @@
     },
     {
       "source": "/api/:path*",
-      "destination": "http://101.37.171.135:8000/api/:path*"
+      "destination": "http://localhost:8000/api/:path*"
     }
   ]
 }
