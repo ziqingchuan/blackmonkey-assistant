@@ -1,23 +1,21 @@
-const { createProxyMiddleware } = require('http-proxy-middleware')
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
-module.exports = (req, res) => {
-    let target = ''
+export default (req, res) => {
+    let target = '';
 
     // 代理目标地址
-    // 这里使用 backend 主要用于区分 vercel serverless 的 api 路径
     if (req.url.startsWith('/proxy')) {
-        target = 'http://101.37.171.135:8000/api'
+        target = 'http://101.37.171.135:8000/api';
     }
 
     // 创建代理对象并转发请求
-    createProxyMiddleware({
+    const proxy = createProxyMiddleware({
         target,
         changeOrigin: true,
         pathRewrite: {
-            // 通过路径重写，去除请求路径中的 `/backend`
-            // 例如 /backend/user/login 将被转发到 http://backend-api.com/user/login
-            '^/proxy/': '/'
-        }
-    })(req, res)
-}
+            '^/proxy/': '/',
+        },
+    });
 
+    return proxy(req, res);
+};
