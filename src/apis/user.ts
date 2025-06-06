@@ -57,7 +57,7 @@ export const register = (userInfo: RegisterInfo) => {
  */
 export const getSalt = (email: string) => {
     // return axios.post(`${API_MODULE}/salt`, { email }, {
-    return axios.post('/proxy/salt', { email }, {
+    return axios.post('/api/salt', { email }, {
         headers: { 'Content-Type': 'application/json' }
     });
 };

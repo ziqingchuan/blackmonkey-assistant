@@ -3,8 +3,15 @@
     { "source": "/:path*",
       "destination": "/index.html"
     },
-    { "source": "/proxy/:match*",
-      "destination": "http://localhost:8000/:match*"
+//    { "source": "/proxy/:match*",
+//      "destination": "http://localhost:8000/:match*"
+//    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "http://localhost:8000/:path*",
+      "methods": ["GET", "POST", "PUT", "DELETE"]
     }
   ]
 }
