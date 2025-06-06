@@ -18,8 +18,9 @@ export default defineConfig({
     host: true, // 确保可以通过局域网访问
     proxy: {
       '/api': {
-        target: 'https://101.37.171.135:8000', // 确保地址和端口正确
+        target: 'http://101.37.171.135:8000', // 确保地址和端口正确
         changeOrigin: true,
+        secure: false,
       },
     },
   },
