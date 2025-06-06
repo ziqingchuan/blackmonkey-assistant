@@ -2,8 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
-      "source": "/https://blackmonkey-assistant.vercel.app/api/:match*",
-      "destination": "/http://101.37.171.135:8000/api/:match*"
+      "source": "/proxy/:match*",
+      "destination": "http://101.37.171.135:8000/api/:match*"
     },
     {
       "source": "/(.*)",
@@ -12,11 +12,20 @@
   ],
   "headers": [
     {
-      "source": "/api/(.*)",
+      "source": "/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization, token" }
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "content-type"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "DELETE,PUT,POST,GET,OPTIONS"
+        }
       ]
     }
   ]
