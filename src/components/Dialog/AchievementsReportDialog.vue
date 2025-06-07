@@ -147,7 +147,7 @@ const processStream = async () => {
     }
   } catch (err: any) {
     if (err.name !== 'AbortError') {
-      errorMessage.value = err.message || '请求失败';
+      errorMessage.value = '无法连接Steam，请稍后再试';
       console.error('流式请求错误:', err);
     }
   } finally {
@@ -166,7 +166,7 @@ const handleStreamEvent = (data: any) => {
       scrollToBottom('.report-content')
       break;
     case 'error':
-      errorMessage.value = data.error || '生成报告时出错';
+      errorMessage.value = '无法连接Steam，请稍后再试';
       break;
     case 'done':
       isComplete.value = true;
