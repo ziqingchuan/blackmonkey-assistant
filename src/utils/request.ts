@@ -6,7 +6,7 @@ import axios from 'axios'
 
 //创建一个axios的实例service
 const service = axios.create({
-    timeout: 60000 // 1 minute timeout
+    timeout: 120000 // 1 minute timeout
 })
 
 //判断是否登录
