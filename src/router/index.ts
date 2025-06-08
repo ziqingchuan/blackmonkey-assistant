@@ -3,10 +3,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 const routes = [
     {
         path: '/',
-        redirect: '/index'
+        redirect: '/home'
     },
     {
-        path: '/index',
+        path: '/home',
         name: 'index',
         component: () => import('../views/Index.vue'),
         meta: { title: '首页' }
@@ -18,13 +18,13 @@ const routes = [
         meta: { title: '登录与注册' }
     },
     {
-        path: '/rag-user',
+        path: '/dialog',
         name: 'rag-user',
         component: () => import('../views/UserModule/RagUser.vue'),
         meta: { title: '用户端' }
     },
     {
-        path: '/rag-admin',
+        path: '/admin',
         name: 'rag-admin',
         component: () => import('../views/AdminModule/RagAdmin.vue'),
         meta: { title: '管理员端' }
@@ -36,13 +36,13 @@ const routes = [
         meta: { title: '成就页面' }
     },
     {
-        path: '/play-methods',
+        path: '/strategy',
         name: 'play-methods',
         component: () => import('../views/UserModule/PlayMethods.vue'),
         meta: { title: '打法推荐' }
     },
     {
-        path: '/boss-tips',
+        path: '/boss',
         name: 'boss-tips',
         component: () => import('../views/UserModule/BossTips.vue'),
         meta: { title: 'Boss攻略' }
