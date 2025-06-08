@@ -1,3 +1,36 @@
+# 前端仓库简介
+
+本仓库为黑神话悟空游戏助手的前端代码仓库，现已部署完毕，体验地址：
+
+www.blackmonkey-assistant.cn
+
+## 目录结构
+
+```bash
+├─api
+├─public
+└─src
+    ├─apis
+    ├─assets
+    │  └─icons
+    │      └─Clouds
+    ├─components
+    │  ├─DataBase
+    │  ├─Dialog
+    │  └─Form
+    ├─consts
+    ├─router
+    ├─utils
+    └─views
+        ├─AdminModule
+        └─UserModule
+```
+
+- 管理员端与用户端的UI设计保证一致性的风格
+- 封装了全局的弹窗组件、表单组件、数据库组件、动画组件，提高了可复用性
+- 封装了全局的函数(utils/GlobalFunction.ts)，提高开发效率
+- 封装了全局的路由(router/index.ts)，统一管理路由
+
 # 前端代码规范
 
 ## 1. 模板部分 (`<template>`)
