@@ -226,6 +226,7 @@ const closeConnection = () => {
 // 关闭对话框
 const closeDialog = () => {
   closeConnection();
+  isComplete.value = true;
   emit('close');
 };
 
