@@ -71,10 +71,30 @@
     <footer>
       <div class="footer-container">
         <FooterCloudLeft/>
+        <!-- 左侧二维码容器 -->
+        <div class="qrcode-container qrcode-left">
+          <div class="qrcode-card">
+            <div class="qrcode-title">加入我们的团队</div>
+            <div class="qrcode-placeholder"
+                 style="background: url('/img.jpg') no-repeat center center;
+                 background-size: contain;">
+            </div>
+          </div>
+        </div>
         <div class="footer-section">
           <h2>联系我们</h2>
           <p>邮箱: 221250108@smail.nju.edu.cn &nbsp; &nbsp; &nbsp;电话: 182-4518-7102</p>
           <p>地址: 南京市 鼓楼区 汉口路 22号</p>
+        </div>
+        <!-- 右侧二维码容器 -->
+        <div class="qrcode-container qrcode-right">
+          <div class="qrcode-card">
+            <div class="qrcode-title">支持我们的团队</div>
+            <div class="qrcode-placeholder"
+                 style="background: url('/111.jpg') no-repeat center center;
+                 background-size: contain;">
+            </div>
+          </div>
         </div>
         <FooterCloudRight/>
       </div>
@@ -356,29 +376,122 @@ button {
   /* 页脚样式 */
   footer {
     background: #1a1a1a;
-    padding: 0 30px 30px;
+    padding: 30px 30px 20px;
     color: #d3b479;
     border-top: 2px solid #c0aa6a;
+    position: relative;
+    overflow: hidden;
 
     .footer-container {
       display: flex;
-      justify-content: center;
+      flex-direction: row;
+      justify-content: space-between;
       align-items: center;
-    }
+      position: relative;
+      z-index: 10;
 
-    .footer-section {
-      flex: 1;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      h2 {
-        color: #c0aa6a;
-        width: 50%;
-        border-bottom: 1px solid #c0aa6a;
-        padding-bottom: 10px;
-        margin-bottom: 10px;
+      .qrcode-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 10;
+        width: 150px;
+
+        &.qrcode-left {
+          margin-left: 90px;
+        }
+
+        &.qrcode-right {
+          margin-right: 90px;
+        }
+
+        .qrcode-card {
+          background: rgba(0, 0, 0, 0.7);
+          border: 1px solid #c0aa6a;
+          border-radius: 10px;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 100%;
+          box-shadow: 0 5px 25px rgba(195, 161, 106, 0.3);
+          transition: all 0.4s ease;
+          position: relative;
+          overflow: hidden;
+
+          &::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #c0aa6a, #d3b479, #8a7c55, #d3b479);
+            z-index: -1;
+            border-radius: 12px;
+            animation: border-glow 3s linear infinite;
+            background-size: 400%;
+          }
+
+          .qrcode-placeholder {
+            z-index: 9999;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #c0aa6a;
+            position: relative;
+            overflow: hidden;
+          }
+
+          .qrcode-title {
+            font-size: 18px;
+            color: #d3b479;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(211, 180, 121, 0.5);
+            position: relative;
+
+            &::after {
+              content: "";
+              display: block;
+              width: 80%;
+              height: 2px;
+              background: linear-gradient(90deg, transparent, #c0aa6a, transparent);
+              margin: 8px auto;
+            }
+          }
+        }
+      }
+
+      .footer-section {
+        flex: 1;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 0 20px;
+        z-index: 10;
+
+        h2 {
+          color: #c0aa6a;
+          width: 70%;
+          border-bottom: 1px solid #c0aa6a;
+          padding-bottom: 10px;
+          margin-bottom: 15px;
+          font-size: 28px;
+          text-shadow: 0 0 8px rgba(195, 161, 106, 0.5);
+        }
+
+        p {
+          font-size: 18px;
+          margin: 8px 0;
+          color: #a9956a;
+          line-height: 1.6;
+        }
       }
     }
 
@@ -391,7 +504,21 @@ button {
       font-size: 14px;
       color: #a9956a;
       gap: 20px;
+      position: relative;
+      z-index: 10;
+
+      h3 {
+        font-size: 18px;
+        letter-spacing: 1px;
+        text-shadow: 0 0 5px rgba(169, 149, 106, 0.5);
+      }
     }
+  }
+
+  @keyframes border-glow {
+    0% { background-position: 0 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0 50%; }
   }
 }
 </style>
