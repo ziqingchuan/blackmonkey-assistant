@@ -76,7 +76,7 @@
           <div class="qrcode-card">
             <div class="qrcode-title">加入我们的团队</div>
             <div class="qrcode-placeholder"
-                 style="background: url('/img.jpg') no-repeat center center;
+                 style="background: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/asserts/BlackMonkey/contact.jpg') no-repeat center center;
                  background-size: contain;">
             </div>
           </div>
@@ -91,7 +91,7 @@
           <div class="qrcode-card">
             <div class="qrcode-title">支持我们的团队</div>
             <div class="qrcode-placeholder"
-                 style="background: url('/111.jpg') no-repeat center center;
+                 style="background: url('https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/asserts/BlackMonkey/payme.jpg') no-repeat center center;
                  background-size: contain;">
             </div>
           </div>
@@ -100,7 +100,7 @@
       </div>
       <div class="footer-bottom">
         <RedCloudLeft/>
-        <h3>&copy; 2025 黑神话悟空问答助手. 版权所有 | 玄门证道</h3>
+        <h3>&copy; 2025 blackmonkey-assistant.cn 版权所有</h3>
         <RedCloudRight/>
       </div>
     </footer>

@@ -139,7 +139,7 @@
       </div>
       <div class="footer-bottom">
         <RedCloudLeft/>
-        <h3>&copy; 2025 黑神话悟空问答助手. 版权所有 | 玄门证道</h3>
+        <h3>&copy; 2025 blackmonkey-assistant.cn 版权所有</h3>
         <RedCloudRight/>
       </div>
     </footer>
