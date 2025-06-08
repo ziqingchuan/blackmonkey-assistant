@@ -110,7 +110,6 @@ export interface ScriptureResponse {
     messageType: MessageType; // 消息类型
   };
 }
-
 /**
  * 流派推荐响应
  */
