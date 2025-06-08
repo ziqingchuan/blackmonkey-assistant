@@ -330,7 +330,7 @@ const backToStickSelection = async () => {
       msg => msg.role === 'RAG' && (
         msg.content.includes('善哉！劈棍乃天罡正法') ||
         msg.content.includes('妙哉！立棍乃中庸至道') ||
-        msg.content.includes('奇哉！截棍乃灵巧变化')
+        msg.content.includes('奇哉！戳棍乃灵巧变化')
       )
     );
     

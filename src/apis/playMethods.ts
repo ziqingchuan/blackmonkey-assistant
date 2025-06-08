@@ -3,7 +3,7 @@
 /**
  * 棍法类型
  */
-export type StickType = '劈棍' | '立棍' | '截棍';
+export type StickType = '劈棍' | '立棍' | '戳棍';
 
 /**
  * 消息类型 - 用于区分不同阶段的秘籍内容
@@ -142,8 +142,8 @@ const STICK_CHOICES: StickChoice[] = [
     description: '中正平和，守中用攻'
   },
   {
-    id: '截棍',
-    name: '截棍',
+    id: '戳棍',
+    name: '戳棍',
     description: '短打疾击，敏捷如风'
   }
 ];
@@ -186,9 +186,9 @@ const SCHOOL_RECOMMENDATIONS: Record<StickType, SchoolRecommendationResponse['da
     ],
     philosophy: '此三派皆重心法，需静心体悟。记住，立棍之道在于守，守中有攻，攻中有守。<br>（什么是闪避？什么是蓄力？什么是万物起源？天下武功，唯立不破。本派主打防御法术回血拉满，遇到boss先画个圈圈诅咒它，然后立立立，敲一棒。能立起来就绝不闪避，能坐轮椅就绝不站立！）'
   },
-  '截棍': {
-    stickType: '截棍',
-    content: '奇哉！截棍乃灵巧变化，老夫为你推荐两大流派',
+  '戳棍': {
+    stickType: '戳棍',
+    content: '奇哉！戳棍乃灵巧变化，老夫为你推荐两大流派',
     schools: [
       {
         name: '戳棍搅棍流',
@@ -199,7 +199,7 @@ const SCHOOL_RECOMMENDATIONS: Record<StickType, SchoolRecommendationResponse['da
         description: '退一寸，进一尺，以退为进'
       }
     ],
-    philosophy: '此两派重在巧劲，需苦练身法。记住，截棍之道在于快，快则制人，慢则制于人。<br>（戳棍流讲究一进一出，可进可退，在敌人的攻击范围内出入自如。看准时机便能直捣黄龙，直接开搅！我愿称该流派为:黑神话赵云！）'
+    philosophy: '此两派重在巧劲，需苦练身法。记住，戳棍之道在于快，快则制人，慢则制于人。<br>（戳棍流讲究一进一出，可进可退，在敌人的攻击范围内出入自如。看准时机便能直捣黄龙，直接开搅！我愿称该流派为:黑神话赵云！）'
   }
 };
 
@@ -300,7 +300,7 @@ const SCHOOL_DETAILS: Record<string, SchoolDetailContent> = {
     videoUrl: 'https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/BlackMonkey/PlayMethod/%E7%AB%8B%E6%A3%8D.mp4'
   },
   
-  // 截棍流派  
+  // 戳棍流派  
   '戳棍搅棍流': {
     name: '戳棍搅棍流',
     title: '龙蛇飞舞·搅动风云',
@@ -820,7 +820,7 @@ export const getSchoolRecommendation = async (
  * @returns boolean
  */
 export const isValidStickType = (stickType: string): stickType is StickType => {
-  return ['劈棍', '立棍', '截棍'].includes(stickType);
+  return ['劈棍', '立棍', '戳棍'].includes(stickType);
 };
 
 /**
