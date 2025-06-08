@@ -4,7 +4,7 @@
     <!-- 页头 -->
     <header class="header">
       <div class="header-container">
-        <div class="logo" @click="router.push('/index')">
+        <div class="logo" @click="router.push('/home')">
           <img src="https://black-monkey-resource.oss-cn-hangzhou.aliyuncs.com/public/wukong-header.png" alt="黑神话悟空" />
           <span>问答助手</span>
         </div>
@@ -17,7 +17,7 @@
               @click="getHeaderText"
           />
           <span class="welcome-text">{{ currentHeaderText  }}</span>
-          <button class="header-btn" @click="router.push('/index')">返回首页</button>
+          <button class="header-btn" @click="router.push('/home')">返回首页</button>
         </div>
       </div>
     </header>

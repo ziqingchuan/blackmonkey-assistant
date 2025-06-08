@@ -746,7 +746,7 @@ const startNewCycle = async () => {
 const returnToMainPage = async () => {
   const confirmed = await showAlert('天命人，武学修炼已臻化境，是否功成身退返回江湖？', 1);
   if (confirmed) {
-    await router.push('/rag-user');
+    await router.push('/dialog');
   }
 };
 

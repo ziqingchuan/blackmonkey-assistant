@@ -634,11 +634,11 @@ const toAchievementPage = async () => {
 }
 
 const toPlayMethodsPage = async () => {
-  await router.push('/play-methods');
+  await router.push('/strategy');
 }
 
 const toBossTipsPage = async () => {
-  await router.push('/boss-tips');
+  await router.push('/boss');
 }
 
 // 界面初始化加载

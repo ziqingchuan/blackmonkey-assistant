@@ -41,7 +41,7 @@ export function logout(router: any) {
             localStorage.removeItem('name');
             localStorage.removeItem('achievements');
             localStorage.removeItem('report')
-            router.push('/index');
+            router.push('/home');
         }
     });
 }
