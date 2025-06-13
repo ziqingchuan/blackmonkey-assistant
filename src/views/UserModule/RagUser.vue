@@ -653,7 +653,6 @@ onMounted(async () => {
       // 获取全部的对话信息
       dialogList.value = await getAllHistory(currentUser.value);
       if (dialogList.value) {
-        // 初始化默认的对话
         currentDialog.value = await getDialogDetail(dialogList.value[0].id);
         displayContentList.value = convertToDisplayFormat(currentDialog.value.contentList); // 转换数据格式
       }
